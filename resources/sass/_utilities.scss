@@ -1,0 +1,33 @@
+.bg-color {
+    &\:blue-3 {
+        background-color: $color-blue-3 !important;
+    }
+
+    &\:blue-1 {
+        background-color: $color-blue-1 !important;
+    }
+}
+
+.fw {
+    &-400 {
+        font-weight: 400 !important;
+    }
+
+    &-500 {
+        font-weight: 500 !important;
+    }
+
+    &-600 {
+        font-weight: 600 !important;
+    }
+}
+
+.text-color {
+    &\:black {
+        color: #000 !important;
+    }
+
+    &\:gray {
+        color: $color-gray-1 !important;
+    }
+}

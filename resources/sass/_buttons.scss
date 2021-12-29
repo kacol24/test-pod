@@ -1,0 +1,26 @@
+.btn {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    //font-family: Poppins;
+    @extend %font-poppins;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 22px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 4px;
+
+    transition: background-color 200ms;
+}
+
+.btn-primary {
+    color: #FFFFFF;
+    background-color: $color-blue-2;
+
+    &:disabled {
+        background-color: rgba(29, 120, 253, .4);
+        border-color: rgba(29, 120, 253, .4);
+        color: #fff;
+    }
+}

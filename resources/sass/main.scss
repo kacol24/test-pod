@@ -1,0 +1,247 @@
+$color-blue-1: #1665D8;
+$color-blue-2: #1D78FD;
+$color-blue-3: #0D62CA;
+
+$color-gray-1: #9EA0A5;
+
+body {
+    background-color: #fff;
+}
+
+@import "fonts";
+@import "utilities";
+@import "buttons";
+
+#site_nav {
+    #main_nav {
+        .nav-item {
+            .nav-link {
+                //font-family: Poppins;
+                @extend %font-poppins;
+                font-style: normal;
+                font-weight: 700;
+                font-size: 14px;
+                line-height: 22px;
+                color: #000000;
+            }
+        }
+    }
+}
+
+.page-title {
+    margin: 0;
+    //font-family: Poppins;
+    @extend %font-poppins;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 28px;
+    color: #000000;
+}
+
+.nav-pills {
+    .nav-link {
+        //font-family: Poppins;
+        @extend %font-poppins;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 22px;
+        color: #6B6C6F;
+
+        &.active {
+            background-color: $color-blue-1;
+        }
+    }
+}
+
+.card {
+    page-break-inside: avoid !important;
+
+    .card-header {
+        &:first-child {
+            border-radius: 4px 4px 0 0;
+        }
+    }
+
+    .card-footer {
+        &:last-child {
+            border-radius: 0 0 4px 4px;
+        }
+    }
+
+    .card-title {
+        //font-family: Poppins;
+        @extend %font-poppins;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 28px;
+        color: #000000;
+    }
+
+    .card-subtitle {
+        //font-family: Poppins;
+        @extend %font-poppins;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 18px;
+        color: #9EA0A5;
+    }
+
+    .list-group {
+        .list-group-item {
+            border-left: 0;
+            border-right: 0;
+
+            &:first-child {
+                border-top: 0;
+            }
+
+            &:last-child {
+                border-radius: 0 0 4px 4px;
+            }
+        }
+    }
+
+    th {
+        //font-family: Poppins;
+        @extend %font-poppins;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 22px;
+        color: #9EA0A5;
+        padding-bottom: 10px;
+    }
+
+    td {
+        //font-family: Poppins;
+        @extend %font-poppins;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 22px;
+        color: #3E3F42;
+
+        padding-bottom: 10px;
+    }
+
+    &--address-default {
+        border: 2px solid #000000;
+
+        &, .card-header {
+            background: #F6F7F9;
+        }
+    }
+
+    &--address-placeholder {
+        border: 1px dashed #D8D8D8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+.order-list {
+    .list-group-item {
+        padding: 20px 30px;
+    }
+
+    dl {
+        margin: 0;
+    }
+
+    dt {
+        font-family: Poppins;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 22px;
+        color: #000000;
+    }
+
+    dd {
+        font-family: Poppins;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 18px;
+        color: #9EA0A5;
+    }
+}
+
+.table {
+    > :not(:first-child) {
+        border-top: 1px solid #eaedf3;
+    }
+}
+
+.modal-title {
+    //font-family: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 28px;
+    color: #000000;
+}
+
+#mobile_nav {
+    .nav-item {
+        border-top: 1px solid #eee;
+        border-bottom: 0;
+
+        &:first-child {
+            border-top: 0;
+        }
+
+        &.active {
+            .nav-link {
+                border-left: 0;
+            }
+        }
+    }
+
+    .nav-link {
+        padding: 15px 20px;
+        //font-family: Poppins;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 28px;
+        color: #000000;
+        justify-content: flex-start;
+        border-left: 0;
+    }
+
+    .dropdown-menu {
+        background: #FFFFFF;
+        box-shadow: 0 3px 20px rgba(0, 0, 0, 0.08) !important;
+        border-radius: 4px !important;
+        margin: 20px;
+
+        .dropdown-item {
+            padding: 20px;
+            border-left: 0;
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 22px;
+            color: #000000;
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .account-sidebar {
+        position: static;
+    }
+}

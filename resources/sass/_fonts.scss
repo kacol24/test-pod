@@ -1,0 +1,7 @@
+.font-poppins, %font-poppins {
+    font-family: 'Poppins', sans-serif;
+}
+
+* {
+    @extend %font-poppins;
+}
