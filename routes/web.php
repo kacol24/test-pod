@@ -20,3 +20,13 @@ Route::get('/', function () {
 Route::view('login', 'auth.login')->name('login');
 Route::view('register', 'auth.register')->name('register');
 Route::view('register/success', 'auth.register-success')->name('register_success');
+
+Route::view('dashboard', 'dashboard')->name('dashboard');
+
+Route::view('my-account', 'account.myaccount')->name('myaccount');
+Route::view('my-purchases', 'account.mypurchases')->name('myorders');
+Route::view('my-purchases/{id?}', 'account.orderdetail')->name('orderdetail');
+Route::view('my-purchases/{id?}/print', 'account.print-invoice')->name('orderdetail.print');
+Route::view('my-shipments', 'account.myshipments')->name('myshipments');
+Route::view('my-shipments/{id?}', 'account.shipmentdetail')->name('shipmentdetail');
+Route::view('my-address', 'account.myaddress')->name('myaddress');
