@@ -57,7 +57,7 @@
     </div>
 </div>
 
-<div class="dropdown mb-4">
+<div class="dropdown mb-4 d-block d-md-none">
     <button class="btn btn-default w-100 dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
             aria-expanded="false">
         My Profile
