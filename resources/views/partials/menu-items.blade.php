@@ -70,17 +70,17 @@
     </li>
 
 
-    <li class="nav-item border-start ps-4 me-3 d-none d-md-block">
+    <li class="nav-item border-start ps-4 me-3 d-none d-md-flex">
         <a class="nav-link" href="{{ route('myaccount') }}">
             <i class="ri-account-circle-line ri-xl align-middle"></i>
         </a>
     </li>
-    <li class="nav-item me-3 d-none d-md-block">
+    <li class="nav-item me-3 d-none d-md-flex">
         <a class="nav-link" href="./customers-index.html">
             <i class="ri-shopping-basket-line ri-xl align-middle"></i>
         </a>
     </li>
-    <li class="nav-item me-3 d-none d-md-block">
+    <li class="nav-item me-3 d-none d-md-flex">
         <a class="nav-link" href="./customers-index.html">
             <i class="ri-wallet-3-line ri-xl align-middle"></i>
         </a>
@@ -91,7 +91,7 @@
             </a>
         </div>
     </li>
-    <li class="nav-item me-3 d-none d-md-block">
+    <li class="nav-item me-3 d-none d-md-flex">
         <a class="btn btn-primary" href="./customers-index.html">
             <i class="ri-add-circle-line ri-xl align-middle"></i>
             Create
