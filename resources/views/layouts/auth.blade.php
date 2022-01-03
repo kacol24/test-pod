@@ -27,10 +27,12 @@
     <title>@yield('page_title', 'Welcome') | {{ config('app.name') }}</title>
 
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.7.1/dist/cdn.min.js" defer></script>
+
+    @stack('styles')
 </head>
 <body class="h-100 bg-color:blue-3">
 
-<main role="main" class="h-100 d-flex align-items-center justify-content-center">
+<main role="main" class="h-100 d-flex align-items-center justify-content-center py-3">
     @yield('content')
 </main>
 

@@ -6,8 +6,12 @@
     <div class="container">
         <form method="post" action="TODO">
             {{ csrf_field() }}
-            <div class="card mx-auto p-md-5" style="border-radius: 10px;max-width: 758px">
-                <div class="card-body p-md-0">
+            <div class="card mx-auto p-md-5 position-relative" style="border-radius: 10px;max-width: 758px">
+                <div class="position-absolute card-decoration" style="left: 0;z-index: -1;width: 100%;">
+                    <img src="{{ asset('images/bg-card-decor.png') }}" alt="" class="img-fluid mx-auto d-block w-100"
+                         style="max-width: 670px;">
+                </div>
+                <div class="card-body p-0">
                     @foreach ($errors->all() as $error)
                         <div class="alert alert-danger">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -122,7 +126,7 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="row">
+                        <div class="row align-items-center">
                             <div class="col-md">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value=""
@@ -134,7 +138,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <a href="{{ route('register_success') }}" class="btn btn-primary w-100 text-center">
+                                <a href="{{ route('register_success') }}" class="btn btn-primary w-100 text-center mt-3 mt-md-0">
                                     Create Account
                                 </a>
                             </div>
@@ -145,3 +149,23 @@
         </form>
     </div>
 @endsection
+
+@push('styles')
+    <style>
+        .card-decoration {
+            bottom: -30px;
+        }
+
+        @media (max-width: 767px) {
+            main.d-flex {
+                display: block !important;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .card-decoration {
+                bottom: -50px;
+            }
+        }
+    </style>
+@endpush

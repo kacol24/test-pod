@@ -6,8 +6,12 @@
     <div class="container">
         <form method="post" action="TODO">
             {{ csrf_field() }}
-            <div class="card mx-auto p-md-5" style="border-radius: 10px;max-width: 445px">
-                <div class="card-body p-2">
+            <div class="card mx-auto p-md-5 position-relative" style="border-radius: 10px;max-width: 445px">
+                <div class="position-absolute" style="bottom: -30px;left: 0;z-index: -1;width: 100%;">
+                    <img src="{{ asset('images/bg-card-decor.png') }}" alt="" class="img-fluid mx-auto d-block w-100"
+                         style="max-width: 400px;">
+                </div>
+                <div class="card-body p-0">
                     @foreach ($errors->all() as $error)
                         <div class="alert alert-danger">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -67,7 +71,8 @@
                             Sign In
                         </button>
                         <div class="text-center font-size:12">
-                            Don't have an account? <a href="{{ route('register') }}" class="text-decoration-none">Create
+                            Looking to create an account instead? <a href="{{ route('register') }}"
+                                                                     class="text-decoration-none">Create
                                 Account</a>
                         </div>
                     </fieldset>
