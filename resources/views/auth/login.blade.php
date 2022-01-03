@@ -27,17 +27,17 @@
                             Sign In
                         </legend>
                         <small class="font-size:12">
-                            Welcome! Please submit your credentials to login.
+                            Please enter your account’s name (eg. ELLISHOP)
                         </small>
                         <hr>
                         <div class="mb-4">
-                            <label for="email" class="text-uppercase text-color:black">
-                                E-mail Address
+                            <label for="username" class="text-uppercase text-color:black">
+                                Account Name
                             </label>
-                            <input id="email" name="email" type="email"
-                                   class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}"
-                                   value="{{ old('email') }}">
-                            @error('email')
+                            <input id="username" name="username" type="text"
+                                   class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}"
+                                   value="{{ old('username') }}">
+                            @error('username')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
@@ -45,7 +45,17 @@
                         </div>
                         <div class="mb-4 position-relative">
                             <label for="password" class="text-uppercase text-color:black">Password</label>
-                            <input type="password" id="password" name="password" class="form-control">
+                            <div class="input-group mb-3 rounded align-items-center shadow-none"
+                                 x-data="{ show: false }">
+                                <input type="password" id="password" name="password" class="form-control"
+                                       :type="!show ? 'password' : 'text'">
+                                <button class="text-color:black btn border-0 shadow-0 hover:shadow-none pe-0"
+                                        type="button"
+                                        @click="show = !show">
+                                    <i class="ri-fw text-color:black"
+                                       :class="show ? 'ri-eye-line' : 'ri-eye-close-line'"></i>
+                                </button>
+                            </div>
                             <a href="TODO" class="position-absolute text-decoration-none"
                                style="top: 0;right: 0;">
                                 <small>
@@ -57,7 +67,8 @@
                             Sign In
                         </button>
                         <div class="text-center font-size:12">
-                            Don't have an account? <a href="{{ route('register') }}" class="text-decoration-none">Create Account</a>
+                            Don't have an account? <a href="{{ route('register') }}" class="text-decoration-none">Create
+                                Account</a>
                         </div>
                     </fieldset>
                 </div>

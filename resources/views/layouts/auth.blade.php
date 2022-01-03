@@ -25,6 +25,8 @@
     <link rel="stylesheet" href="{{asset('backend/css/main.css')}}">
 
     <title>@yield('page_title', 'Welcome') | {{ config('app.name') }}</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.7.1/dist/cdn.min.js" defer></script>
 </head>
 <body class="h-100 bg-color:blue-3">
 
