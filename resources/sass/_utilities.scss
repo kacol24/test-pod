@@ -31,3 +31,11 @@
         color: $color-gray-1 !important;
     }
 }
+
+.hover {
+    &\:shadow-none {
+        &:hover {
+            box-shadow: none;
+        }
+    }
+}

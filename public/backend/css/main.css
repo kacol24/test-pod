@@ -30,6 +30,10 @@ body {
   color: #9EA0A5 !important;
 }
 
+.hover\:shadow-none:hover {
+  box-shadow: none;
+}
+
 .btn {
   font-size: 14px;
   display: flex;
