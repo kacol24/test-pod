@@ -4,9 +4,10 @@
 
 @section('content')
     <div class="container">
-        <form method="post" action="TODO">
+        <form method="post" action="{{ route('otp') }}">
             {{ csrf_field() }}
-            <div class="card mx-auto p-md-5 position-relative" style="border-radius: 10px;max-width: 445px">
+            <div class="card mx-auto p-md-5 position-relative" style="border-radius: 10px;max-width: 445px"
+                 x-data="{ passwordFieldShown: false, username: '' }">
                 <div class="position-absolute" style="bottom: -30px;left: 0;z-index: -1;width: 100%;">
                     <img src="{{ asset('images/bg-card-decor.png') }}" alt="" class="img-fluid mx-auto d-block w-100"
                          style="max-width: 400px;">
@@ -30,9 +31,6 @@
                         <legend class="fw-600 font-poppins font-size:22">
                             Sign In
                         </legend>
-                        <small class="font-size:12">
-                            Please enter your account’s name (eg. ELLISHOP)
-                        </small>
                         <hr>
                         <div class="mb-4">
                             <label for="username" class="text-uppercase text-color:black">
@@ -40,14 +38,14 @@
                             </label>
                             <input id="username" name="username" type="text"
                                    class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}"
-                                   value="{{ old('username') }}">
+                                   value="{{ old('username') }}" x-model="username">
                             @error('username')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
                             @enderror
                         </div>
-                        <div class="mb-4 position-relative">
+                        <div class="mb-4 position-relative" x-show="passwordFieldShown" x-transition x-cloak>
                             <label for="password" class="text-uppercase text-color:black">Password</label>
                             <div class="input-group mb-3 rounded align-items-center shadow-none"
                                  x-data="{ show: false }">
@@ -67,9 +65,19 @@
                                 </small>
                             </a>
                         </div>
-                        <button class="btn btn-primary w-100 d-block text-center mb-4">
-                            Sign In
-                        </button>
+                        <template x-if="!passwordFieldShown">
+                            <button class="btn btn-primary w-100 d-block text-center mb-4"
+                                    :disabled="!username"
+                                    @click="passwordFieldShown = true">
+                                Continue
+                            </button>
+                        </template>
+                        <template x-if="passwordFieldShown" x-cloak>
+                            <a href="{{ route('otp') }}"
+                               class="btn btn-primary w-100 d-block text-center mb-4 d-flex align-items-center">
+                                Sign In
+                            </a>
+                        </template>
                         <div class="text-center font-size:12">
                             Looking to create an account instead? <a href="{{ route('register') }}"
                                                                      class="text-decoration-none">Create

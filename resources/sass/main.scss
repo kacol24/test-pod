@@ -8,6 +8,10 @@ body {
     background-color: #fff;
 }
 
+[x-cloak] {
+    display: none !important;
+}
+
 @import "fonts";
 @import "utilities";
 @import "buttons";
@@ -244,4 +248,20 @@ body {
     .account-sidebar {
         position: static;
     }
+}
+
+.form-control--arrowless::-webkit-outer-spin-button,
+.form-control--arrowless::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+.form-control--arrowless[type=number] {
+    -moz-appearance: textfield;
+}
+
+.form-control-lg {
+    font-size: 1.25rem;
+    height: auto;
 }
