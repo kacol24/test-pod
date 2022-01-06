@@ -18,6 +18,7 @@ Route::get('/', function () {
 });
 
 Route::view('login', 'auth.login')->name('login');
+Route::view('login/verify', 'auth.otp')->name('otp');
 Route::view('register', 'auth.register')->name('register');
 Route::view('register/success', 'auth.register-success')->name('register_success');
 
