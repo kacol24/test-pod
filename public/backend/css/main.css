@@ -2,6 +2,10 @@ body {
   background-color: #fff;
 }
 
+[x-cloak] {
+  display: none !important;
+}
+
 .font-poppins, .card td, .card th, .card .card-subtitle, .card .card-title, .nav-pills .nav-link, .page-title, #site_nav #main_nav .nav-item .nav-link, .btn, * {
   font-family: "Poppins", sans-serif;
 }
@@ -228,4 +232,19 @@ body {
   .account-sidebar {
     position: static;
   }
+}
+.form-control--arrowless::-webkit-outer-spin-button,
+.form-control--arrowless::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.form-control--arrowless[type=number] {
+  -moz-appearance: textfield;
+}
+
+.form-control-lg {
+  font-size: 1.25rem;
+  height: auto;
 }
