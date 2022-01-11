@@ -33,6 +33,9 @@ body {
 .text-color\:gray {
   color: #9EA0A5 !important;
 }
+.text-color\:blue-1 {
+  color: #1665D8 !important;
+}
 
 .hover\:shadow-none:hover {
   box-shadow: none;
@@ -247,4 +250,17 @@ body {
 .form-control-lg {
   font-size: 1.25rem;
   height: auto;
+}
+
+.form-check-input:checked {
+  background-color: #34AA44;
+  border-color: #34AA44;
+}
+
+.form-check-label {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 22px;
+  color: #000000;
 }

@@ -31,3 +31,5 @@ Route::view('my-purchases/{id?}/print', 'account.print-invoice')->name('orderdet
 Route::view('my-shipments', 'account.myshipments')->name('myshipments');
 Route::view('my-shipments/{id?}', 'account.shipmentdetail')->name('shipmentdetail');
 Route::view('my-address', 'account.myaddress')->name('myaddress');
+Route::view('my-team', 'account.myteam')->name('myteam');
+Route::view('my-wallet', 'account.mywallet')->name('mywallet');
