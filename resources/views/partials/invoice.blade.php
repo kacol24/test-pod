@@ -82,9 +82,8 @@
                     </th>
                     <td>
                         000900281834
-                        <a href="#" class="text-decoration-none" data-copy
-                           data-clipboard-text="000900281834" data-bs-toggle="tooltip" title="Copied!"
-                           data-bs-trigger="manual">
+                        <a href="javascript:void(0)"
+                           class="text-decoration-none" @include('partials.data-copy', ['copyText' => '000900281834'])>
                             <i class="ri-file-copy-line ri-fw text-muted align-middle"></i>
                         </a>
                     </td>
