@@ -50,7 +50,7 @@
         <a class="nav-link" href="./customers-index.html">
             <i class="ri-shopping-basket-line ri-xl align-middle"></i>
         </a>
-        <a class="nav-link" href="./customers-index.html">
+        <a class="nav-link" href="{{ route('mywallet') }}">
             <i class="ri-wallet-3-line ri-xl align-middle"></i>
         </a>
         <div class="d-flex flex-column font-size:12 ms-2">
@@ -81,7 +81,7 @@
         </a>
     </li>
     <li class="nav-item me-3 d-none d-md-flex">
-        <a class="nav-link" href="./customers-index.html">
+        <a class="nav-link" href="{{ route('mywallet') }}">
             <i class="ri-wallet-3-line ri-xl align-middle"></i>
         </a>
         <div class="d-flex flex-column font-size:12 ms-2">

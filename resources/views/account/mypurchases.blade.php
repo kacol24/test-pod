@@ -17,7 +17,7 @@
                         </small>
                     </div>
                     <div class="list-group order-list">
-                        <a href="{{ route('orderdetail', '1') }}" class="list-group-item list-group-item-action">
+                        <a href="{{ route('orderdetail', '1') }}" class="list-group-item list-group-item-action bg-light">
                             <div class="row align-items-center">
                                 <div class="col-md-3">
                                     <dl>
