@@ -30,3 +30,28 @@
     border-color: #111111;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
+
+.border-color {
+    &\:black {
+        border-color: #000 !important;
+    }
+}
+
+.numbered-bullet {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #1665D8;
+    color: #fff;
+    font-size: 10px;
+}
+
+.custom-list {
+    li {
+        display: flex;
+        align-items: center;
+    }
+}

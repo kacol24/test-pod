@@ -33,3 +33,5 @@ Route::view('my-shipments/{id?}', 'account.shipmentdetail')->name('shipmentdetai
 Route::view('my-address', 'account.myaddress')->name('myaddress');
 Route::view('my-team', 'account.myteam')->name('myteam');
 Route::view('my-wallet', 'account.mywallet')->name('mywallet');
+Route::view('top-up', 'account.topup')->name('topup');
+Route::view('top-up/success', 'account.topup-success')->name('topup.success');

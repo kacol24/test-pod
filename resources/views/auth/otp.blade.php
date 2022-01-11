@@ -89,7 +89,7 @@
                         </div>
                         <template x-if="otpCountdown > 0">
                             <div>
-                                Resend in <span x-text="otpCountdown"></span>s
+                                Resend in <span x-text="otpCountdown">60</span>s
                             </div>
                         </template>
                         <template x-if="otpCountdown <= 0">
