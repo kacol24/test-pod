@@ -188,6 +188,10 @@ body {
     }
 }
 
+.modal-content {
+    border: 0;
+}
+
 .modal-title {
     //font-family: Poppins;
     font-style: normal;
@@ -278,4 +282,15 @@ body {
     font-size: 12px;
     line-height: 22px;
     color: #000000;
+}
+
+.accordion-flush {
+    .accordion-button {
+        background-color: transparent;
+        color: #000;
+        font-size: 12px;
+        line-height: 18px;
+        font-weight: 500;
+        box-shadow: none;
+    }
 }

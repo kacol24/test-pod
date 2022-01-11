@@ -16,6 +16,9 @@ body {
 .bg-color\:blue-1 {
   background-color: #1665D8 !important;
 }
+.bg-color\:gray {
+  background-color: #F6F7F9 !important;
+}
 
 .fw-400 {
   font-weight: 400 !important;
@@ -51,7 +54,7 @@ body {
   padding-left: 15px;
   padding-right: 15px;
   border-radius: 4px;
-  transition: background-color 200ms;
+  transition: background-color 200ms, border-color 200ms, box-shadow 200ms;
 }
 
 .btn-primary {
@@ -62,6 +65,12 @@ body {
   background-color: rgba(29, 120, 253, 0.4);
   border-color: rgba(29, 120, 253, 0.4);
   color: #fff;
+}
+
+.btn-check:active + .btn-default,
+.btn-check:checked + .btn-default {
+  border-color: #111111;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 #site_nav #main_nav .nav-item .nav-link {
@@ -186,6 +195,10 @@ body {
   border-top: 1px solid #eaedf3;
 }
 
+.modal-content {
+  border: 0;
+}
+
 .modal-title {
   font-style: normal;
   font-weight: 600;
@@ -263,4 +276,13 @@ body {
   font-size: 12px;
   line-height: 22px;
   color: #000000;
+}
+
+.accordion-flush .accordion-button {
+  background-color: transparent;
+  color: #000;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  box-shadow: none;
 }
