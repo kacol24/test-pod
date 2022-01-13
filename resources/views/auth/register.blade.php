@@ -26,13 +26,10 @@
                          style="max-width: 670px;">
                 </div>
                 <div class="card-body p-0">
-                    @if (session('message'))
-                        <div class="alert alert-success">
-                            <a href="javascript:void(0);" class="close" data-dismiss="alert"
-                               aria-label="close">&times;</a>
-                            <img src="{{asset('backend/images/success-icon.png')}}"
-                                 alt=""> {{session('message')}}
-                        </div>
+                    @if (session('status'))
+                        <x-alert type="success" dismissible icon>
+                            {{ session('status') }}
+                        </x-alert>
                     @endif
                     <fieldset>
                         <legend class="fw-600 font-poppins font-size:22">

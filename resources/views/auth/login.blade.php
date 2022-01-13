@@ -16,18 +16,14 @@
                     </div>
                     <div class="card-body p-0">
                         @foreach ($errors->all() as $error)
-                            <div class="alert alert-danger">
-                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                <img src="{{asset('backend/images/error-icon.png')}}" alt=""> {{$error}}
-                            </div>
+                            <x-alert type="danger" dismissible icon>
+                                {{ $error }}
+                            </x-alert>
                         @endforeach
-                        @if (session('message'))
-                            <div class="alert alert-success">
-                                <a href="javascript:void(0);" class="close" data-dismiss="alert"
-                                   aria-label="close">&times;</a>
-                                <img src="{{asset('backend/images/success-icon.png')}}"
-                                     alt=""> {{session('message')}}
-                            </div>
+                        @if (session('status'))
+                            <x-alert type="success" dismissible icon>
+                                {{ session('status') }}
+                            </x-alert>
                         @endif
                         <fieldset>
                             <legend
@@ -99,13 +95,15 @@
                              style="max-width: 400px;">
                     </div>
                     <div class="card-body p-0">
+                        @if (session('status'))
+                            <x-alert type="success" dismissible icon>
+                                {{ session('status') }}
+                            </x-alert>
+                        @endif
                         @if (session('message'))
-                            <div class="alert alert-success">
-                                <a href="javascript:void(0);" class="close" data-dismiss="alert"
-                                   aria-label="close">&times;</a>
-                                <img src="{{asset('backend/images/success-icon.png')}}"
-                                     alt=""> {{session('message')}}
-                            </div>
+                            <x-alert type="success" dismissible icon>
+                                {{ session('message') }}
+                            </x-alert>
                         @endif
                         <fieldset>
                             <legend class="fw-600 font-poppins font-size:22">
