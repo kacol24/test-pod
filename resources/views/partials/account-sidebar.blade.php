@@ -46,8 +46,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
-                    My Users
+                <a class="nav-link" href="{{ route('myteam') }}">
+                    My Team
                 </a>
             </li>
             <li class="nav-item">
@@ -87,8 +87,8 @@
             </a>
         </li>
         <li>
-            <a class="dropdown-item" href="#">
-                My Users
+            <a class="dropdown-item" href="{{ route('myteam') }}">
+                My Team
             </a>
         </li>
         <li>

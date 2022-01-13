@@ -145,7 +145,6 @@
 {{--<script src="{{asset('backend/js/ckeditor.js')}}"></script>--}}
 <script src="https://cdn.jsdelivr.net/npm/@rails/ujs@6.1.4/lib/assets/compiled/rails-ujs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
 {{--<script src="{{asset('backend/js/components.js')}}"></script>--}}
 <script src="{{asset('backend/js/app.js')}}"></script>
 <script>
@@ -155,16 +154,6 @@
         $('[data-datepicker]').flatpickr({
             enableTime: true,
             disableMobile: true
-        });
-
-        var clipboard = new ClipboardJS('[data-copy]');
-        var tooltip = new bootstrap.Tooltip('[data-copy]');
-        clipboard.on('success', function(e) {
-            tooltip.show();
-        });
-
-        $('[data-copy]').on('mouseleave', function() {
-            tooltip.hide();
         });
     });
 </script>
