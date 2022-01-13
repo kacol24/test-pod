@@ -16,7 +16,7 @@ class CreateStores extends Migration
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
             $table->string('storename');
-            $table->integer('balance');
+            $table->integer('balance')->default(0);
             $table->timestamps();
         });
     }
