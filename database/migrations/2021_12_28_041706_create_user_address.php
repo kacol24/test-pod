@@ -16,7 +16,7 @@ class CreateUserAddress extends Migration
         Schema::create('user_address', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->string('title')
+            $table->string('title');
             $table->string('name');
             $table->string('email');
             $table->string('phone');
