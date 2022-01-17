@@ -8,8 +8,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
+    const ROLE_ID_SUPER_ADMIN = 1;
+    const ROLE_ID_ADMIN = 2;
+    const ROLE_ID_DESIGNER = 3;
+    const ROLE_ID_FINANCE = 4;
+
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -20,6 +25,9 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
+        'description',
+        'what_to_do',
         'password',
     ];
 
@@ -41,4 +49,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function stores()
+    {
+        return $this->belongsToMany(Store::class)->withPivot('role_id')->withTimestamps();
+    }
 }

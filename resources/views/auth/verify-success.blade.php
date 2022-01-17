@@ -16,15 +16,12 @@
                 <h1 class="font-poppins font-size:22 fw-600 mb-3">
                     Nice! Your account is now verified.
                 </h1>
-                <a href="{{ route('dashboard') }}" class="btn btn-primary">
-                    Go to dashboard
+                <div class="font-size:12 mb-5">
+                    Your account is now active. Login now to manage your account.
+                </div>
+                <a href="{{ route('login') }}" class="btn btn-primary d-inline-flex">
+                    Login
                 </a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <a href="#" class="mt-3 text-decoration-none d-inline-block" onclick="this.closest('form').submit()">
-                        {{ __('Log Out') }}
-                    </a>
-                </form>
             </div>
         </div>
     </div>

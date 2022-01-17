@@ -294,3 +294,30 @@ body {
         box-shadow: none;
     }
 }
+
+.form-control,
+.form-select {
+    font-size: 12px;
+}
+
+.form-select {
+    height: 39px;
+}
+
+::-webkit-input-placeholder { /* Edge */
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(62, 63, 66, 0.3);
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(62, 63, 66, 0.3);
+}
+
+::placeholder {
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(62, 63, 66, 0.3);
+}

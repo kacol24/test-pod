@@ -37,7 +37,7 @@
     <script type="text/javascript">
         var lang = "{{session('language')}}";
     </script>
-    <style type="text/css">
+    <style>
         #loading {
             position: fixed;
             top: 0;
