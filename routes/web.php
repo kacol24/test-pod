@@ -18,13 +18,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/check-store', [AuthenticatedSessionController::class, 'checkStore'])
-     ->middleware('guest')
-     ->name('check_store');
-Route::get('/switch-account', [AuthenticatedSessionController::class, 'switchAccount'])
-     ->middleware('guest')
-     ->name('switch_account');
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('/dashboard', 'dashboard')->name('dashboard');
     Route::view('my-account', 'account.myaccount')->name('myaccount');

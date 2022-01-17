@@ -18,11 +18,9 @@ Route::post('/register', [RegisteredUserController::class, 'store'])
                 ->middleware('guest');
 
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])
-                ->middleware('guest')
                 ->name('login');
 
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])
-                ->middleware('guest');
+Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 
 Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
                 ->middleware('guest')
@@ -62,6 +60,11 @@ Route::post('/confirm-password', [ConfirmablePasswordController::class, 'store']
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->middleware('auth')
                 ->name('logout');
+
+Route::post('/check-store', [AuthenticatedSessionController::class, 'checkStore'])
+     ->name('check_store');
+Route::get('/switch-account', [AuthenticatedSessionController::class, 'switchAccount'])
+     ->name('switch_account');
 
 // fallback
 Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])
