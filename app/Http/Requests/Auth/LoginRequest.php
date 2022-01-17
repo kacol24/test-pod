@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\Store;
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -50,6 +52,14 @@ class LoginRequest extends FormRequest
 
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
+            ]);
+        }
+
+        if (! auth()->user()->stores->pluck('storename')->contains(session(Store::SESSION_KEY))) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => __('You don\'t have to right permission to access this store.'),
             ]);
         }
 
