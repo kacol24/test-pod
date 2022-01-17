@@ -75,7 +75,7 @@
            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="ri-account-circle-line ri-xl align-middle me-2"></i>
             <span class="font-size:12">
-                Junishop
+                {{ session(\App\Models\Store::SESSION_KEY) }}
             </span>
         </a>
         <div class="dropdown-menu">
