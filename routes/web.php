@@ -1,6 +1,9 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Account\WalletController;
+use App\Http\Controllers\TopupController;
+use App\Http\Controllers\Xendit\XenditController;
+use App\Http\Controllers\Xendit\XenditWebhookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,6 +23,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('/dashboard', 'dashboard')->name('dashboard');
+
     Route::view('my-account', 'account.myaccount')->name('myaccount');
     Route::view('my-purchases', 'account.mypurchases')->name('myorders');
     Route::view('my-purchases/{id?}', 'account.orderdetail')->name('orderdetail');
@@ -28,11 +32,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('my-shipments/{id?}', 'account.shipmentdetail')->name('shipmentdetail');
     Route::view('my-address', 'account.myaddress')->name('myaddress');
     Route::view('my-team', 'account.myteam')->name('myteam');
-    Route::view('my-wallet', 'account.mywallet')->name('mywallet');
-    Route::view('top-up', 'account.topup')->name('topup');
-    Route::view('top-up/success', 'account.topup-success')->name('topup.success');
+    Route::get('my-wallet', [WalletController::class, 'index'])->name('mywallet');
 
-    Route::view('register/success', 'auth.register-success')->name('register_success');
+    Route::get('top-up', [TopupController::class, 'index'])->name('topup');
+    Route::post('top-up', [TopupController::class, 'store']);
+    Route::get('top-up/success', [TopupController::class, 'success'])->name('topup.success');
+
+    Route::post('xendit/cc', [XenditController::class, 'creditCard'])->name('xendit.cc');
+    Route::post('xendit/e-wallet', [XenditController::class, 'ewallet'])->name('xendit.ewallet');
+});
+
+Route::prefix('xendit')->group(function () {
+    Route::post('notify-ewallet', [XenditWebhookController::class, 'notifyEwallet'])
+         ->name('xendit.notifyewallet');
+    Route::post('xendit/notify-va-created', [XenditWebhookController::class, 'notifyVACreated'])
+         ->name('xendit.notifyvacreated');
+    Route::post('xendit/notify-va-paid', [XenditWebhookController::class, 'notifyVAPaid'])
+         ->name('xendit.notifyvapaid');
 });
 
 require __DIR__.'/auth.php';

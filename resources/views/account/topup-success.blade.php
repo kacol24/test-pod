@@ -13,7 +13,7 @@
             <div class="bg-color:gray text-center py-3 w-100 font-size:12 text-uppercase">
                 Total Payment
                 <strong class="d-block font-size:18">
-                    IDR 280,000
+                    IDR {{ $orderable->formatted_total }}
                 </strong>
             </div>
             <a href="" class="btn btn-primary w-100 mt-3">

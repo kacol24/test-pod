@@ -30,4 +30,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'xendit' => [
+        'api_url' => env('XENDIT_API_URL'),
+        'public_key' => env('XENDIT_PUBLIC'),
+        'secret_key' => env('XENDIT_SECRET')
+    ]
 ];
