@@ -12,10 +12,13 @@
             <small class="card-subtitle d-block">
                 Joined since 08 Jul 2020
             </small>
-            <a href="" class="text-decoration-none font-size:12">
-                Log Out
-                <i class="ri-arrow-right-line align-middle"></i>
-            </a>
+            <form action="{{ route('logout') }}" method="post">
+                @csrf
+                <a href="#" class="text-decoration-none font-size:12" onclick="this.closest('form').submit()">
+                    Log Out
+                    <i class="ri-arrow-right-line align-middle"></i>
+                </a>
+            </form>
         </div>
     </div>
     <div class="card-body p-3 d-none d-md-block">
@@ -50,9 +53,6 @@
                     My Team
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link disabled">Disabled</a>
-            </li>
         </ul>
     </div>
 </div>
@@ -64,20 +64,17 @@
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
         <li>
-            <a class="dropdown-item"
-               href="{{ route('myaccount') }}">
+            <a class="dropdown-item" href="{{ route('myaccount') }}">
                 My Profile
             </a>
         </li>
         <li>
-            <a class="dropdown-item"
-               href="{{ route('myorders') }}">
+            <a class="dropdown-item" href="{{ route('myorders') }}">
                 My Purchases
             </a>
         </li>
         <li>
-            <a class="dropdown-item"
-               href="{{ route('myshipments') }}">
+            <a class="dropdown-item" href="{{ route('myshipments') }}">
                 My Shipments
             </a>
         </li>
@@ -90,9 +87,6 @@
             <a class="dropdown-item" href="{{ route('myteam') }}">
                 My Team
             </a>
-        </li>
-        <li>
-            <a class="dropdown-item disabled">Disabled</a>
         </li>
     </ul>
 </div>
