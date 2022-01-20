@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="container">
-        @if(session('storename'))
+        @if(session(App\Models\Store::SESSION_KEY))
             <form method="post" action="{{ route('login') }}">
                 {{ csrf_field() }}
                 <div class="card mx-auto p-md-5 position-relative" style="border-radius: 10px;max-width: 445px"
@@ -28,7 +28,7 @@
                         <fieldset>
                             <legend
                                 class="fw-600 font-poppins font-size:22 d-flex justify-content-between align-items-center">
-                                Sign In to {{ session('storename') }}
+                                Sign In to {{ session(App\Models\Store::SESSION_KEY)->storename }}
                                 <small class="fw-400 text-end font-size:12">
                                     <a href="{{ route('switch_account') }}" class="text-decoration-none">
                                         Switch Account

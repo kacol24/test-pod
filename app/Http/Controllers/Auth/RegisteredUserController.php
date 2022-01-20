@@ -53,6 +53,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+        session([Store::SESSION_KEY => $store]);
 
         return redirect()->route('verification.notice');
     }

@@ -16,6 +16,7 @@ Route::get('/register', [RegisteredUserController::class, 'create'])
 
 Route::post('/register', [RegisteredUserController::class, 'store'])
                 ->middleware('guest');
+Route::view('register/success', 'auth.register-success')->name('register_success');
 
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])
                 ->name('login');

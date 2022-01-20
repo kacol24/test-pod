@@ -61,7 +61,8 @@ class AuthenticatedSessionController extends Controller
             'username.exists' => 'We could not find this account. Please re-check your account name.',
         ]);
 
-        session([Store::SESSION_KEY => $request->username]);
+        $store = Store::firstWhere('storename', $request->username);
+        session([Store::SESSION_KEY => $store]);
 
         return back();
     }

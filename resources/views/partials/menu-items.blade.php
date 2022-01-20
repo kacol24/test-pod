@@ -75,29 +75,57 @@
            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="ri-account-circle-line ri-xl align-middle me-2"></i>
             <span class="font-size:12">
-                {{ session(\App\Models\Store::SESSION_KEY) }}
+                {{ session(\App\Models\Store::SESSION_KEY)->storename }}
             </span>
         </a>
-        <div class="dropdown-menu">
-            <a class="dropdown-item"
-               href="./blogs-index.html">
-                Blog
+        <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item" href="{{ route('myaccount') }}">
+                    My Profile
             </a>
-            <a class="dropdown-item"
-               href="./banners-index.html">
-                Banners
+            </li>
+            <li>
+                <a class="dropdown-item" href="{{ route('myorders') }}">
+                    My Purchases
             </a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-        </div>
+            </li>
+            <li>
+                <a class="dropdown-item" href="{{ route('myshipments') }}">
+                    My Shipments
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="{{ route('myaddress') }}">
+                    My Addresses
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="{{ route('myteam') }}">
+                    My Team
+                </a>
+            </li>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
+            <li>
+                <form action="{{ route('logout') }}" method="post">
+                    @csrf
+                    <a href="#" class="dropdown-item" onclick="this.closest('form').submit()">
+                        Logout
+                    </a>
+                </form>
+            </li>
+        </ul>
     </li>
     <li class="nav-item me-3 border-start ps-4 d-none d-md-flex">
         <a class="nav-link" href="{{ route('mywallet') }}">
             <i class="ri-wallet-3-line ri-xl align-middle"></i>
         </a>
         <div class="d-flex flex-column font-size:12 ms-2">
-            <span class="fw-500">IDR 200,000</span>
-            <a href="" class="text-decoration-none fw-400">
+            <span class="fw-500">
+                IDR {{ number_format($storeBalanceComposer, 0, ',', '.') }}
+            </span>
+            <a href="{{ route('mywallet') }}" class="text-decoration-none fw-400">
                 Top Up
             </a>
         </div>

@@ -55,7 +55,7 @@ class LoginRequest extends FormRequest
             ]);
         }
 
-        if (! auth()->user()->stores->pluck('storename')->contains(session(Store::SESSION_KEY))) {
+        if (! auth()->user()->stores->pluck('storename')->contains(session(Store::SESSION_KEY)->storename)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
