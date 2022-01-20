@@ -49,8 +49,10 @@
             <i class="ri-wallet-3-line ri-xl align-middle"></i>
         </a>
         <div class="d-flex flex-column font-size:12 ms-2">
-            <span class="fw-500">IDR 200,000</span>
-            <a href="" class="text-decoration-none fw-400">
+            <span class="fw-500">
+                IDR {{ number_format($storeBalanceComposer, 0, ',', '.') }}
+            </span>
+            <a href="{{ route('mywallet') }}" class="text-decoration-none fw-400">
                 Top Up
             </a>
         </div>
@@ -82,12 +84,12 @@
             <li>
                 <a class="dropdown-item" href="{{ route('myaccount') }}">
                     My Profile
-            </a>
+                </a>
             </li>
             <li>
                 <a class="dropdown-item" href="{{ route('myorders') }}">
                     My Purchases
-            </a>
+                </a>
             </li>
             <li>
                 <a class="dropdown-item" href="{{ route('myshipments') }}">

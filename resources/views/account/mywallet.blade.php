@@ -15,18 +15,18 @@
                                 Balance
                             </small>
                             <h3 class="card-title font-size:30 fw-400">
-                                IDR 2,300
+                                IDR {{ number_format($storeBalanceComposer, 0, ',', '.') }}
                             </h3>
                         </div>
                     </div>
                     <div class="card-body p-3">
-                        <div class="alert alert-danger d-flex" role="alert" style="background: #EA001B;">
-                            <i class="ri-information-line ri-fw align-middle ri-lg mt-1"></i>
-                            <div class="font-size:12 ms-2">
-                                Pending order: <strong>IDR 209,000</strong><br>
-                                Please top up to avoid automatic cancellation.
-                            </div>
-                        </div>
+                        {{--                        <div class="alert alert-danger d-flex" role="alert" style="background: #EA001B;">--}}
+                        {{--                            <i class="ri-information-line ri-fw align-middle ri-lg mt-1"></i>--}}
+                        {{--                            <div class="font-size:12 ms-2">--}}
+                        {{--                                Pending order: <strong>IDR 209,000</strong><br>--}}
+                        {{--                                Please top up to avoid automatic cancellation.--}}
+                        {{--                            </div>--}}
+                        {{--                        </div>--}}
                         <a href="#modalTopup" class="btn btn-primary w-100" data-bs-toggle="modal">
                             Top Up Balance
                         </a>
