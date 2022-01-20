@@ -44,56 +44,44 @@
                         </h3>
                     </div>
                     <div class="list-group order-list">
-                        <a href="{{ route('shipmentdetail', '1') }}" class="list-group-item list-group-item-action">
-                            <div class="row align-items-center">
-                                <div class="col-md">
-                                    <dl>
-                                        <dt>
-                                            Production Cost - T-shirt (2 pcs)
-                                        </dt>
-                                        <dd>
-                                            08 Sep 2018, 14:00 PM
-                                        </dd>
-                                    </dl>
+                        @foreach($pendingTransactions as $pending)
+                            <a href="{{ get_class($pending) == \App\Models\Topup::class ? route('topup', ['order_id' => $pending->serial_number]) : '#' }}"
+                               class="list-group-item list-group-item-action">
+                                <div class="row align-items-center">
+                                    <div class="col-md">
+                                        <dl>
+                                            <dt>
+                                                @if(get_class($pending) == \App\Models\Topup::class)
+                                                    Wallet top up
+                                                @else
+                                                    Production Cost - T-shirt (2 pcs) //TODO
+                                                @endif
+                                            </dt>
+                                            <dd>
+                                                {{ $pending->created_at->format('d M Y, H:i A') }}
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <dl>
+                                            <dt>
+                                                {{ $pending->serial_number }}
+                                            </dt>
+                                            <dd>
+                                                {{ $pending->payment }}
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                    <div class="col-md-2 text-end">
+                                        <dl>
+                                            <dt>
+                                                IDR {{ $pending->formatted_total }}
+                                            </dt>
+                                        </dl>
+                                    </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <dl>
-                                        <dt>INV 20203389</dt>
-                                        <dd>Desty</dd>
-                                    </dl>
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    <dl>
-                                        <dt>IDR 500,000</dt>
-                                    </dl>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="{{ route('shipmentdetail', '1') }}" class="list-group-item list-group-item-action">
-                            <div class="row align-items-center">
-                                <div class="col-md">
-                                    <dl>
-                                        <dt>
-                                            Production Cost - T-shirt (2 pcs)
-                                        </dt>
-                                        <dd>
-                                            08 Sep 2018, 14:00 PM
-                                        </dd>
-                                    </dl>
-                                </div>
-                                <div class="col-md-3">
-                                    <dl>
-                                        <dt>INV 20203389</dt>
-                                        <dd>Desty</dd>
-                                    </dl>
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    <dl>
-                                        <dt>IDR 500,000</dt>
-                                    </dl>
-                                </div>
-                            </div>
-                        </a>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
                 <div class="card p-0 mt-4">
@@ -103,207 +91,179 @@
                         </h3>
                     </div>
                     <div class="list-group order-list">
-                        <a href="{{ route('shipmentdetail', '1') }}" class="list-group-item list-group-item-action">
-                            <div class="row align-items-center">
-                                <div class="col-md">
-                                    <dl>
-                                        <dt>
-                                            Production Cost - T-shirt (2 pcs)
-                                        </dt>
-                                        <dd>
-                                            08 Sep 2018, 14:00 PM
-                                        </dd>
-                                    </dl>
-                                </div>
-                                <div class="col-md-3">
-                                    <dl>
-                                        <dt>INV 20203389</dt>
-                                        <dd>Desty</dd>
-                                    </dl>
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    <dl>
-                                        <dt class="text-color:red">IDR 500,000</dt>
-                                    </dl>
-                                </div>
-                            </div>
-                        </a>
-                        <a href="{{ route('shipmentdetail', '1') }}" class="list-group-item list-group-item-action">
-                            <div class="row align-items-center">
-                                <div class="col-md">
-                                    <dl>
-                                        <dt>
-                                            Production Cost - T-shirt (2 pcs)
-                                        </dt>
-                                        <dd>
-                                            08 Sep 2018, 14:00 PM
-                                        </dd>
-                                    </dl>
-                                </div>
-                                <div class="col-md-3">
-                                    <dl>
-                                        <dt>INV 20203389</dt>
-                                        <dd>Desty</dd>
-                                    </dl>
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    <dl>
-                                        <dt class="text-color:green">IDR 500,000</dt>
-                                    </dl>
+                        @forelse($transactions as $transaction)
+                            <div class="list-group-item">
+                                <div class="row align-items-center">
+                                    <div class="col-md">
+                                        <dl>
+                                            <dt>
+                                                @if($transaction->isDeposit())
+                                                    Wallet top up
+                                                @else
+                                                    Production Cost - T-shirt (2 pcs) //TODO
+                                                @endif
+                                            </dt>
+                                            <dd>
+                                                {{ $transaction->created_at->format('d M Y, H:i A') }}
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <dl>
+                                            <dt>
+                                                {{ $transaction->ref->serial_number }}</dt>
+                                            <dd>
+                                                {{ $transaction->ref->payment }}
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                    <div class="col-md-2 text-end">
+                                        <dl>
+                                            <dt class="{{ $transaction->isDeposit() ? 'text-color:green' : 'text-color:red' }}
+                                                ">
+                                                IDR
+                                                {{ $transaction->formatted_given }}
+                                            </dt>
+                                        </dl>
+                                    </div>
                                 </div>
                             </div>
-                        </a>
+                        @empty
+                            <p class="text-center my-4">
+                                You have no previous transactions.<br>
+                                <a href="#modalTopup" class="btn btn-primary mt-3 d-inline-flex px-5"
+                                   data-bs-toggle="modal">
+                                    Top Up Balance
+                                </a>
+                            </p>
+                        @endforelse
                     </div>
+                    @if($transactions->hasPages())
+                        <div class="card-footer justify-content-center d-flex">
+                            {{ $transactions->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
     <div class="modal fade" id="modalTopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <form action="{{ route('topup') }}">
-            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">
-                            Top Up Balance
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content"
+                 x-data="{
+                    amount: '',
+                    formattedAmount: '',
+                    originalAmount: '',
+                    paymentMethod: ''
+                  }">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">
+                        Top Up Balance
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('topup') }}" method="post" id="paymentForm">
+                        @csrf
                         <div class="mb-4">
                             <label for="amount" class="text-uppercase text-color:black">
                                 Top Up Amount In IDR
                             </label>
-                            <input type="text" class="form-control" id="amount" name="amount">
+                            <input type="tel" class="form-control text-end" id="amount" x-model="amount"
+                                   @focus="amount = originalAmount"
+                                   @input.lazy="formattedAmount = number_format(amount, 0, ',', '.'); originalAmount = amount"
+                                   @blur="originalAmount = amount; amount = formattedAmount">
+                            <input type="hidden" name="amount" x-model="originalAmount">
                         </div>
-                        <div class="alert alert-danger d-flex" role="alert" style="background: #EA001B;">
-                            <i class="ri-information-line ri-fw align-middle ri-lg mt-1"></i>
-                            <div class="font-size:12 ms-2">
-                                Pending order: <strong>IDR 209,000</strong><br>
-                                Please top up to avoid automatic cancellation.
-                            </div>
-                        </div>
+                        {{--                        <div class="alert alert-danger d-flex" role="alert" style="background: #EA001B;">--}}
+                        {{--                            <i class="ri-information-line ri-fw align-middle ri-lg mt-1"></i>--}}
+                        {{--                            <div class="font-size:12 ms-2">--}}
+                        {{--                                Pending order: <strong>IDR 209,000</strong><br>--}}
+                        {{--                                Please top up to avoid automatic cancellation.--}}
+                        {{--                            </div>--}}
+                        {{--                        </div>--}}
                         <h3 class="font-size:16 fw-500">
                             Select Payment Method
                         </h3>
                         <hr>
                         <div class="accordion accordion-flush" id="accordionPanelsStayOpenExample">
-                            <div class="accordion-item mb-4 bg-color:gray border-0">
-                                <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                                    <button class="accordion-button text-uppercase border-0" type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
-                                            aria-controls="panelsStayOpen-collapseOne">
-                                        Transfer Virtual Account
-                                    </button>
-                                </h2>
-                                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
-                                     aria-labelledby="panelsStayOpen-headingOne">
-                                    <div class="accordion-body pt-0">
-                                        <div class="row">
-                                            <div class="col-6 col-md-3">
-                                                <input type="radio" class="btn-check" name="payment_method" id="option1"
-                                                       autocomplete="off" value="virtual_bca"
-                                                       checked>
-                                                <label class="btn btn-default py-0" for="option1">
-                                                    <img src="{{ asset('images/icons/logo_bca 1.png') }}" alt=""
-                                                         class="img-fluid w-100">
-                                                </label>
-                                            </div>
-                                            <div class="col-6 col-md-3">
-                                                <input type="radio" class="btn-check" name="payment_method" id="option2"
-                                                       autocomplete="off">
-                                                <label class="btn btn-default py-0" for="option2">
-                                                    <img src="{{ asset('images/icons/logo_bca 1.png') }}" alt=""
-                                                         class="img-fluid w-100">
-                                                </label>
-                                            </div>
-                                            <div class="col-6 col-md-3">
-                                                <input type="radio" class="btn-check" name="payment_method" id="option3"
-                                                       autocomplete="off">
-                                                <label class="btn btn-default py-0" for="option3">
-                                                    <img src="{{ asset('images/icons/logo_bca 1.png') }}" alt=""
-                                                         class="img-fluid w-100">
-                                                </label>
-                                            </div>
-                                            <div class="col-6 col-md-3">
-                                                <input type="radio" class="btn-check" name="payment_method" id="option4"
-                                                       autocomplete="off">
-                                                <label class="btn btn-default py-0" for="option4">
-                                                    <img src="{{ asset('images/icons/logo_bca 1.png') }}" alt=""
-                                                         class="img-fluid w-100">
-                                                </label>
+                            @foreach($paymentMethods as $group => $channels)
+                                <div class="accordion-item mb-4 bg-color:gray border-0">
+                                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                                        <button class="accordion-button text-uppercase border-0" type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#panelsStayOpen-{{ $group }}" aria-expanded="true"
+                                                aria-controls="panelsStayOpen-{{ $group }}">
+                                            @switch($group)
+                                                @case('VA')
+                                                Transfer Virtual Account
+                                                @break
+                                                @case('eWallet')
+                                                E-wallet
+                                                @break
+                                                @case('CC')
+                                                Credit Card
+                                                @break
+                                            @endswitch
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-{{ $group }}" class="accordion-collapse collapse show"
+                                         aria-labelledby="panelsStayOpen-headingOne">
+                                        <div class="accordion-body pt-0">
+                                            <div class="row">
+                                                @foreach($channels as $payment)
+                                                    <div class="col-6 col-md-3 mb-3">
+                                                        <input type="radio" class="btn-check"
+                                                               name="payment_method"
+                                                               id="{{ Str::slug($payment['display_name']) }}"
+                                                               x-model="paymentMethod"
+                                                               autocomplete="off"
+                                                               value="{{ $payment['display_name'] }}">
+                                                        <label class="btn btn-default py-2"
+                                                               for="{{ Str::slug($payment['display_name']) }}">
+                                                            <img src="{{ asset($payment['logo']) }}"
+                                                                 alt="logo {{ $payment['display_name'] }}"
+                                                                 title="{{ $payment['display_name'] }}"
+                                                                 class="img-fluid h-100" style="max-width: none">
+                                                        </label>
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="accordion-item mb-4 bg-color:gray border-0">
-                                <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-                                    <button class="accordion-button text-uppercase border-0 collapsed" type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
-                                            aria-controls="panelsStayOpen-collapseTwo">
-                                        Credit Card
-                                    </button>
-                                </h2>
-                                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
-                                     aria-labelledby="panelsStayOpen-headingTwo">
-                                    <div class="accordion-body pt-0">
-                                        <strong>This is the second item's accordion body.</strong> It is hidden by
-                                        default,
-                                        until the collapse plugin adds the appropriate classes that we use to style each
-                                        element. These classes control the overall appearance, as well as the showing
-                                        and
-                                        hiding via CSS transitions. You can modify any of this with custom CSS or
-                                        overriding
-                                        our default variables. It's also worth noting that just about any HTML can go
-                                        within
-                                        the <code>.accordion-body pt-0</code>, though the transition does limit
-                                        overflow.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item bg-color:gray border-0">
-                                <h2 class="accordion-header" id="panelsStayOpen-headingThree">
-                                    <button class="accordion-button text-uppercase border-0 collapsed" type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
-                                            aria-controls="panelsStayOpen-collapseThree">
-                                        E-Money
-                                    </button>
-                                </h2>
-                                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
-                                     aria-labelledby="panelsStayOpen-headingThree">
-                                    <div class="accordion-body pt-0">
-                                        <strong>This is the third item's accordion body.</strong> It is hidden by
-                                        default,
-                                        until the collapse plugin adds the appropriate classes that we use to style each
-                                        element. These classes control the overall appearance, as well as the showing
-                                        and
-                                        hiding via CSS transitions. You can modify any of this with custom CSS or
-                                        overriding
-                                        our default variables. It's also worth noting that just about any HTML can go
-                                        within
-                                        the <code>.accordion-body pt-0</code>, though the transition does limit
-                                        overflow.
-                                    </div>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="d-flex w-100">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="d-flex w-100 justify-content-end">
+                        <template x-if="originalAmount">
                             <label
                                 class="bg-color:gray d-flex align-items-center justify-content-center font-size:12 px-5 w-100 me-3 text-color:black"
                                 style="height: 39px;">
-                                Total amount: <strong class="font-size:14 ms-1">IDR 1,000,000</strong>
+                                Total amount: <strong class="font-size:14 ms-1">
+                                    IDR <span x-text="formattedAmount">0</span>
+                                </strong>
                             </label>
-                            <button type="submit" class="btn btn-primary px-5 my-0">Proceed</button>
-                        </div>
+                        </template>
+                        <button type="submit" class="btn btn-primary px-5 my-0"
+                                disabled form="paymentForm"
+                                :disabled="!originalAmount || !paymentMethod">
+                            Proceed
+                        </button>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 @endsection
+
+@push('styles')
+    <style>
+        .pagination {
+            margin-bottom: 0;
+        }
+    </style>
+@endpush

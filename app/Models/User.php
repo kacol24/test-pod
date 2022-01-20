@@ -52,6 +52,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function stores()
     {
-        return $this->belongsToMany(Store::class)->withPivot('role_id')->withTimestamps();
+        return $this->belongsToMany(Store::class, 'store_users', 'user_id')->withPivot('role_id');
     }
 }
