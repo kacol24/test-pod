@@ -11,9 +11,30 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable implements MustVerifyEmail
 {
     const ROLE_ID_SUPER_ADMIN = 1;
+
     const ROLE_ID_ADMIN = 2;
+
     const ROLE_ID_DESIGNER = 3;
+
     const ROLE_ID_FINANCE = 4;
+
+    const OPTIONS_DESCRIBE = [
+        'Marketer',
+        'Content Creator',
+        'Illustrator / Designer',
+        'Organization',
+        'Other',
+    ];
+
+    const OPTIONS_WHAT_WOULD_YOU_DO = [
+        'Use warehousing services to sell my own products',
+        'Start my first online business',
+        'Grow my existing online business',
+        'Sell merchandise to my followers/subscribers',
+        'Sell merchandise for fundraising',
+        'Ordering custom products for myself, my team or my event',
+        'I\'m just playing around',
+    ];
 
     use HasApiTokens, HasFactory, Notifiable;
 

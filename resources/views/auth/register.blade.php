@@ -153,12 +153,11 @@
                                         <option selected disabled value="" hidden>
                                             Describe Yourself?
                                         </option>
-                                        <option value="Illustrator/Designer">
-                                            Illustrator/Designer
-                                        </option>
-                                        <option value="1">One</option>
-                                        <option value="2">Two</option>
-                                        <option value="3">Three</option>
+                                        @foreach(App\Models\User::OPTIONS_DESCRIBE as $option)
+                                            <option value="{{ $option }}">
+                                                {{ $option }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                     @error('description')
                                     <div class="invalid-feedback">
@@ -178,12 +177,11 @@
                                         <option selected disabled value="" hidden>
                                             What Would You Like To Do With Us
                                         </option>
-                                        <option value="Start my first online business">
-                                            Start my first online business
-                                        </option>
-                                        <option value="1">One</option>
-                                        <option value="2">Two</option>
-                                        <option value="3">Three</option>
+                                        @foreach(App\Models\User::OPTIONS_WHAT_WOULD_YOU_DO as $option)
+                                            <option value="{{ $option }}">
+                                                {{ $option }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                     @error('what_to_do')
                                     <div class="invalid-feedback">
