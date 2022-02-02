@@ -17,8 +17,8 @@
             <a class="dropdown-item" href="#">Something else here</a>
         </div>
     </li>
-    <li class="nav-item active">
-        <a class="nav-link" href="/">
+    <li class="nav-item {{ request()->routeIs(['products.*']) ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('products.index') }}">
             Products
         </a>
     </li>
@@ -59,7 +59,7 @@
     </li>
     <li class="nav-item d-block d-md-none border-0">
         <div class="nav-link">
-            <a class="btn btn-primary w-100" href="./customers-index.html">
+            <a class="btn btn-primary w-100" href="{{ route('products.create') }}">
                 <i class="ri-add-circle-line ri-xl align-middle"></i>
                 Create
             </a>
@@ -133,7 +133,7 @@
         </div>
     </li>
     <li class="nav-item me-3 d-none d-md-flex">
-        <a class="btn btn-primary" href="./customers-index.html">
+        <a class="btn btn-primary" href="{{ route('products.create') }}">
             <i class="ri-add-circle-line ri-xl align-middle"></i>
             Create
         </a>

@@ -20,12 +20,13 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.min.css">
-    {{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">--}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.6/dist/flatpickr.min.css">
-    {{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">--}}
-    {{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.18.3/dist/extensions/sticky-header/bootstrap-table-sticky-header.min.css">--}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.19.1/dist/bootstrap-table.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.19.1/dist/extensions/sticky-header/bootstrap-table-sticky-header.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
     <link rel="stylesheet" href="{{asset('backend/css/app.css')}}">
     <link rel="stylesheet" href="{{asset('backend/css/main.css')}}">
@@ -137,10 +138,14 @@
 {{--<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>--}}
 {{--<script src="https://cdn.jsdelivr.net/npm/tablednd@1.0.5/dist/jquery.tablednd.min.js"></script>--}}
 {{--<script src="{{asset('backend/js/bootstrap-table.js')}}"></script>--}}
-{{--<script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.18.3/dist/themes/bootstrap-table/bootstrap-table.min.js"></script>--}}
-{{--<script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.18.3/dist/locale/bootstrap-table-id-ID.min.js"></script>--}}
-{{--<script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.18.3/dist/extensions/sticky-header/bootstrap-table-sticky-header.min.js"></script>--}}
-{{--<script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.18.3/dist/extensions/mobile/bootstrap-table-mobile.min.js"></script>--}}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.19.1/dist/themes/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.19.1/dist/locale/bootstrap-table-id-ID.min.js"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.19.1/dist/extensions/sticky-header/bootstrap-table-sticky-header.min.js"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.19.1/dist/extensions/mobile/bootstrap-table-mobile.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 {{--<script src="{{asset('backend/js/ckeditor.js')}}"></script>--}}
 <script src="https://cdn.jsdelivr.net/npm/@rails/ujs@6.1.4/lib/assets/compiled/rails-ujs.min.js"></script>

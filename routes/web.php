@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Account\WalletController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TopupController;
 use App\Http\Controllers\Xendit\XenditController;
 use App\Http\Controllers\Xendit\XenditWebhookController;
@@ -40,6 +41,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('xendit/cc', [XenditController::class, 'creditCard'])->name('xendit.cc');
     Route::post('xendit/e-wallet', [XenditController::class, 'ewallet'])->name('xendit.ewallet');
+
+    Route::resource('products', ProductController::class);
 });
 
 Route::prefix('xendit')->group(function () {
