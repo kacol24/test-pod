@@ -42,6 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('xendit/cc', [XenditController::class, 'creditCard'])->name('xendit.cc');
     Route::post('xendit/e-wallet', [XenditController::class, 'ewallet'])->name('xendit.ewallet');
 
+    Route::get('products/designer', [ProductController::class, 'designer'])->name('products.designer');
     Route::resource('products', ProductController::class);
 });
 
