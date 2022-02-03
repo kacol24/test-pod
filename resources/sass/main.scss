@@ -17,6 +17,50 @@ body {
 @import "buttons";
 @import "components/stepper";
 
+.product-item {
+    text-decoration: none;
+    color: black;
+    display: block;
+
+    &.disabled {
+        color: rgba(0, 0, 0, 0.3);
+
+        .card {
+            background: #F6F6F6;
+        }
+
+        .product-item__overlay {
+            display: flex;
+        }
+    }
+
+    &:hover {
+        &.disabled {
+            color: rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    &__overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        display: none;
+
+        font-family: Poppins;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 18px;
+        text-transform: uppercase;
+
+        color: #FFFFFF;
+    }
+}
+
 #site_nav {
     #main_nav {
         .nav-item {
