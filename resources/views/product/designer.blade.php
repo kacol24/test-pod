@@ -12,8 +12,8 @@
             </div>
         </div>
         <div class="row mt-4">
-            <div class="col-md-5" style="background: #F6F7F9;">
-                <div class="py-3">
+            <div class="col-md-5">
+                <div class="p-3 p-md-4" style="background: #F6F7F9;">
                     <div class="card p-0">
                         <div class="card-header d-flex align-items-center justify-content-between">
                             <div class="text-nowrap mr-3">
@@ -24,11 +24,20 @@
                             </div>
                         </div>
                         <div class="card-body pt-3">
-                            <div>
-                                <label for="" class="text-color:black text-uppercase">
-                                    Set Your Price (IDR)
-                                </label>
-                                <input type="text" class="form-control">
+                            <div class="row">
+                                <div class="col-md">
+                                    <label for="" class="text-color:black text-uppercase">
+                                        Set Your Price (IDR)
+                                    </label>
+                                </div>
+                                <div class="col-12 order-md-5">
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="col-md-auto order-md-3">
+                                    <small class="text-color:green font-size:12 text-end">
+                                        IDR 30,000 profit/order
+                                    </small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -85,7 +94,8 @@
                     <div class="card p-0 mt-3 border-0" style="background-color: transparent;">
                         <hr>
                         <div class="d-flex justify-content-between mb-3">
-                            <a href="" class="text-color:blue text-decoration-none">
+                            <a href="" class="text-color:blue text-decoration-none font-size:12">
+                                <i class="fas fa-arrow-left fa-fw"></i>
                                 Back
                             </a>
                         </div>

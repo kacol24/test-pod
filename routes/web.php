@@ -43,6 +43,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('xendit/e-wallet', [XenditController::class, 'ewallet'])->name('xendit.ewallet');
 
     Route::get('products/designer', [ProductController::class, 'designer'])->name('products.designer');
+    Route::get('products/add-more', [ProductController::class, 'additional'])->name('products.additional');
+    Route::get('products/finish', [ProductController::class, 'finish'])->name('products.finish');
+    Route::get('products/saving', [ProductController::class, 'saving'])->name('products.saving');
+    Route::get('products/success', [ProductController::class, 'success'])->name('products.saved');
     Route::resource('products', ProductController::class);
 });
 

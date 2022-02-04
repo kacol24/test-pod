@@ -22,6 +22,14 @@ body {
     color: black;
     display: block;
 
+    .card {
+        border: 2px solid #EAEDF3;
+
+        .card-header {
+            border-radius: 0;
+        }
+    }
+
     &.disabled {
         color: rgba(0, 0, 0, 0.3);
 
@@ -37,6 +45,16 @@ body {
     &:hover {
         &.disabled {
             color: rgba(0, 0, 0, 0.3);
+        }
+
+        .card {
+            border: 2px solid #000000;
+        }
+    }
+
+    &.active {
+        .card {
+            border: 2px solid #000000;
         }
     }
 
@@ -365,4 +383,16 @@ body {
     font-size: 12px;
     font-weight: 400;
     color: rgba(62, 63, 66, 0.3);
+}
+
+a {
+    .card {
+        transition: background-color 200ms;
+    }
+
+    &:hover {
+        .card {
+            background-color: darken(#fff, 1);
+        }
+    }
 }

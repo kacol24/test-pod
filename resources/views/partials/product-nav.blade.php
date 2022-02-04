@@ -1,4 +1,4 @@
-<div class="stepper mb-5 sticky-top sticky-top--header">
+<div class="stepper mb-3 mb-md-5 sticky-top sticky-top--header mt-3">
     <h3 class="stepper__title text-uppercase d-none d-md-block">
         Create Product
     </h3>
@@ -13,7 +13,7 @@
             </div>
         </a>
         <a href="{{ route('products.designer') }}"
-           class="stepper__step {{ request()->routeIs(['products.designer']) ? 'stepper__step--stepped' : '' }}">
+           class="stepper__step {{ request()->routeIs(['products.designer', 'products.additional']) ? 'stepper__step--stepped' : '' }}">
             <div class="stepper__numbering">2</div>
             <div class="stepper__step-content">
                 <div class="d-none d-md-block">
@@ -21,7 +21,8 @@
                 </div>
             </div>
         </a>
-        <a href="#" class="stepper__step">
+        <a href="{{ route('products.additional') }}"
+           class="stepper__step {{ request()->routeIs(['products.designer', 'products.additional', 'products.finish']) ? 'stepper__step--stepped' : '' }}">
             <div class="stepper__numbering">3</div>
             <div class="stepper__step-content">
                 <div class="d-none d-md-block">
@@ -29,7 +30,8 @@
                 </div>
             </div>
         </a>
-        <a href="#" class="stepper__step">
+        <a href="{{ route('products.finish') }}"
+           class="stepper__step {{ request()->routeIs(['products.finish']) ? 'stepper__step--stepped' : '' }}">
             <div class="stepper__numbering">4</div>
             <div class="stepper__step-content">
                 <div class="d-none d-md-block">

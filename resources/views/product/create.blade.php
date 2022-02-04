@@ -3,7 +3,7 @@
 @section('content')
     <div class="container container--app">
         @include('partials.product-nav')
-        <div class="text-center">
+        <div class="text-start text-md-center">
             <h1 class="page-title font-size:22">
                 Select Product
             </h1>
@@ -12,9 +12,9 @@
             </div>
         </div>
         <div class="row mt-4">
-            <div class="col-md" style="max-width: 255px">
+            <div class="col-md-3">
                 <input type="search" class="form-control" placeholder="Search product">
-                <ul class="list-group list-group-flush font-size:12 mt-3">
+                <ul class="list-group list-group-flush font-size:12 mt-3 d-none d-md-block">
                     <li class="list-group-item ps-0 text-uppercase text-color:tertiary fw-400">
                         Categories
                     </li>
@@ -24,6 +24,14 @@
                         </a>
                     </li>
                 </ul>
+                <div class="d-block d-md-none my-3">
+                    <select class="form-select" aria-label="Default select example">
+                        <option selected>All Categories</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                </div>
             </div>
             <div class="col-md">
                 <div class="row">

@@ -59,7 +59,7 @@
     </li>
     <li class="nav-item d-block d-md-none border-0">
         <div class="nav-link">
-            <a class="btn btn-primary w-100" href="{{ route('products.create') }}">
+            <a class="btn btn-primary w-100" href="#createModal" data-bs-toggle="modal">
                 <i class="ri-add-circle-line ri-xl align-middle"></i>
                 Create
             </a>
@@ -133,7 +133,7 @@
         </div>
     </li>
     <li class="nav-item me-3 d-none d-md-flex">
-        <a class="btn btn-primary" href="{{ route('products.create') }}">
+        <a class="btn btn-primary" href="#createModal" data-bs-toggle="modal">
             <i class="ri-add-circle-line ri-xl align-middle"></i>
             Create
         </a>

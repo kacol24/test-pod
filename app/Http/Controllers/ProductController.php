@@ -21,6 +21,26 @@ class ProductController extends Controller
         return view('product.designer');
     }
 
+    public function additional()
+    {
+        return view('product.additional');
+    }
+
+    public function finish()
+    {
+        return view('product.finish');
+    }
+
+    public function saving()
+    {
+        return view('product.saving');
+    }
+
+    public function success()
+    {
+        return view('product.saved');
+    }
+
     public function store(Request $request)
     {
         //
