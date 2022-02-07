@@ -1,0 +1,26 @@
+<?php
+
+return [
+  'customers' => 'Pelanggan',
+  'hereyoucan' => 'Di sini Anda dapat mengelola seluruh pelanggan di toko Anda',
+  'customergroups' => 'Grup Pelanggan',
+  'exportcustomer' => 'Export Pelanggan',
+  'searchby' => 'Cari kustomer dengan nama kustomer',
+  'customername' => 'Nama Pelanggan',
+  'customergroup' => 'Grup Pelanggan',
+  'backto' => 'Kembali ke Pelanggan',
+  'customerdashboard' => 'Dashboard Pelanggan',
+  'totalpurchase' => 'Total Pembelian',
+  'transactions' => 'Transaksi',
+  'last5' => '5 Item Terkahir Dibeli',
+  'hereyoucangroup' => 'Di sini Anda dapat mengelola seluruh grup kustomer di toko Anda',
+  'addgroup' => 'Tambah Grup',
+  'searchbygroup' => 'Cari group dengan nama grup',
+  'groupname' => 'Nama Grup',
+  'backtogroup' => 'Kembali ke Daftar Grup',
+  'addcustomergroup' => 'Tambah Grup Pelanggan',
+  'editcustomergroup' => 'Ubah Grup Pelanggan',
+  'group' => 'Grup',
+  'all' => 'Semua',
+  'pointamount' => 'Jumlah Poin',
+];

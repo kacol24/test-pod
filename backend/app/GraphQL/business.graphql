@@ -1,0 +1,212 @@
+"Can be used as an argument to upload files using https://github.com/jaydenseric/graphql-multipart-request-spec"
+scalar Upload @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload")
+
+extend type Query {
+  categories: [Category!]! @field(resolver: "BusinessQuery@categories")
+  catalogs(filter: CatalogFilterInput @spread): Catalog! @field(resolver: "BusinessQuery")
+  business(slug: String!, related_limit: Int, is_visit: Boolean): Business @field(resolver: "BusinessQuery@findBySlug")
+  MyBusiness: Catalog! @guard(with: ["api"]) @field(resolver: "BusinessQuery@myBusiness")
+  businessAreas: [String!] @field(resolver: "BusinessQuery@businessAreas")
+  search(q: String!): SearchResult! @field(resolver: "BusinessQuery@search")
+  Report(
+      slug: String!
+      start_date: String!
+      end_date: String!
+      group_by: String
+  ): GeneratedReport! @field(resolver: "BusinessQuery@report")
+}
+
+extend type Mutation {
+  BusinessBasic(input: BasicInput @spread): AuthPayload! @guard(with: ["api"]) @field(resolver: "BusinessMutation@basic")
+  UpdateBusinessBasic(input: BasicInput @spread): AuthPayload! @guard(with: ["api"]) @field(resolver: "BusinessMutation@updateBasic")
+  UploadImage(image: Upload!): ImageResponse! @guard(with: ["api"]) @field(resolver: "BusinessMutation@uploadImage")
+  UpdateBusinessComplete(input: CompleteInput @spread): AuthPayload! @guard(with: ["api"]) @field(resolver: "BusinessMutation@updateComplete")
+  CreateCoupon(input: CouponInput @spread): AuthPayload! @guard(with: ["api"]) @field(resolver: "BusinessMutation@createCoupon")
+  DeleteCoupon(id: Int!): AuthPayload! @guard(with: ["api"]) @field(resolver: "BusinessMutation@deleteCoupon")
+  PublishCoupon(id: Int!, is_publish: Boolean!): AuthPayload! @guard(with: ["api"]) @field(resolver:
+  "BusinessMutation@publishCoupon")
+  ConnectInstagram(slug: String!, code: String!): AuthPayload! @guard(with: ["api"]) @field(resolver: "BusinessMutation@connectInstagram")
+  DisconnectInstagram(slug: String!): StatusResponse @field(resolver: "BusinessMutation@disconnectInstagram")
+  ToggleWishlist(slug: String!): AuthPayload! @guard(with: ["api"]) @field(resolver: "BusinessMutation@toggleWishlist")
+  CouponClick(
+      business_id: Int!,
+      coupon_id: Int!
+  ): AuthPayload! @field(resolver: "BusinessMutation@couponClick")
+  ContactClick(business_id: Int!): AuthPayload! @field(resolver: "BusinessMutation@contactClick")
+  ButtonClick(business_id: Int!): AuthPayload! @field(resolver: "BusinessMutation@buttonClick")
+  DeleteBusiness(slug: String!): StatusResponse @field(resolver: "BusinessMutation@deleteBusiness")
+}
+
+type ReportResult {
+    data: [Int]
+    labels: [String]
+    sum: Int
+    sum_formatted: String
+    last_period: ReportResult
+}
+
+type GeneratedReport {
+    visitors: ReportResult!
+    contacts: ReportResult!
+    coupons: ReportResult!
+}
+
+type SearchResult {
+    business: [Business]
+    categories: [Category]
+    tags: [String]
+}
+
+type BusinessArea {
+    area: String!
+}
+
+input CouponInput {
+  slug: String!
+  code: String!
+  description: String!
+  how_to_use: String
+}
+
+type ImageResponse {
+  status: String!
+  message: String
+  url: String
+  filename: String
+}
+
+input CompleteInput {
+  slug: String!
+  company_type: String!
+  company_size: String!,
+  ownership: String!
+  establish_since: String!
+  tags: [String]
+  images: [Image]
+  links: [InputLink]
+}
+
+input InputLink {
+  title: String
+  url : String
+}
+
+input Image {
+  url: String!
+  filename: String!
+}
+
+input BasicInput {
+  slug: String
+  name: String!
+  email: String!
+  address: String!
+  location:String!
+  areas:[String]!
+  category:String!
+  description: String
+  is_treasure_arise: Boolean
+  logo: Upload
+  phone: String!
+  whatsapp: String
+  website: String
+  instagram: String
+  youtube: String
+  newsletter: Boolean
+}
+
+type Category {
+  id: ID
+  title: String
+  slug: String
+  seo: Seo
+  children: [Category]
+}
+
+type Catalog {
+  businesses: [Business]
+  pagination: Pagination
+  filterCategory: Category
+}
+
+input CatalogFilterInput {
+  sort: String
+  category_id: Int
+  s: String
+  limit: Int
+  page: Int
+  isTreasure: Boolean
+  areas: String
+  has_logo: Boolean
+  has_coupons: Boolean
+  has_images: Int
+  is_wishlist: Boolean
+}
+
+type ImageType {
+  url: String
+  filename: String
+}
+
+type Link {
+  title: String
+  url: String
+}
+
+type Coupon {
+  id: Int
+  code: String
+  description: String
+  how_to_use: String
+  copied: Int
+  is_publish: Int
+}
+
+type MediaIG {
+  id: String
+  media_type: String
+  media_url: String
+  permalink: String
+  thumbnail_url: String
+}
+
+type Instagram {
+  id: String
+  username: String
+  medias: [MediaIG]
+}
+
+type Business {
+  id: ID!
+  slug: String
+  name: String!,
+  email: String!,
+  address: String!,
+  location: String!,
+  areas: [String]!,
+  logo_url: String,
+  initial:String,
+  description: String,
+  is_treasure_arise: Boolean,
+  treasure_arise_status: String,
+  phone: String!,
+  whatsapp: String,
+  website: String,
+  instagram: String,
+  youtube: String
+  images: [ImageType]
+  firstcategory: Category
+  secondcategory: Category
+  company_type:String
+  company_size:String
+  ownership: String
+  establish_since: String
+  tags: [String]
+  links: [Link]
+  coupons: [Coupon]
+  status: String
+  type: String
+  connectInstagram: Instagram
+  related(limit: Int): [Business]
+  is_loved: Boolean
+}

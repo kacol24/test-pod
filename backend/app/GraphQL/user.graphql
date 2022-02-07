@@ -1,0 +1,179 @@
+"A date string with format `Y-m-d`, e.g. `2011-05-23`."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+type Query {
+    me: User @auth @guard
+    addresses: [Address!]! @guard @field(resolver: "UserQuery@addresses")
+    address(id: ID!): Address! @guard @field(resolver: "UserQuery@address")
+    searchCitySubdistrict(s: String!): [CitySubdistrict]! @field(resolver: "UserQuery@searchCitySubdistrict") 
+    mypoints(limit: Int, page: Int): Points! @guard @field(resolver: "UserQuery@mypoints")
+    myorders(language: String!, limit: Int, page: Int): MyOrder! @guard @field(resolver: "UserQuery@myorders")
+    order(language: String!, id: ID!): Order! @guard @field(resolver: "UserQuery@orderDetail")
+}
+
+type Mutation {
+    login(input: LoginInput @spread): AuthPayload! @field(resolver: "UserMutation@login")
+    refreshToken(input: RefreshTokenInput @spread): RefreshTokenPayload! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\RefreshToken@resolve")
+    logout: StatusResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\Logout@resolve")
+    forgotPassword(input: ForgotPasswordInput! @spread): StatusResponse! @field(resolver: "UserMutation@forgotPassword")
+    updateForgottenPassword(input: NewPasswordWithCodeInput @spread): StatusResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\ResetPassword@resolve")
+    register(input: RegisterInput @spread): RegisterResponse! @field(resolver: "UserMutation@register")
+    socialLogin(input: SocialLoginInput! @spread): AuthPayload! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\SocialLogin@resolve")
+    verifyEmail(input: VerifyEmailInput! @spread): AuthPayload! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\VerifyEmail@resolve")
+    updatePassword(input: UpdatePassword! @spread): StatusResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\UpdatePassword@resolve") @guard(with: ["api"])
+    updateUser(input: UpdateUser! @spread): StatusResponse! @field(resolver: "UserMutation@updateUser") @guard(with: ["api"])
+    createUpdateAddress(input: AddressInput! @spread): Address! @field(resolver: "UserMutation@createUpdateAddress") @guard(with: ["api"])
+    deleteAddress(id: ID!): DeleteAddressResponse! @field(resolver: "UserMutation@deleteAddress") @guard(with: ["api"])
+    subscribe(email: String!): StatusResponse! @field(resolver: "UserMutation@subscribe")
+}
+
+enum Group {
+  Guest @enum(value: 1)
+  Member @enum(value: 2)
+  Customer @enum(value: 3)
+}
+
+type Address {
+    id: ID!
+    name: String!
+    email: String!
+    phone: String!
+    address: String!
+    country: String!
+    state: String!
+    city: String!
+    subdistrict: String!
+    postcode: String!
+    is_primary: Int!
+    longitude: String
+    latitude: String
+    geolabel: String
+}
+
+type CitySubdistrict {
+    id: ID!
+    state : String!
+    city: String!
+    subdistrict: String!
+    postcodes: [String]!
+}
+
+type Points {
+    datas: [PointLog]!
+    pagination: Pagination!
+}
+
+type PointLog {
+    type: String!
+    last_point: Int!
+    given_point: Int!
+    current_point: Int!
+    order: Order
+}
+
+type MyOrder {
+    datas: [Order]!
+    pagination: Pagination!
+}
+
+type Order {
+    id: ID
+    order_no: String
+    total_amount: Int
+    shipping_fee: Int
+    discount_ongkir: Int
+    total_discount: Int
+    insurance: Int
+    tax: Int
+    unique_code: Int
+    payment_service_fee: Int
+    currency: String
+    exchange_rate: Int
+    final_amount: Int
+    charge_service_fee: Int,
+    pay_with_point: Int
+    billing: OrderBilling
+    shipping: OrderShipping
+    order_status : OrderStatus
+    details : [OrderDetail]
+    payment_method: String
+    #only use when create order
+    status: String!
+    message: String
+}
+
+type OrderDetail {
+    title: String
+    image: String
+    sku_code: String
+    price: Int
+    discount: Int
+    discount_coupon: Int
+    quantity: Int
+    notes: String
+    option_1: DetailOption
+    option_2: DetailOption
+}
+
+type DetailOption {
+    title: String
+    value: String
+}
+
+type OrderBilling {
+    id: ID
+    name: String
+    phone: String
+    email: String
+    address: String
+    country: String
+    state: String
+    city: String
+    subdistrict: String
+    postcode : String
+}
+
+type OrderShipping {
+    id: ID
+    name: String
+    phone: String
+    email: String
+    address: String
+    country: String
+    state: String
+    city: String
+    subdistrict: String
+    postcode : String
+    shipping_method: String
+    tracking_number : String
+}
+
+type OrderStatus {
+    id: ID!
+    title: String!
+}
+
+input AddressInput {
+    address_id: Int
+    name: String! @rules(apply: ["required"])
+    email: String! @rules(apply: ["required", "email"])
+    phone: String!  @rules(apply: ["required"])
+    address: String!  @rules(apply: ["required"])
+    country: String!  @rules(apply: ["required"])
+    state: String!  @rules(apply: ["required"])
+    city: String!  @rules(apply: ["required"])
+    subdistrict: String!  @rules(apply: ["required"])
+    postcode: String!  @rules(apply: ["required"])
+    is_primary: Int
+    longitude: String
+    latitude: String
+    geolabel: String
+}
+
+type DeleteAddressResponse {
+    status: String!
+    message: String
+}

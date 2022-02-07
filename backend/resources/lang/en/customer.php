@@ -1,0 +1,26 @@
+<?php
+
+return [
+  'customers' => 'Customers',
+  'hereyoucan' => 'Here you can manage customer across you entire store',
+  'customergroups' => 'Customer Groups',
+  'exportcustomer' => 'Export Customer',
+  'searchby' => 'Search customer by customer name',
+  'customername' => 'Customer Name',
+  'customergroup' => 'Customer Group',
+  'backto' => 'Back to Customers',
+  'customerdashboard' => 'Customer Dashboard',
+  'totalpurchase' => 'Total Purchase',
+  'transactions' => 'Transactions',
+  'last5' => 'Last 5 Items Purchased',
+  'hereyoucangroup' => 'Here you can manage customer group across you entire store',
+  'addgroup' => 'Add Group',
+  'searchbygroup' => 'Search item by name',
+  'groupname' => 'Group Name',
+  'backtogroup' => 'Back to Group Lists',
+  'addcustomergroup' => 'Add Customer Group',
+  'editcustomergroup' => 'Edit Customer Group',
+  'group' => 'Group',
+  'all' => 'All',
+  'pointamount' => 'Point Amount',
+];

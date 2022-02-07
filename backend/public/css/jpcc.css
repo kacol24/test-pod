@@ -1,0 +1,92 @@
+.BasicCard {
+  background: #FFFFFF;
+  border: 1px solid #EAEDF3;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border-radius: 7px;
+  margin-bottom: 15px;
+  position: relative;
+}
+.BasicCard__header, .BasicCard__body, .BasicCard__footer {
+  padding: 45px;
+}
+.BasicCard__title {
+  font-family: HK Grotesk, Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 38px;
+  line-height: 46px;
+  letter-spacing: -0.03em;
+  color: #000000;
+  margin: 0;
+}
+.BasicCard--narrow .BasicCard__header, .BasicCard--narrow .BasicCard__body, .BasicCard--narrow .BasicCard__footer {
+  padding: 20px;
+}
+
+@media (min-width: 768px) {
+  .BasicCard__title {
+    font-size: 48px;
+    line-height: 46px;
+    letter-spacing: -0.03em;
+  }
+}
+@media (max-width: 767px) {
+  .BasicCard--md-narrow .BasicCard__header, .BasicCard--md-narrow .BasicCard__body {
+    padding: 20px;
+  }
+}
+.Content__title {
+  font-family: HK Grotesk, Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 24px;
+  color: #000000;
+}
+.Content__title--sm {
+  font-family: HK Grotesk, Roboto, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px !important;
+  line-height: 24px !important;
+  color: #000000;
+}
+.Content__title--lg {
+  font-size: 38px;
+  line-height: 46px;
+  letter-spacing: -0.03em;
+}
+.Content__title small {
+  font-family: HK Grotesk, Roboto, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 22px;
+  color: #080808;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .Content__title {
+    font-size: 32px;
+    line-height: 46px;
+    letter-spacing: -0.01em;
+  }
+  .Content__title--lg {
+    font-size: 48px;
+    line-height: 46px;
+    letter-spacing: -0.03em;
+  }
+}
+.Avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #003866;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: HK Grotesk, Roboto, sans-serif;
+}

@@ -1,0 +1,51 @@
+.Content {
+    &__title {
+        font-family: HK Grotesk, Roboto, sans-serif;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 24px;
+        color: #000000;
+
+        &--sm {
+            font-family: HK Grotesk, Roboto, sans-serif;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 18px !important;
+            line-height: 24px !important;
+            color: #000000;
+        }
+
+        &--lg {
+            font-size: 38px;
+            line-height: 46px;
+            letter-spacing: -0.03em;
+        }
+
+        small {
+            font-family: HK Grotesk, Roboto, sans-serif;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 14px;
+            line-height: 22px;
+            color: #080808;
+            display: block;
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .Content {
+        &__title {
+            font-size: 32px;
+            line-height: 46px;
+            letter-spacing: -0.01em;
+
+            &--lg {
+                font-size: 48px;
+                line-height: 46px;
+                letter-spacing: -0.03em;
+            }
+        }
+    }
+}

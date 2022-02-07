@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'blogs'              => 'Blogs',
+    'hereyoucan'         => 'Here you can manage blog across you entire store',
+    'managecategory'     => 'Manage Category',
+    'addblog'            => 'Add Blog',
+    'searchby'           => 'Search blog by title',
+    'title'              => 'Title',
+    'author'             => 'Author',
+    'category'           => 'Category',
+    'publishdate'        => 'Publish Date',
+    'backto'             => 'Back to Blogs',
+    'clickdrag'          => 'Click &amp; Drag on the image you wish to set as the blog\'s thumbnail',
+    'blogcategories'     => 'Blog Categories',
+    'hereyoucancategory' => 'Here you can manage category across you entire store',
+    'addblogcategory'    => 'Add Blog Category',
+    'categoryname'       => 'Category Name',
+    'searchbycategory'   => 'Search blog category',
+    'backtocategory'     => 'Back to Blog Categories',
+    'blogcategory'       => 'Blog Category',
+    'blog'               => 'Blog',
+    'editblog'           => 'Edit Blog',
+    'editblogcategory'   => 'Ubah Blog Category',
+];

@@ -1,0 +1,54 @@
+.BasicCard {
+    background: #FFFFFF;
+    border: 1px solid #EAEDF3;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    border-radius: 7px;
+    margin-bottom: 15px;
+    position: relative;
+
+    &__header, &__body, &__footer {
+        padding: 45px;
+    }
+
+    &__title {
+        font-family: HK Grotesk, Roboto, sans-serif;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 38px;
+        line-height: 46px;
+        letter-spacing: -0.03em;
+        color: #000000;
+        margin: 0;
+    }
+
+    &--narrow {
+        .BasicCard {
+            &__header, &__body, &__footer {
+                padding: 20px;
+            }
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .BasicCard {
+        &__title {
+            font-size: 48px;
+            line-height: 46px;
+            letter-spacing: -0.03em;
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .BasicCard {
+        &--md-narrow {
+            .BasicCard {
+                &__header, &__body {
+                    padding: 20px;
+                }
+            }
+        }
+    }
+}

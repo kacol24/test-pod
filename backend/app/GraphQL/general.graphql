@@ -1,0 +1,39 @@
+extend type Query {
+  banners(type: String!, limit: Int): [Banner!]! @field(resolver: "ContentQuery@banners")
+}
+
+extend type Mutation {
+    SubmitContactForm(input: ContactFormFields @spread): StatusResponse! @field(resolver: "GeneralMutation@submitContactForm")
+}
+
+type Seo {
+  meta_title: String
+  meta_keyword: String
+  meta_description: String
+}
+
+type Pagination {
+  count: Int
+  current_page: Int
+  total_data: Int
+  last_page: Int
+}
+
+type StatusResponse {
+    status: String!
+    message: String
+}
+
+type Banner {
+  id: ID!
+  title: String
+  url: String
+  desktop: String
+  mobile: String
+}
+
+input ContactFormFields {
+    name: String!
+    email: String!
+    message: String!
+}
