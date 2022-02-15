@@ -32,13 +32,6 @@
                                     </small>
                                 </div>
                             </a>
-                            <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item"
-                                   href="{{route('help')}}">{{Lang::get('menuadmin.help')}}</a>
-                                <a class="dropdown-item" href="{{route('logout')}}">
-                                    {{Lang::get('general.logout')}}
-                                </a>
-                            </div>
                         </li>
                     </ul>
                 </nav>
@@ -85,7 +78,6 @@
                     </div>
                 </a>
                 <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="{{route('help')}}">{{Lang::get('menuadmin.help')}}</a>
                     <a class="dropdown-item" href="{{route('logout')}}">
                         {{Lang::get('general.logout')}}
                     </a>
