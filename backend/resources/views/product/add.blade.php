@@ -632,20 +632,15 @@
                         <div class="card mt-3 p-0">
                             <div class="card-body p-0">
                                 <table id="table-variant" data-mobile-responsive="true" data-toggle="table">
-                                    <thead class="text-uppercase">
+                                    <thead>
                                     <tr>
                                         <th data-field="variant">Variant</th>
                                         <th data-field="sku">SKU</th>
-                                        <th data-width="180" data-field="dimensi">Dimension (cm)</th>
-                                        <th data-width="10" data-field="weight">{{Lang::get('product.weight')}}(gr)
-                                        </th>
-                                        <th data-width="120" data-field="price">{{Lang::get('general.price')}}(IDR)
-                                        </th>
+                                        <th data-width="180" data-field="dimensi">Dimension WxLxH (cm)</th>
+                                        <th data-width="10" data-field="weight">{{Lang::get('product.weight')}}(gr)</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
-
-                                    </tbody>
+                                    <tbody></tbody>
                                 </table>
                             </div>
                         </div>
@@ -673,8 +668,8 @@
                     </div>
                 </div>
                 <input type="hidden" name="is_publish" x-model="status">
-                {{--                <input type="hidden" name="product_options" value=""/>--}}
-                {{--                <input type="hidden" name="product_skus" value=""/>--}}
+                <input type="hidden" name="product_options" value=""/>
+                <input type="hidden" name="product_skus" value=""/>
             </form>
         </div>
     </main>
@@ -683,7 +678,7 @@
 @push('scripts')
     <script type="text/javascript">
         var base_url = "{{url('themes/default/backend/js/library')}}";
-        {{--var upload_url = "{{route('product.upload')}}";--}}
+        var upload_url = "{{route('product.upload')}}";
         var bind_image_to_sku = false;
         var options = [];
         var old_sku = [];

@@ -9,7 +9,10 @@ use App\Models\Product\OptionSet;
 use App\Models\Product\Product;
 use App\Models\Product\ProductImage;
 use App\Models\Product\ProductOption;
+use App\Models\Product\ProductOptionDetail;
+use App\Models\Product\ProductSku;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -87,7 +90,7 @@ class ProductController extends Controller
         $offset = $input['offset'];
         $limit = $input['limit'];
         $search = $input['search'];
-        $sorting = 'order_weight';
+        $sorting = 'updated_at';
         $status = $input['status'];
         $order = $input['order'];
 
@@ -106,6 +109,8 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $input = $request->all();
+
         \DB::beginTransaction();
         $product = Product::create([
             'is_publish'             => $request->is_publish,
@@ -140,10 +145,76 @@ class ProductController extends Controller
             $request->category_id,
         ]);
 
+        #Product Options
+        if (isset($input['product_options']) && is_array(json_decode($input['product_options']))) {
+            foreach (json_decode($input['product_options']) as $option) {
+                $product_option = ProductOption::create([
+                    'product_id' => $product->id,
+                    'title'      => $option->title_en,
+                ]);
+                foreach ($option->details as $opt_detail) {
+                    $product_option_detail = ProductOptionDetail::create([
+                        'option_id' => $product_option->id,
+                        'key'       => $opt_detail->key,
+                        'title'     => $opt_detail->title_en,
+                    ]);
+
+                    if (isset($opt_detail->image)) {
+                        $product_option_detail->image = $opt_detail->image;
+                        $product_option_detail->save();
+                    }
+                }
+            }
+        }
+
+        if (! $input['default_weight']) {
+            $input['default_weight'] = 0;
+        }
+        if (! $input['default_width']) {
+            $input['default_width'] = 0;
+        }
+        if (! $input['default_length']) {
+            $input['default_length'] = 0;
+        }
+        if (! $input['default_height']) {
+            $input['default_height'] = 0;
+        }
+        #Default Product Option
+        $sku = ProductSku::create([
+            'product_id'         => $product->id,
+            'option_detail_key1' => null,
+            'option_detail_key2' => null,
+            'sku_code'           => $input['default_sku'],
+            'weight'             => ($input['default_weight']) ? intval($input['default_weight']) : 0,
+            'width'              => ($input['default_width']) ? intval($input['default_width']) : 0,
+            'length'             => ($input['default_length']) ? intval($input['default_length']) : 0,
+            'height'             => ($input['default_height']) ? intval($input['default_height']) : 0,
+        ]);
+
         #Product Images
         if (isset($request->images) && is_array($request->images)) {
             foreach ($request->images as $idx => $image) {
                 ProductImage::create(['product_id' => $product->id, 'image' => $image, 'order_weight' => $idx]);
+            }
+        }
+
+        if (isset($input['product_skus']) && is_array(json_decode($input['product_skus']))) {
+            foreach (json_decode($input['product_skus']) as $idx => $sku) {
+                if (! isset($sku->key2)) {
+                    $sku->key2 = null;
+                }
+
+                $sku = ProductSku::create([
+                    'product_id'         => $product->id,
+                    'option_detail_key1' => $sku->key1,
+                    'option_detail_key2' => $sku->key2,
+                    'sku_code'           => $input['sku'.$idx],
+                    'weight'             => ($input['weight'.$idx]) ? intval($input['weight'.$idx]) : 0,
+                    'width'              => ($input['width'.$idx]) ? intval($input['width'.$idx]) : 0,
+                    'length'             => ($input['length'.$idx]) ? intval($input['length'.$idx]) : 0,
+                    'height'             => ($input['height'.$idx]) ? intval($input['height'.$idx]) : 0,
+                    'image_no'           => (isset($input['image_no'.$idx])) ? intval($input['image_no'.$idx]) : 0,
+                ]);
             }
         }
         \DB::commit();
@@ -168,14 +239,6 @@ class ProductController extends Controller
             $selected_category[] = $category['category_id'];
         }
 
-        $options = Option::get();
-        foreach ($options as $option) {
-            $option->title = $option->title;
-            foreach ($option->details as $detail) {
-                $detail->title = $detail->title;
-            }
-        }
-
         $data = [
             'entity'            => $product,
             'product_options'   => $this->getProductOptions($id),
@@ -183,26 +246,146 @@ class ProductController extends Controller
             'option_sets'       => OptionSet::get(),
             'page_title'        => 'Edit Product',
             'active'            => 'product',
-            'options'           => $options,
+            'options'           => Option::all(),
         ];
 
         return view('product/edit', $data);
     }
 
-    private function getProductOptions($id)
+    public function update(Request $request, $id)
     {
-        $options = ProductOption::where('product_id', $id)->orderBy('id', 'asc')->get();
-        foreach ($options as $option) {
-            foreach ($option->details as $detail) {
-                foreach ($detail->contents as $key => $content_detail) {
-                    $detail[$content_detail['keyword'].'_'.$content_detail['language']] = $content_detail['value'];
-                }
-                $detail['title'] = $detail['title_'.session('language')];
-                if (json_decode(session('store')->option)->use_option_image && $detail->image) {
-                    $detail->image_url = $detail->image_url;
+        $request->flash();
+
+        $validation = [
+            'title' => 'required',
+        ];
+
+        if ($request->input('is_publish')) {
+            $validation['images'] = 'required';
+            $validation['category_id'] = 'required';
+        }
+
+        $validator = \Validator::make($request->all(), $validation);
+
+        if ($validator->fails()) {
+            return redirect()->route('product.edit', ['id' => $id])->withErrors($validator)->withInput();
+        }
+
+        $input = $request->all();
+        if (! isset($input['is_featured'])) {
+            $input['is_featured'] = 0;
+        }
+        DB::beginTransaction();
+        try {
+            $product = Product::where('id', $id)->first();
+            if (isset($input['is_publish'])) {
+                $product->is_publish = $input['is_publish'];
+            }
+            $product->updated_at = date('Y-m-d H:i:s');
+            $product->title = $input['title'];
+            $product->description = $input['description'];
+            $product->save();
+
+            $product->categories()->sync([
+                $request->category_id,
+            ]);
+
+            #Product Images
+            ProductImage::where('product_id', $product->id)->delete();
+            if (isset($input['images']) && is_array($input['images'])) {
+                foreach ($input['images'] as $idx => $image) {
+                    ProductImage::create(['product_id' => $product->id, 'image' => $image, 'order_weight' => $idx]);
                 }
             }
+            #Product Options
+            foreach ($product->options as $option) {
+                foreach ($option->details as $option_detail) {
+                    $option_detail->delete();
+                }
+                $option->delete();
+            }
+            ProductOption::where('product_id', $product->id)->delete();
+            if (isset($input['product_options']) && is_array(json_decode($input['product_options']))) {
+                foreach (json_decode($input['product_options']) as $option) {
+                    $product_option = ProductOption::create([
+                        'product_id' => $product->id,
+                        'title'      => $option->title,
+                    ]);
+
+                    foreach ($option->details as $opt_detail) {
+                        $product_option_detail = ProductOptionDetail::create([
+                            'option_id' => $product_option->id,
+                            'title'     => $opt_detail->title,
+                            'key'       => $opt_detail->key,
+                        ]);
+
+                        if (isset($opt_detail->image)) {
+                            $product_option_detail->image = $opt_detail->image;
+                            $product_option_detail->save();
+                        }
+                    }
+                }
+            }
+            #Default Product Option
+            ProductSku::where('product_id', $product->id)->delete();
+            ProductSku::where('product_id', $product->id)->whereNull('option_detail_key1')
+                      ->whereNull('option_detail_key2')->restore();
+            $sku = ProductSku::where('product_id', $product->id)->whereNull('option_detail_key1')
+                             ->whereNull('option_detail_key2')->first();
+
+            $sku->sku_code = $input['default_sku'];
+            //$sku->price = $input['default_price'];
+            $sku->weight = $input['default_weight'];
+            $sku->width = $input['default_width'];
+            $sku->length = $input['default_length'];
+            $sku->height = $input['default_height'];
+            $sku->save();
+
+            if (isset($input['product_skus']) && is_array(json_decode($input['product_skus']))) {
+                foreach (json_decode($input['product_skus']) as $idx => $sku) {
+                    if (! isset($sku->key2)) {
+                        $sku->key2 = null;
+                    }
+
+                    $productsku = ProductSku::withTrashed()->where('product_id', $product->id)
+                                            ->where('option_detail_key1', $sku->key1)
+                                            ->where('option_detail_key2', $sku->key2)->first();
+                    if ($productsku) {
+                        $productsku->sku_code = $input['sku'.$idx];
+                        $productsku->weight = $input['weight'.$idx];
+                        $productsku->width = $input['width'.$idx];
+                        $productsku->length = $input['length'.$idx];
+                        $productsku->height = $input['height'.$idx];
+                        $productsku->image_no = (isset($input['image_no'.$idx])) ? $input['image_no'.$idx] : 0;
+                        $productsku->save();
+                        $productsku->restore();
+                    } else {
+                        $sku = ProductSku::create([
+                            'product_id'         => $product->id,
+                            'option_detail_key1' => $sku->key1,
+                            'option_detail_key2' => $sku->key2,
+                            'sku_code'           => $input['sku'.$idx],
+                            'weight'             => $input['weight'.$idx],
+                            'width'              => $input['width'.$idx],
+                            'length'             => $input['length'.$idx],
+                            'height'             => $input['height'.$idx],
+                            'image_no'           => (isset($input['image_no'.$idx])) ? $input['image_no'.$idx] : 0,
+                        ]);
+                    }
+                }
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw new \Exception($e->getMessage());
         }
+
+        return redirect()->route('product.list')->with('status', 'Success edit product');
+    }
+
+    private function getProductOptions($id)
+    {
+        $options = ProductOption::where('product_id', $id)->orderBy('id', 'asc')->with('details')->get();
 
         return $options->toArray();
     }

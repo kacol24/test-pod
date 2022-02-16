@@ -37,7 +37,8 @@
             </div>
         </div>
         <div class="container container--crud mt-3">
-            <form class="form-validate" action="{{route('product.store')}}" method="post" enctype="multipart/form-data">
+            <form class="form-validate" action="{{route('product.update', $entity->id)}}" method="post"
+                  enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <div class="card p-0 sticky-top sticky-top--header border-0" style="background: transparent;">
                     <nav class="navbar navbar-expand px-0 px-lg-3 site-nav bg-white">
@@ -196,18 +197,29 @@
                                         <div class="form-group">
                                             <label class="text-uppercase" for="weight">{{Lang::get('product.weight')}}
                                                 (gram)</label>
-                                            <input type="number" class="form-control default" name="weight"
-                                                   id="weight" placeholder="{{Lang::get('product.weight')}}"
-                                                   value="{{$entity->weight}}" data-toggle="tooltip" required
+                                            <input type="number" class="form-control default" name="default_weight"
+                                                   id="default_weight" placeholder="{{Lang::get('product.weight')}}"
+                                                   value="{{$entity->default_sku->weight}}"
+                                                   data-toggle="tooltip" required
                                                    data-placement="top" title="{{Lang::get('product.youcanweight')}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-uppercase" for="sku"> Stock Keeping Unit (SKU)
+                                                Code</label>
+                                            <input type="text" class="form-control default" name="default_sku" id="sku"
+                                                   placeholder="SKU" value="{{$entity->default_sku->sku_code}}"
+                                                   data-toggle="tooltip"
+                                                   data-placement="top" title="{{Lang::get('product.youcansku')}}"/>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <label class="text-uppercase" for="width">Width (cm)</label>
-                                            <input type="number" class="form-control default" name="width"
+                                            <input type="number" class="form-control default" name="default_width"
                                                    id="width" placeholder="{{Lang::get('product.width')}}"
-                                                   value="{{($entity->width) ? $entity->width : 1}}"
+                                                   value="{{$entity->default_sku->width}}"
                                                    data-toggle="tooltip" min="0" data-placement="top" required
                                                    title="{{Lang::get('product.youcanwidth')}}">
                                         </div>
@@ -215,9 +227,9 @@
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <label class="text-uppercase" for="length">Length (CM)</label>
-                                            <input type="number" class="form-control default" name="length"
+                                            <input type="number" class="form-control default" name="default_length"
                                                    id="length" placeholder="{{Lang::get('product.length')}}"
-                                                   value="{{($entity->length) ? $entity->length : 1}}"
+                                                   value="{{$entity->default_sku->length}}"
                                                    data-toggle="tooltip" min="0" data-placement="top" required
                                                    title="{{Lang::get('product.youcanlength')}}">
                                         </div>
@@ -225,9 +237,9 @@
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <label class="text-uppercase" for="height">Height (CM)</label>
-                                            <input type="number" class="form-control default" name="height"
+                                            <input type="number" class="form-control default" name="default_height"
                                                    id="height" placeholder="{{Lang::get('product.height')}}"
-                                                   value="{{($entity->height) ? $entity->height : 1}}"
+                                                   value="{{$entity->default_sku->height}}"
                                                    data-toggle="tooltip" data-placement="top" min="0" required
                                                    title="{{Lang::get('product.youcanheight')}}">
                                         </div>
@@ -325,6 +337,7 @@
                                                 @foreach(['square', 'circle'] as $radio)
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio" name="shape"
+                                                               {{ $entity->shape == $radio ? 'checked' : '' }}
                                                                id="shape_{{ $radio }}" value="{{ $radio }}">
                                                         <label class="form-check-label" for="shape_{{ $radio }}">
                                                             {{ Str::title($radio) }}
@@ -343,6 +356,7 @@
                                                 @foreach(['portrait', 'landscape'] as $radio)
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio" name="orientation"
+                                                               {{ $entity->orientation == $radio ? 'checked' : '' }}
                                                                id="orientation_{{ $radio }}" value="{{ $radio }}">
                                                         <label class="form-check-label" for="orientation_{{ $radio }}">
                                                             {{ Str::title($radio) }}
@@ -361,6 +375,7 @@
                                                 @foreach(['mm', 'cm'] as $radio)
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio" name="unit"
+                                                               {{ $entity->unit == $radio ? 'checked' : '' }}
                                                                id="unit_{{ $radio }}" value="{{ $radio }}">
                                                         <label class="form-check-label" for="unit_{{ $radio }}">
                                                             {{ Str::title($radio) }}
@@ -380,6 +395,7 @@
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio"
                                                                name="enable_resize"
+                                                               {{ $entity->enable_resize == $radio ? 'checked' : '' }}
                                                                id="resize_{{ $radio }}" value="{{ $index }}">
                                                         <label class="form-check-label" for="resize_{{ $radio }}">
                                                             {{ Str::title($radio) }}
@@ -629,8 +645,6 @@
                                         <th data-width="180" data-field="dimensi">Dimension (cm)</th>
                                         <th data-width="10" data-field="weight">{{Lang::get('product.weight')}}(gr)
                                         </th>
-                                        <th data-width="120" data-field="price">{{Lang::get('general.price')}}(IDR)
-                                        </th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -658,11 +672,13 @@
                             </div>
                         </div>
                         <button class="btn btn-primary px-5 ml-3" type="submit">
-                            Create Product
+                            Save Product
                         </button>
                     </div>
                 </div>
                 <input type="hidden" name="is_publish" x-model="status">
+                <input type="hidden" name="product_options" value="{{json_encode($product_options)}}"/>
+                <input type="hidden" name="product_skus" value=""/>
             </form>
         </div>
     </main>
@@ -670,22 +686,27 @@
 
 @push('scripts')
     <script type="text/javascript">
-        var base_url = "{{url('themes/default/backend/js/library')}}";
-        {{--var upload_url = "{{route('product.upload')}}";--}}
-        var bind_image_to_sku = false;
-        var options = [];
-        var old_sku = [];
+        var base_url = "{{url('js/library')}}";
+        var upload_url = "{{route('product.upload')}}";
+        var options = <?php echo json_encode($product_options); ?>;
+        var old_sku = <?php echo json_encode($entity->skus); ?>;
         var option_rows = [];
-        var lang = "{{session('language')}}";
-        var outlets = [];
-        var stocks = [];
+        var bind_image_to_sku = false;
     </script>
     <script src="{{asset('js/product.js')}}"></script>
     <script src="{{asset('js/jquery.priceformat.min.js')}}"></script>
     <script src="{{asset('js/typeahead.min.js')}}"></script>
     <script src="{{asset('js/bootstrap-tagsinput.js')}}"></script>
+    <script type="text/javascript">
+        set_select_category();
+        generate_option();
+    </script>
     @include('product.partials.modaloptionset')
     @include('product.partials.modaloptionmanual')
+@endpush
+
+@push('styles')
+    <link rel="stylesheet" href="{{asset('css/bootstrap-tagsinput.css')}}"/>
     <style>
         .bootstrap-tagsinput {
             width: 100%;
@@ -712,6 +733,3 @@
     </style>
 @endpush
 
-@push('styles')
-    <link rel="stylesheet" href="{{asset('css/bootstrap-tagsinput.css')}}"/>
-@endpush

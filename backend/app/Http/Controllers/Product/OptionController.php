@@ -94,6 +94,7 @@ class OptionController extends Controller
             foreach ($input['valueen'] as $idx => $value) {
                 OptionDetail::create([
                     'option_id' => $option->id,
+                    'key'       => slugify($value),
                     'title'     => $input['valueen'][$idx],
                 ]);
             }
@@ -155,7 +156,7 @@ class OptionController extends Controller
             $details = $input['valueen'];
 
             foreach ($details as $idx => $value) {
-                $option_detail = OptionDetail::where('option_id', $option->id)->where('title', slugify($value))
+                $option_detail = OptionDetail::where('option_id', $option->id)->where('key', slugify($value))
                                              ->withTrashed()->first();
                 if ($option_detail) {
                     if ($option_detail->trashed()) {
@@ -164,7 +165,8 @@ class OptionController extends Controller
                 } else {
                     $option_detail = OptionDetail::create([
                         'option_id' => $option->id,
-                        'title'     => slugify($value),
+                        'title'     => $value,
+                        'key'       => slugify($value),
                     ]);
                 }
 

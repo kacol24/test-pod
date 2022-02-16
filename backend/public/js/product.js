@@ -176,18 +176,6 @@ function generate_option_view()
     }
     row = {variant: variantName, sku: '<div class="form-group mb-md-0"><input class="form-control" disabled id="sku'+option_rows[i].key1+option_rows[i].key2+'" type="text" value="'+option_rows[i].sku+'" disabled placeholder="SKU"></div>'};
 
-    row['stock'] = '<div class="form-group mb-md-0">';
-    for(var j =0;j<outlets.length;j++) {
-      finding = stocks.find(el => el.outlet_id == outlets[j].id && el.sku_id == option_rows[i].id);
-      if(finding) {
-        stock = finding.stock;
-      }else {
-        stock = 0;
-      }
-      row['stock'] += '<input class="form-control" x-show="selectedOutlet.id == '+outlets[j].id+'" type="number" name="stock'+i+'outlet'+outlets[j].id+'" value="'+stock+'">';
-    }
-    row['stock'] += '</div>';
-
     tableInventory.bootstrapTable('append', row);
   }
 }
