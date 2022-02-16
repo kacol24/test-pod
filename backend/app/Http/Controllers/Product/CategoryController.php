@@ -51,7 +51,6 @@ class CategoryController extends Controller
     {
         $data = [
             'page_title' => 'Add Category',
-            'parents'    => CategoryRepository::getCategoryBranch(),
             'active'     => 'product',
         ];
 
@@ -65,18 +64,8 @@ class CategoryController extends Controller
             'order_weight' => 'integer',
             'file'         => 'image|mimes:png,jpeg,jpg,gif',
         ];
-        if (session('store')->multi_language == 1) {
-            $validation['title_en'] = 'required';
-            $validation['title_id'] = 'required';
-        } else {
-            if (session('store')->default_language == 'en') {
-                $validation['title_en'] = 'required';
-            } else {
-                if (session('store')->default_language == 'id') {
-                    $validation['title_id'] = 'required';
-                }
-            }
-        }
+        $validation['title'] = 'required';
+
         $validator = Validator::make($request->all(), $validation);
 
         if ($validator->fails()) {
@@ -97,88 +86,18 @@ class CategoryController extends Controller
                 $input['order_weight'] = 0;
             }
             $category = Category::create([
-                'store_id'     => session('store')->id,
-                'parent_id'    => $input['parent'],
+                'parent_id'    => 0,
                 'order_weight' => $input['order_weight'],
                 'is_active'    => (isset($input['is_active'])) ? $input['is_active'] : 1,
                 'image'        => $input['image'],
                 'is_featured'  => (isset($input['is_featured'])) ? $input['is_featured'] : 0,
+                'name'         => $input['title'],
             ]);
-
-            CategoryContent::create([
-                'category_id' => $category->id,
-                'language'    => 'id',
-                'keyword'     => 'title',
-                'value'       => $input['title_id'],
-            ]);
-            CategoryContent::create([
-                'category_id' => $category->id,
-                'language'    => 'id',
-                'keyword'     => 'description',
-                'value'       => $input['description_id'],
-            ]);
-            CategoryContent::create([
-                'category_id' => $category->id,
-                'language'    => 'id',
-                'keyword'     => 'seo',
-                'value'       => json_encode([
-                    'meta_title'       => $input['meta_title_id'],
-                    'meta_keyword'     => $input['meta_keyword_id'],
-                    'meta_description' => $input['meta_description_id'],
-                ]),
-            ]);
-
-            $slug_candidate = slugify($input['title_id']);
-            $possible_conflicts = CategorySlug::whereRaw("(`value` = '".$slug_candidate."' or `value` like '%".$slug_candidate."-%')")
-                                              ->where('language', 'id')->get(['value'])
-                                              ->where('store_id', session('store')->id)->pluck('value')->toArray();
-            CategorySlug::create([
-                'store_id'    => session('store')->id,
-                'category_id' => $category->id,
-                'language'    => 'id',
-                'value'       => slugUniqify($slug_candidate, $possible_conflicts),
-            ]);
-            CategoryContent::create([
-                'category_id' => $category->id,
-                'language'    => 'en',
-                'keyword'     => 'title',
-                'value'       => $input['title_en'],
-            ]);
-            CategoryContent::create([
-                'category_id' => $category->id,
-                'language'    => 'en',
-                'keyword'     => 'description',
-                'value'       => $input['description_en'],
-            ]);
-            CategoryContent::create([
-                'category_id' => $category->id,
-                'language'    => 'en',
-                'keyword'     => 'seo',
-                'value'       => json_encode([
-                    'meta_title'       => $input['meta_title_en'],
-                    'meta_keyword'     => $input['meta_keyword_en'],
-                    'meta_description' => $input['meta_description_en'],
-                ]),
-            ]);
-
-            $slug_candidate = slugify($input['title_en']);
-            $possible_conflicts = CategorySlug::whereRaw("(`value` = '".$slug_candidate."' or `value` like '%".$slug_candidate."-%')")
-                                              ->where('language', 'en')->get(['value'])
-                                              ->where('store_id', session('store')->id)->pluck('value')->toArray();
-            CategorySlug::create([
-                'store_id'    => session('store')->id,
-                'category_id' => $category->id,
-                'language'    => 'en',
-                'value'       => slugUniqify($slug_candidate, $possible_conflicts),
-            ]);
-
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
         }
-
-        Cache::tags('categories'.session('store')->id.app_key())->flush();
 
         return redirect()->route('category.list')->with('status', 'Success add category');
     }
@@ -187,8 +106,7 @@ class CategoryController extends Controller
     {
         $data = [
             'page_title' => 'Edit Category',
-            'parents'    => CategoryRepository::getCategoryBranch(),
-            'entity'     => Category::where('id', $id)->where('store_id', session('store')->id)->first(),
+            'entity'     => Category::where('id', $id)->first(),
             'active'     => 'product',
         ];
 
@@ -201,18 +119,8 @@ class CategoryController extends Controller
             'order_weight' => 'integer',
             'file'         => 'image|mimes:png,jpeg,jpg,gif',
         ];
-        if (session('store')->multi_language == 1) {
-            $validation['title_en'] = 'required';
-            $validation['title_id'] = 'required';
-        } else {
-            if (session('store')->default_language == 'en') {
-                $validation['title_en'] = 'required';
-            } else {
-                if (session('store')->default_language == 'id') {
-                    $validation['title_id'] = 'required';
-                }
-            }
-        }
+        $validation['title'] = 'required';
+
         $validator = Validator::make($request->all(), $validation);
 
         if ($validator->fails()) {
@@ -234,71 +142,23 @@ class CategoryController extends Controller
             if (! $input['order_weight']) {
                 $input['order_weight'] = 0;
             }
-            $category = Category::where('id', $id)->where('store_id', session('store')->id)->first();
-            $category->parent_id = $input['parent'];
+            $category = Category::where('id', $id)->first();
+            $category->parent_id = 0;
             $category->order_weight = $input['order_weight'];
+            $category->name = $input['title'];
             $category->is_active = (isset($input['is_active'])) ? $input['is_active'] : 1;
             $category->is_featured = (isset($input['is_featured'])) ? $input['is_featured'] : 0;
 
             if (isset($input['image'])) {
                 $category->image = $input['image'];
             }
-
             $category->save();
-
-            CategoryContent::where('category_id', $id)->where('language', 'id')->where('keyword', 'title')
-                           ->update(['value' => $input['title_id']]);
-
-            CategoryContent::where('category_id', $id)->where('language', 'id')->where('keyword', 'description')
-                           ->update(['value' => $input['description_id']]);
-
-            CategoryContent::where('category_id', $id)->where('language', 'id')->where('keyword', 'seo')
-                           ->update([
-                               'value' => json_encode([
-                                   'meta_title'       => $input['meta_title_id'],
-                                   'meta_keyword'     => $input['meta_keyword_id'],
-                                   'meta_description' => $input['meta_description_id'],
-                               ]),
-                           ]);
-
-            $slug_candidate = slugify($input['title_id']);
-            $possible_conflicts = CategorySlug::whereRaw("(`value` = '".$slug_candidate."' or `value` like '%".$slug_candidate."-%')")
-                                              ->where('language', 'id')->where('category_id', '!=', $id)
-                                              ->where('store_id', session('store')->id)->get(['value'])->pluck('value')
-                                              ->toArray();
-            CategorySlug::where('category_id', $id)->where('language', 'id')->where('store_id', session('store')->id)
-                        ->update(['value' => slugUniqify($slug_candidate, $possible_conflicts)]);
-
-            CategoryContent::where('category_id', $id)->where('language', 'en')->where('keyword', 'title')
-                           ->update(['value' => $input['title_en']]);
-
-            CategoryContent::where('category_id', $id)->where('language', 'en')->where('keyword', 'description')
-                           ->update(['value' => $input['description_en']]);
-
-            CategoryContent::where('category_id', $id)->where('language', 'en')->where('keyword', 'seo')
-                           ->update([
-                               'value' => json_encode([
-                                   'meta_title'       => $input['meta_title_en'],
-                                   'meta_keyword'     => $input['meta_keyword_en'],
-                                   'meta_description' => $input['meta_description_en'],
-                               ]),
-                           ]);
-
-            $slug_candidate = slugify($input['title_en']);
-            $possible_conflicts = CategorySlug::whereRaw("(`value` = '".$slug_candidate."' or `value` like '%".$slug_candidate."-%')")
-                                              ->where('language', 'en')->where('category_id', '!=', $id)
-                                              ->where('store_id', session('store')->id)->get(['value'])->pluck('value')
-                                              ->toArray();
-            CategorySlug::where('category_id', $id)->where('language', 'en')->where('store_id', session('store')->id)
-                        ->update(['value' => slugUniqify($slug_candidate, $possible_conflicts)]);
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
         }
-
-        Cache::tags('categories'.session('store')->id.app_key())->flush();
 
         return redirect()->route('category.list')->with('status', 'Success edit category');
     }

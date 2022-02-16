@@ -34,7 +34,7 @@
             @if (session('status'))
                 <div class="alert alert-success">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    <img src="{{theme_asset('backend/images/success-icon.png')}}" alt=""> {{session('status')}}
+                    <img src="{{asset('backend/images/success-icon.png')}}" alt=""> {{session('status')}}
                 </div>
             @endif
         </div>
