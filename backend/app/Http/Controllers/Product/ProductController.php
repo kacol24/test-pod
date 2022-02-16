@@ -118,6 +118,7 @@ class ProductController extends Controller
             'title'                  => $request->title,
             'production_cost'        => $request->production_cost,
             'fulfillment_cost'       => $request->fulfillment_cost,
+            'selling_price'          => $request->selling_price,
             'prism_id'               => $request->prism_id,
             'production_time'        => $request->production_time,
             'fulfillment_time'       => $request->fulfillment_time,
@@ -170,6 +171,18 @@ class ProductController extends Controller
         if (! $input['default_weight']) {
             $input['default_weight'] = 0;
         }
+        if (! $input['default_production_cost']) {
+            $input['default_production_cost'] = 0;
+        }
+        if (! $input['default_fulfillment_cost']) {
+            $input['default_fulfillment_cost'] = 0;
+        }
+        if (! $input['default_selling_price']) {
+            $input['default_selling_price'] = 0;
+        }
+        if (! $input['default_stock']) {
+            $input['default_stock'] = 0;
+        }
         if (! $input['default_width']) {
             $input['default_width'] = 0;
         }
@@ -185,6 +198,10 @@ class ProductController extends Controller
             'option_detail_key1' => null,
             'option_detail_key2' => null,
             'sku_code'           => $input['default_sku'],
+            'production_cost'    => $input['default_production_cost'],
+            'fulfillment_cost'   => $input['default_fulfillment_cost'],
+            'selling_price'      => $input['default_selling_price'],
+            'stock'              => $input['default_stock'],
             'weight'             => ($input['default_weight']) ? intval($input['default_weight']) : 0,
             'width'              => ($input['default_width']) ? intval($input['default_width']) : 0,
             'length'             => ($input['default_length']) ? intval($input['default_length']) : 0,
@@ -209,6 +226,10 @@ class ProductController extends Controller
                     'option_detail_key1' => $sku->key1,
                     'option_detail_key2' => $sku->key2,
                     'sku_code'           => $input['sku'.$idx],
+                    'stock'              => $input['stock'.$idx],
+                    'production_cost'    => $input['production_cost'.$idx],
+                    'fulfillment_cost'   => $input['fulfillment_cost'.$idx],
+                    'selling_price'      => $input['selling_price'.$idx],
                     'weight'             => ($input['weight'.$idx]) ? intval($input['weight'.$idx]) : 0,
                     'width'              => ($input['width'.$idx]) ? intval($input['width'.$idx]) : 0,
                     'length'             => ($input['length'.$idx]) ? intval($input['length'.$idx]) : 0,
@@ -334,8 +355,11 @@ class ProductController extends Controller
                              ->whereNull('option_detail_key2')->first();
 
             $sku->sku_code = $input['default_sku'];
-            //$sku->price = $input['default_price'];
             $sku->weight = $input['default_weight'];
+            $sku->production_cost = $input['default_production_cost'];
+            $sku->fulfillment_cost = $input['default_fulfillment_cost'];
+            $sku->selling_price = $input['default_selling_price'];
+            $sku->stock = $input['default_stock'];
             $sku->width = $input['default_width'];
             $sku->length = $input['default_length'];
             $sku->height = $input['default_height'];
@@ -353,6 +377,10 @@ class ProductController extends Controller
                     if ($productsku) {
                         $productsku->sku_code = $input['sku'.$idx];
                         $productsku->weight = $input['weight'.$idx];
+                        $productsku->production_cost = $input['production_cost'.$idx];
+                        $productsku->fulfillment_cost = $input['fulfillment_cost'.$idx];
+                        $productsku->selling_price = $input['selling_price'.$idx];
+                        $productsku->stock = $input['stock'.$idx];
                         $productsku->width = $input['width'.$idx];
                         $productsku->length = $input['length'.$idx];
                         $productsku->height = $input['height'.$idx];
@@ -366,6 +394,10 @@ class ProductController extends Controller
                             'option_detail_key2' => $sku->key2,
                             'sku_code'           => $input['sku'.$idx],
                             'weight'             => $input['weight'.$idx],
+                            'production_cost'    => $input['production_cost'.$idx],
+                            'fulfillment_cost'   => $input['fulfillment_cost'.$idx],
+                            'selling_price'      => $input['selling_price'.$idx],
+                            'stock'              => $input['stock'.$idx],
                             'width'              => $input['width'.$idx],
                             'length'             => $input['length'.$idx],
                             'height'             => $input['height'.$idx],

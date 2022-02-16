@@ -116,14 +116,14 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label class="text-uppercase" for="title">Product Name</label>
                                             <input type="text" class="form-control" name="title" id="title" required
                                                    placeholder="Product Name" value="{{$entity->title}}">
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="text-uppercase" for="production_cost">
                                             Production Cost (IDR)
                                         </label>
@@ -133,10 +133,11 @@
                                             </div>
                                             <input type="tel" class="form-control price text-right" id="production_cost"
                                                    required
-                                                   name="production_cost" value="{{$entity->production_cost}}">
+                                                   name="default_production_cost"
+                                                   value="{{$entity->default_sku->production_cost}}">
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label class="text-uppercase" for="fulfillment_cost">
                                             Fulfillment Cost (IDR)
                                         </label>
@@ -146,7 +147,22 @@
                                             </div>
                                             <input type="tel" class="form-control price text-right"
                                                    id="fulfillment_cost" required
-                                                   name="fulfillment_cost" value="{{$entity->fulfillment_cost}}">
+                                                   name="default_fulfillment_cost"
+                                                   value="{{$entity->default_sku->fulfillment_cost}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="text-uppercase" for="selling_price">
+                                            Selling Price
+                                        </label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon1">Rp</span>
+                                            </div>
+                                            <input type="tel" class="form-control price text-right"
+                                                   id="selling_price" required
+                                                   name="default_selling_price"
+                                                   value="{{$entity->default_sku->selling_price}}">
                                         </div>
                                     </div>
                                 </div>
@@ -204,7 +220,7 @@
                                                    data-placement="top" title="{{Lang::get('product.youcanweight')}}">
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-2">
                                         <div class="form-group">
                                             <label class="text-uppercase" for="sku"> Stock Keeping Unit (SKU)
                                                 Code</label>
@@ -212,6 +228,15 @@
                                                    placeholder="SKU" value="{{$entity->default_sku->sku_code}}"
                                                    data-toggle="tooltip"
                                                    data-placement="top" title="{{Lang::get('product.youcansku')}}"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="text-uppercase" for="default_stock">
+                                                Stock
+                                            </label>
+                                            <input type="number" class="form-control default" name="default_stock"
+                                                   id="default_stock" value="{{$entity->default_sku->stock}}"/>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -641,9 +666,18 @@
                                     <thead class="text-uppercase">
                                     <tr>
                                         <th data-field="variant">Variant</th>
-                                        <th data-field="sku">SKU</th>
+                                        <th data-field="sku" data-width="100">SKU</th>
+                                        <th data-field="stock" data-width="100">Stock</th>
                                         <th data-width="180" data-field="dimensi">Dimension (cm)</th>
-                                        <th data-width="10" data-field="weight">{{Lang::get('product.weight')}}(gr)
+                                        <th data-width="10" data-field="weight">{{Lang::get('product.weight')}}(gr)</th>
+                                        <th data-field="production_cost" data-width="100">
+                                            Production Cost
+                                        </th>
+                                        <th data-field="fulfillment_cost" data-width="100">
+                                            Fulfillment Cost
+                                        </th>
+                                        <th data-field="selling_price" data-width="100">
+                                            Selling Price
                                         </th>
                                     </tr>
                                     </thead>

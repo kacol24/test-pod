@@ -105,7 +105,10 @@ function bind_sku_to_option() {
           option_rows[j].length = old_sku[i].length;
           option_rows[j].height = old_sku[i].height;
           option_rows[j].weight = old_sku[i].weight;
-          option_rows[j].price = old_sku[i].price;
+          option_rows[j].production_cost = old_sku[i].production_cost;
+          option_rows[j].fulfillment_cost = old_sku[i].fulfillment_cost;
+          option_rows[j].selling_price = old_sku[i].selling_price;
+          option_rows[j].stock = old_sku[i].stock;
           option_rows[j].image_no = old_sku[i].image_no;
         }
       }else
@@ -118,7 +121,10 @@ function bind_sku_to_option() {
           option_rows[j].length = old_sku[i].length;
           option_rows[j].height = old_sku[i].height;
           option_rows[j].weight = old_sku[i].weight;
-          option_rows[j].price = old_sku[i].price;
+            option_rows[j].production_cost = old_sku[i].production_cost;
+            option_rows[j].fulfillment_cost = old_sku[i].fulfillment_cost;
+            option_rows[j].selling_price = old_sku[i].selling_price;
+            option_rows[j].stock = old_sku[i].stock;
           option_rows[j].image_no = old_sku[i].image_no;
         }
       }
@@ -143,8 +149,30 @@ function generate_option_view()
       }
       variantName += option_rows[i].label[j].title+" : "+option_rows[i].label[j].value;
     }
-
-    row = {variant: variantName, dimensi: '<div class="d-flex"><div class="form-group mr-3 mb-md-0"><input class="form-control" type="text" name="width'+i+'" style="max-width: 70px" value="'+option_rows[i].width+'"></div><div class="form-group mr-3 mb-md-0"><input class="form-control" type="text" name="length'+i+'" style="max-width: 70px" value="'+option_rows[i].length+'"></div><div class="form-group mb-md-0"><input class="form-control" type="text" name="height'+i+'" style="max-width: 70px" value="'+option_rows[i].height+'"></div></div>', weight: '<div class="form-group mb-md-0"><input class="form-control" type="text" name="weight'+i+'" value="'+option_rows[i].weight+'"></div>', price: '<div class="form-group mb-md-0"><input class="form-control price" type="text" name="price'+i+'" value="'+option_rows[i].price+'"></div>', sku: '<div class="form-group mb-md-0"><input class="form-control sku_input" type="text" data-target='+option_rows[i].key1+option_rows[i].key2+' name="sku'+i+'" value="'+option_rows[i].sku+'" placeholder="SKU"></div>'};
+      
+      row = {
+          variant: variantName,
+          dimensi: '<div class="d-flex"><div class="form-group mr-3 mb-md-0"><input class="form-control" type="text" name="width' +
+              i + '" style="max-width: 70px" value="' + option_rows[i].width +
+              '"></div><div class="form-group mr-3 mb-md-0"><input class="form-control" type="text" name="length' +
+              i + '" style="max-width: 70px" value="' + option_rows[i].length +
+              '"></div><div class="form-group mb-md-0"><input class="form-control" type="text" name="height' +
+              i + '" style="max-width: 70px" value="' + option_rows[i].height +
+              '"></div></div>',
+          weight: '<div class="form-group mb-md-0"><input class="form-control" type="text" name="weight' +
+              i + '" value="' + option_rows[i].weight + '"></div>',
+          stock: '<div class="form-group mb-md-0"><input class="form-control" type="number" name="stock' +
+              i + '" value="' + option_rows[i].stock + '"></div>',
+          production_cost: '<div class="form-group mb-md-0"><input class="form-control price" type="text" name="production_cost' +
+              i + '" value="' + option_rows[i].production_cost + '"></div>',
+          fulfillment_cost: '<div class="form-group mb-md-0"><input class="form-control price" type="text" name="fulfillment_cost' +
+              i + '" value="' + option_rows[i].fulfillment_cost + '"></div>',
+          selling_price: '<div class="form-group mb-md-0"><input class="form-control price" type="text" name="selling_price' +
+              i + '" value="' + option_rows[i].selling_price + '"></div>',
+          sku: '<div class="form-group mb-md-0"><input class="form-control sku_input" type="text" data-target=' +
+              option_rows[i].key1 + option_rows[i].key2 + ' name="sku' + i +
+              '" value="' + option_rows[i].sku + '" placeholder="SKU"></div>'
+      };
 
     if(bind_image_to_sku) {
       var image_option = '<div class="form-group mb-md-0"><select class="form-control" name="image_no'+i+'">';
