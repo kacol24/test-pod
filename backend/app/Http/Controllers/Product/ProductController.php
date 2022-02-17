@@ -12,8 +12,12 @@ use App\Models\Product\ProductOption;
 use App\Models\Product\ProductOptionDetail;
 use App\Models\Product\ProductSku;
 use App\Models\Product\Capacity;
+use App\Models\Product\Template;
+use App\Models\Product\Preview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -137,18 +141,56 @@ class ProductController extends Controller
             'template_height'        => $request->template_height,
             'ratio'                  => $request->ratio,
             'capacity_id'            => $request->capacity_id,
-            // 'template_file'          => $request->template_file,
-            // 'template_design_name'   => $request->template_design_name,
-            // 'template_page_name'     => $request->template_page_name,
-            // 'preview_file'           => $request->preview_file,
-            // 'preview_name'           => $request->preview_name,
-            // 'preview_thumbnail_name' => $request->preview_thumbnail_name,
-            // 'preview_file_config'    => $request->preview_file_config,
         ]);
 
         $product->categories()->sync([
             $request->category_id,
         ]);
+
+        foreach($request->template_design_name as $i => $design_name) {
+            $filename = "";
+            if ($request->hasFile('template_file') && isset($request->file('template_file')[$i])) {
+                $file = $request->file('template_file')[$i];
+                $extension = $file->getClientOriginalExtension();
+                $filename = sha1(Str::random(32)).".".$extension;
+                $path = storage_path('app/templates');
+                if (! file_exists($path)) {
+                    mkdir($path, 0755, true);
+                }
+                $file->storeAs('/templates', $filename);
+                $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
+                $template = Template::create(array(
+                    'product_id' => $product->id,
+                    'file' => $filename,
+                    'design_name' => $request->template_design_name[$i],
+                    'page_name' => $request->template_page_name[$i],
+                    'customer_canvas' => $canvas,
+                ));
+            }
+        }
+
+        foreach($request->preview_name as $i => $preview) {
+            $filename = "";
+            if ($request->hasFile('preview_file') && isset($request->file('preview_file')[$i])) {
+                $file = $request->file('preview_file')[$i];
+                $extension = $file->getClientOriginalExtension();
+                $filename = sha1(Str::random(32)).".".$extension;
+                $path = storage_path('app/previews');
+                if (! file_exists($path)) {
+                    mkdir($path, 0755, true);
+                }
+                $file->storeAs('/previews', $filename);
+                $canvas = $this->uploadCanvas(Storage::path('previews/'.$filename), 'preview_mockups');
+                Preview::create(array(
+                    'product_id' => $product->id,
+                    'file' => $filename,
+                    'preview_name' => $request->preview_name[$i],
+                    'thumbnail_name' => $request->preview_thumbnail_name[$i],
+                    'file_config' => $request->preview_file_config[$i],
+                    'customer_canvas' => $canvas,
+                ));
+            }
+        }
 
         #Product Options
         if (isset($input['product_options']) && is_array(json_decode($input['product_options']))) {
@@ -157,7 +199,7 @@ class ProductController extends Controller
                     'product_id' => $product->id,
                     'title'      => $option->title_en,
                 ]);
-                
+
                 foreach ($option->details as $opt_detail) {
                     $product_option_detail = ProductOptionDetail::create([
                         'option_id' => $product_option->id,
@@ -425,5 +467,38 @@ class ProductController extends Controller
         $options = ProductOption::where('product_id', $id)->orderBy('id', 'asc')->with('details')->get();
 
         return $options->toArray();
+    }
+
+    public function bulkDelete(Request $request) {
+        if(is_array($request->input('ids'))) {
+          Product::whereIn('id', $request->input('ids'))->delete();
+          ProductSku::whereIn('product_id', $request->input('ids'))->delete();
+        }
+        else {
+          Product::whereIn('id', json_decode($request->input('ids'),true))->delete();
+          ProductSku::whereIn('product_id', json_decode($request->input('ids'),true))->delete();
+        }
+
+        if($request->input('back_url'))
+          return redirect($request->input('back_url'));
+    }
+
+    private function uploadCanvas($file, $type) {
+        $key = 'PrinterousCustomerCanvasDemo123!@#';        
+        $url = "https://canvas.printerous.com/production/Canvas/Edge/api/ProductTemplates/".$type."/pod";
+
+        $name = ($type == 'designs') ? 'design' : 'preview_mockups';
+        $post = array($name => curl_file_create($file));
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_POST,1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            "X-CustomersCanvasAPIKey: ".$key,
+        ));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $result=curl_exec ($ch);
+        curl_close ($ch);
+        return $result;
     }
 }

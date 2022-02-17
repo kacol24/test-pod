@@ -19,7 +19,7 @@ class CreateProductPreviews extends Migration
             $table->string('file');
             $table->string('preview_name');
             $table->string('thumbnail_name');
-            $table->string('file_config');
+            $table->string('file_config')->nullable();
             $table->longText('customer_canvas');
             $table->timestamps();
         });
