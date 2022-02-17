@@ -21,8 +21,9 @@ class CreateMasterProductsTable extends Migration
             $table->integer('order_weight');
 
             $table->string('title');
-            $table->unsignedInteger('production_cost');
-            $table->unsignedInteger('fulfillment_cost');
+            $table->double('production_cost');
+            $table->double('fulfillment_cost');
+            $table->double('selling_price');
             $table->string('prism_id');
             $table->integer('production_time');
             $table->integer('fulfillment_time');
@@ -38,14 +39,6 @@ class CreateMasterProductsTable extends Migration
             $table->text('template_width');
             $table->text('template_height');
             $table->text('ratio');
-
-            $table->longText('template_file')->nullable();
-            $table->longText('template_design_name')->nullable();
-            $table->longText('template_page_name')->nullable();
-            $table->longText('preview_file')->nullable();
-            $table->longText('preview_name')->nullable();
-            $table->longText('preview_thumbnail_name')->nullable();
-            $table->longText('preview_file_config')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

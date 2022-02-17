@@ -20,13 +20,11 @@ class CreateTableProductSkus extends Migration
             $table->string('sku_code')->nullable();
             $table->integer('stock');
             $table->double('production_cost');
-            $table->double('fulfillment_cost');
             $table->double('selling_price');
             $table->integer('weight');
             $table->integer('width');
             $table->integer('length');
             $table->integer('height');
-            $table->integer('image_no')->default(0);
             $table->softDeletes();
             $table->index('deleted_at');
             $table->index('product_id');
