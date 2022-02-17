@@ -115,14 +115,34 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-uppercase" for="title">Product Name</label>
                                             <input type="text" class="form-control" name="title" id="title" required
                                                    placeholder="Product Name" value="{{old('title')}}">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-uppercase" for="prism_id">Product ID in PRISM</label>
+                                            <input type="text" class="form-control" name="prism_id" id="prism_id"
+                                                   required
+                                                   placeholder="Product ID in PRISM" value="{{old('prism_id')}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-uppercase" for="capacity_id">Capacity</label>
+                                            <select class="form-control" name="capacity_id">
+                                                @foreach($capacities as $capacity)
+                                                <option value="{{$capacity->id}}">{{$capacity->title}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
                                         <label class="text-uppercase" for="production_cost">
                                             Production Cost (IDR)
                                         </label>
@@ -135,7 +155,7 @@
                                                    name="default_production_cost" value="{{old('production_cost')}}">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <label class="text-uppercase" for="fulfillment_cost">
                                             Fulfillment Cost (IDR)
                                         </label>
@@ -148,7 +168,7 @@
                                                    name="default_fulfillment_cost" value="{{old('fulfillment_cost')}}">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <label class="text-uppercase" for="selling_price">
                                             Selling Price
                                         </label>
@@ -163,14 +183,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="text-uppercase" for="prism_id">Product ID in PRISM</label>
-                                            <input type="text" class="form-control" name="prism_id" id="prism_id"
-                                                   required
-                                                   placeholder="Product ID in PRISM" value="{{old('prism_id')}}">
-                                        </div>
-                                    </div>
+                                    
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-uppercase" for="production_time">Production Time
@@ -190,6 +203,17 @@
                                                    id="fulfillment_time"
                                                    placeholder="Fulfillment Time (days)" required
                                                    value="{{old('fulfillment_time')}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-uppercase" for="threshold">
+                                                Threshold
+                                            </label>
+                                            <input type="number" class="form-control text-right" name="threshold"
+                                                   id="threshold"
+                                                   placeholder="Threshold" required
+                                                   value="{{old('threshold')}}">
                                         </div>
                                     </div>
                                 </div>
@@ -662,9 +686,6 @@
                                         <th data-width="10" data-field="weight">{{Lang::get('product.weight')}}(gr)</th>
                                         <th data-width="120" data-field="production_cost">
                                             Production Cost (IDR)
-                                        </th>
-                                        <th data-width="120" data-field="fulfillment_cost">
-                                            Fulfillment Cost (IDR)
                                         </th>
                                         <th data-width="120" data-field="selling_price">
                                             Selling Price (IDR)

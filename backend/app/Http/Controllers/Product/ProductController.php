@@ -11,6 +11,7 @@ use App\Models\Product\ProductImage;
 use App\Models\Product\ProductOption;
 use App\Models\Product\ProductOptionDetail;
 use App\Models\Product\ProductSku;
+use App\Models\Product\Capacity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -78,6 +79,7 @@ class ProductController extends Controller
             'active'      => 'product',
             'options'     => $options,
             'option_sets' => OptionSet::get(),
+            'capacities' => Capacity::all()
         ];
 
         return view('product.add', $data);
@@ -122,6 +124,7 @@ class ProductController extends Controller
             'prism_id'               => $request->prism_id,
             'production_time'        => $request->production_time,
             'fulfillment_time'       => $request->fulfillment_time,
+            'threshold'              => $request->threshold,
             'description'            => $request->description,
             'size_chart'             => $request->size_chart,
             'shape'                  => $request->shape,
@@ -133,13 +136,14 @@ class ProductController extends Controller
             'template_width'         => $request->template_width,
             'template_height'        => $request->template_height,
             'ratio'                  => $request->ratio,
-            'template_file'          => $request->template_file,
-            'template_design_name'   => $request->template_design_name,
-            'template_page_name'     => $request->template_page_name,
-            'preview_file'           => $request->preview_file,
-            'preview_name'           => $request->preview_name,
-            'preview_thumbnail_name' => $request->preview_thumbnail_name,
-            'preview_file_config'    => $request->preview_file_config,
+            'capacity_id'            => $request->capacity_id,
+            // 'template_file'          => $request->template_file,
+            // 'template_design_name'   => $request->template_design_name,
+            // 'template_page_name'     => $request->template_page_name,
+            // 'preview_file'           => $request->preview_file,
+            // 'preview_name'           => $request->preview_name,
+            // 'preview_thumbnail_name' => $request->preview_thumbnail_name,
+            // 'preview_file_config'    => $request->preview_file_config,
         ]);
 
         $product->categories()->sync([
@@ -153,6 +157,7 @@ class ProductController extends Controller
                     'product_id' => $product->id,
                     'title'      => $option->title_en,
                 ]);
+                
                 foreach ($option->details as $opt_detail) {
                     $product_option_detail = ProductOptionDetail::create([
                         'option_id' => $product_option->id,
@@ -228,7 +233,7 @@ class ProductController extends Controller
                     'sku_code'           => $input['sku'.$idx],
                     'stock'              => $input['stock'.$idx],
                     'production_cost'    => $input['production_cost'.$idx],
-                    'fulfillment_cost'   => $input['fulfillment_cost'.$idx],
+                    'fulfillment_cost'   => $input['default_fulfillment_cost'],
                     'selling_price'      => $input['selling_price'.$idx],
                     'weight'             => ($input['weight'.$idx]) ? intval($input['weight'.$idx]) : 0,
                     'width'              => ($input['width'.$idx]) ? intval($input['width'.$idx]) : 0,

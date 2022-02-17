@@ -21,16 +21,11 @@
                 <a class="dropdown-item {{ request()->routeIs(['category.list', 'category.add', 'category.edit']) ? 'active' : '' }}"
                    href="{{route('category.list')}}">{{Lang::get('menuadmin.productcategories')}}</a>
             @endif
-            @if(check_permission('brand.list') && session('store')->use_brand)
-                <a class="dropdown-item {{ request()->routeIs(['brand.list', 'brand.add', 'brand.edit']) ? 'active' : '' }}"
-                   href="{{route('brand.list')}}">{{Lang::get('menuadmin.productbrands')}}</a>
+            @if(check_permission('capacity.list'))
+                <a class="dropdown-item {{ request()->routeIs(['capacity.list', 'capacity.add', 'capacity.edit']) ? 'active' : '' }}"
+                   href="{{route('capacity.list')}}">Capacities</a>
             @endif
-            @if(check_permission('promotion.list'))
-                <a class="dropdown-item {{ request()->routeIs(['promotion.list', 'promotion.add', 'promotion.edit']) ? 'active' : '' }}"
-                   href="{{route('promotion.list')}}">
-                    {{Lang::get('promotion.promotions')}}
-                </a>
-            @endif
+            
             @if(check_permission('option.list'))
                 <a class="dropdown-item {{ request()->routeIs(['option.list', 'option.add', 'option.edit']) ? 'active' : '' }}"
                    href="{{route('option.list')}}">{{Lang::get('menuadmin.productoptions')}}</a>
@@ -38,14 +33,6 @@
             @if(check_permission('optionset.list'))
                 <a class="dropdown-item {{ request()->routeIs(['optionset.list', 'optionset.add', 'optionset.edit']) ? 'active' : '' }}"
                    href="{{route('optionset.list')}}">{{Lang::get('menuadmin.productoptionsets')}}</a>
-            @endif
-            @if(check_permission('attribute.list') && theme_config('enable_attribute'))
-                <a class="dropdown-item {{ request()->routeIs(['attribute.list', 'attribute.add', 'attribute.edit']) ? 'active' : '' }}"
-                   href="{{route('attribute.list')}}">{{Lang::get('menuadmin.productattributes')}}</a>
-            @endif
-            @if(check_permission('product.request.list'))
-                <a class="dropdown-item {{ request()->routeIs(['product.request.list']) ? 'active' : '' }}"
-                   href="{{route('product.request.list')}}">{{Lang::get('product.productrequest')}}</a>
             @endif
             @if(check_permission('inventory.list'))
                 <a class="dropdown-item {{ request()->routeIs(['inventory.list']) ? 'active' : '' }}"

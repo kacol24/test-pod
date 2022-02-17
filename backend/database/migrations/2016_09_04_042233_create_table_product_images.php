@@ -29,6 +29,6 @@ class CreateTableProductImages extends Migration
      */
     public function down()
     {
-        Schema::drop('product_images');
+        Schema::drop('master_product_images');
     }
 }

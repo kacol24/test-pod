@@ -25,10 +25,10 @@ class FeaturePermissionSeeder extends Seeder
             'banner'  => 'Banner',
             'admin'   => 'Admin',
             'role'    => 'Role',
-
             'category'  => 'Product Category Menu',
             'option'    => 'Product Option Menu',
             'optionset' => 'Product Option Set Menu',
+            'capacity'  => 'Capacity Menu',
         ];
 
         foreach ($features as $name => $feature) {
@@ -183,6 +183,27 @@ class FeaturePermissionSeeder extends Seeder
                 'action_name' => 'optionset.delete',
                 'feature_id'  => $optionset->id,
                 'title'       => 'Delete Option Set',
+            ],
+            #Capacity
+            [
+                'action_name' => 'capacity.list',
+                'feature_id'  => $capacity->id,
+                'title'       => 'View Capacity',
+            ],
+            [
+                'action_name' => 'capacity.add',
+                'feature_id'  => $capacity->id,
+                'title'       => 'Add Capacity',
+            ],
+            [
+                'action_name' => 'capacity.edit',
+                'feature_id'  => $capacity->id,
+                'title'       => 'Edit Capacity',
+            ],
+            [
+                'action_name' => 'capacity.delete',
+                'feature_id'  => $capacity->id,
+                'title'       => 'Delete Capacity',
             ],
         ];
 

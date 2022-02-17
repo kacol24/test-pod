@@ -4,6 +4,7 @@ use App\Http\Controllers\Product\CategoryController;
 use App\Http\Controllers\Product\OptionController;
 use App\Http\Controllers\Product\OptionSetController;
 use App\Http\Controllers\Product\ProductController;
+use App\Http\Controllers\Product\CapacityController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -97,6 +98,15 @@ Route::group(['prefix' => 'product'], function () {
     Route::get('option-set/edit/{id}', [OptionSetController::class, 'edit'])->name('optionset.edit');
     Route::post('option-set/edit/{id}', [OptionSetController::class, 'update'])->name('optionset.update');
     Route::post('option-set/delete', [OptionSetController::class, 'delete'])->name('optionset.delete');
+
+    #Capacity
+    Route::get('capacity/list', [CapacityController::class, 'index'])->name('capacity.list');
+    Route::get('capacity/datatable', [CapacityController::class, 'datatable'])->name('capacity.datatable');
+    Route::get('capacity/add', [CapacityController::class, 'create'])->name('capacity.add');
+    Route::post('capacity/add', [CapacityController::class, 'store'])->name('capacity.store');
+    Route::get('capacity/edit/{id}', [CapacityController::class, 'edit'])->name('capacity.edit');
+    Route::post('capacity/edit/{id}', [CapacityController::class, 'update'])->name('capacity.update');
+    Route::post('capacity/delete', [CapacityController::class, 'delete'])->name('capacity.delete');
 });
 
 Route::post('upload/content', ['as' => 'upload.content', 'uses' => 'App\Http\Controllers\UploadController@content']);

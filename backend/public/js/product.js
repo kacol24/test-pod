@@ -70,12 +70,12 @@ function generate_option() {
         for(var j=0;j<options[1].details.length;j++)
         {
           var detail2 = options[1].details[j];
-          var temp = {key1: detail.key, key2: detail2.key, label:[{title: options[0].title, value:detail.title}, {title: options[1].title, value:detail2.title}], sku: $("input[name='default_sku']").val(),width: $("input[name='default_width']").val(),length: $("input[name='default_length']").val(),height: $("input[name='default_height']").val(), weight: $("input[name='default_weight']").val(),price : $("input[name='default_price']").val(), image_no : 0}
+          var temp = {key1: detail.key, key2: detail2.key, label:[{title: options[0].title, value:detail.title}, {title: options[1].title, value:detail2.title}], sku: $("input[name='default_sku']").val(),width: $("input[name='default_width']").val(),length: $("input[name='default_length']").val(),height: $("input[name='default_height']").val(), weight: $("input[name='default_weight']").val(),selling_price : $("input[name='default_selling_price']").val(),production_cost : $("input[name='default_production_cost']").val(),stock : $("input[name='default_stock']").val(), image_no : 0}
           option_rows.push(temp);
         }
       }else
       {
-        var temp = {key1: detail.key, label:[{title: options[0].title, value:detail.title}], sku: $("input[name='default_sku']").val(),width: $("input[name='default_width']").val(),length: $("input[name='default_length']").val(),height: $("input[name='default_height']").val(), weight: $("input[name='default_weight']").val(),price : $("input[name='default_price']").val(), image_no : 0}
+        var temp = {key1: detail.key, label:[{title: options[0].title, value:detail.title}], sku: $("input[name='default_sku']").val(),width: $("input[name='default_width']").val(),length: $("input[name='default_length']").val(),height: $("input[name='default_height']").val(), weight: $("input[name='default_weight']").val(),selling_price : $("input[name='default_selling_price']").val(),production_cost : $("input[name='default_production_cost']").val(),stock : $("input[name='default_stock']").val(), image_no : 0}
         option_rows.push(temp);
       }
     }
@@ -106,7 +106,6 @@ function bind_sku_to_option() {
           option_rows[j].height = old_sku[i].height;
           option_rows[j].weight = old_sku[i].weight;
           option_rows[j].production_cost = old_sku[i].production_cost;
-          option_rows[j].fulfillment_cost = old_sku[i].fulfillment_cost;
           option_rows[j].selling_price = old_sku[i].selling_price;
           option_rows[j].stock = old_sku[i].stock;
           option_rows[j].image_no = old_sku[i].image_no;
@@ -121,10 +120,9 @@ function bind_sku_to_option() {
           option_rows[j].length = old_sku[i].length;
           option_rows[j].height = old_sku[i].height;
           option_rows[j].weight = old_sku[i].weight;
-            option_rows[j].production_cost = old_sku[i].production_cost;
-            option_rows[j].fulfillment_cost = old_sku[i].fulfillment_cost;
-            option_rows[j].selling_price = old_sku[i].selling_price;
-            option_rows[j].stock = old_sku[i].stock;
+          option_rows[j].production_cost = old_sku[i].production_cost;
+          option_rows[j].selling_price = old_sku[i].selling_price;
+          option_rows[j].stock = old_sku[i].stock;
           option_rows[j].image_no = old_sku[i].image_no;
         }
       }
@@ -165,8 +163,6 @@ function generate_option_view()
               i + '" value="' + option_rows[i].stock + '"></div>',
           production_cost: '<div class="form-group mb-md-0"><input class="form-control price" type="text" name="production_cost' +
               i + '" value="' + option_rows[i].production_cost + '"></div>',
-          fulfillment_cost: '<div class="form-group mb-md-0"><input class="form-control price" type="text" name="fulfillment_cost' +
-              i + '" value="' + option_rows[i].fulfillment_cost + '"></div>',
           selling_price: '<div class="form-group mb-md-0"><input class="form-control price" type="text" name="selling_price' +
               i + '" value="' + option_rows[i].selling_price + '"></div>',
           sku: '<div class="form-group mb-md-0"><input class="form-control sku_input" type="text" data-target=' +

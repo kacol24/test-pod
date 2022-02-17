@@ -86,6 +86,10 @@ class VerifyRole
             'optionset.datatable',
             'optionset.store',
             'optionset.update',
+
+            'capacity.datatable',
+            'capacity.store',
+            'capacity.update',
         ];
         if (session('admin')) {
             if (! check_permission($request->route()->getName()) && ! in_array($request->route()->getName(),

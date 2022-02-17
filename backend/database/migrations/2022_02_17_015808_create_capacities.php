@@ -2,8 +2,9 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class CreateTableProductOptions extends Migration
+class CreateCapacities extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +13,11 @@ class CreateTableProductOptions extends Migration
      */
     public function up()
     {
-        Schema::create('master_product_options', function (Blueprint $table) {
+        Schema::create('capacities', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->integer('product_id');
-            $table->index('product_id');
+            $table->integer('capacity')->default(0);
+            $table->timestamps();
         });
     }
 
@@ -27,6 +28,6 @@ class CreateTableProductOptions extends Migration
      */
     public function down()
     {
-        Schema::drop('master_product_options');
+        Schema::dropIfExists('capacities');
     }
 }
