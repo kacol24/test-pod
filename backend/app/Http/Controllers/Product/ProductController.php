@@ -180,7 +180,7 @@ class ProductController extends Controller
                     mkdir($path, 0755, true);
                 }
                 $file->storeAs('/previews', $filename);
-                $canvas = $this->uploadCanvas(Storage::path('previews/'.$filename), 'preview_mockups');
+                $canvas = $this->uploadCanvas(Storage::path('previews/'.$filename), 'mockups');
                 Preview::create(array(
                     'product_id' => $product->id,
                     'file' => $filename,
