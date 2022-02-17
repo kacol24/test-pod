@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\MasterProduct\Category;
+use App\Models\MasterProduct\MasterProduct;
 
 class ProductController extends Controller
 {
@@ -11,14 +13,26 @@ class ProductController extends Controller
         return view('product.index');
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('product.create');
+        $products = MasterProduct::where('is_publish',1);
+        if($request->category_id) {
+            $products = $products->join('master_category_master_product','master_category_master_product.product_id','=','master_products.id')->where('category_id', $request->category_id);
+        }
+        $products = $products->when(! empty($request->s), function ($query) use ($request) {
+          return $query->where('title', 'like', "%{$request->s}%");
+        })->get();
+        return view('product.create', array(
+            'categories' => Category::active()->get(),
+            'products' => $products
+        ));
     }
 
-    public function designer()
+    public function designer($id)
     {
-        return view('product.designer');
+        return view('product.designer', array(
+            'masterproduct' => MasterProduct::find($id)
+        ));
     }
 
     public function additional()

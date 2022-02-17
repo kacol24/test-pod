@@ -18,11 +18,13 @@
                     <li class="list-group-item ps-0 text-uppercase text-color:tertiary fw-400">
                         Categories
                     </li>
+                    @foreach($categories as $category)
                     <li class="list-group-item ps-0">
-                        <a href="" class="text-decoration-none text-color:black fw-500">
-                            A second item
+                        <a href="?category_id={{$category->id}}" class="text-decoration-none text-color:black fw-500">
+                            {{$category->name}}
                         </a>
                     </li>
+                    @endforeach
                 </ul>
                 <div class="d-block d-md-none my-3">
                     <select class="form-select" aria-label="Default select example">
@@ -35,25 +37,25 @@
             </div>
             <div class="col-md">
                 <div class="row">
-                    @foreach(range(1, 15) as $product)
+                    @foreach($products as $product)
                         <div class="col-md-3 mb-4">
-                            <a href="#" class="product-item {{ $loop->last ? 'disabled' : '' }}">
+                            <a href="{{ route('products.designer', $product->id) }}" class="product-item">
                                 <div class="card p-0 rounded-0 shadow-sm">
                                     <div class="card-header p-0 position-relative">
-                                        <img src="{{ asset('images/candle.jpeg') }}" alt="" class="img-fluid w-100">
+                                        <img src="{{ env('BACKEND_URL').'/storage/masterproduct/'.$product->thumbnail() }}" alt="" class="img-fluid w-100">
                                         <div class="product-item__overlay">
                                             <span class="badge bg-dark">Coming Soon</span>
                                         </div>
                                     </div>
                                     <div class="card-body p-3">
                                         <div class="text-uppercase font-size:12 fw-400">
-                                            Decor
+                                            {{$product->firstcategory()->name}}
                                         </div>
                                         <h3 class="font-size:14 m-0 fw-600">
-                                            Poster - 24” x 36”
+                                            {{$product->title}}
                                         </h3>
                                         <div class="font-size:12 text-color:tertiary fw-500">
-                                            Base cost IDR 100,000
+                                            Base cost IDR {{number_format(($product->default_sku->production_cost+$product->default_sku->fulfillment_cost),0,",",".")}}
                                         </div>
                                     </div>
                                 </div>

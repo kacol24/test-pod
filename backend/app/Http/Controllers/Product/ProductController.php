@@ -43,9 +43,20 @@ class ProductController extends Controller
                 return ['status' => 'error', 'message' => 'Invalid image format'];
             }
 
-            $sizes = config('image.product');
+            // $data[] = generate_image($sizes, $file);
 
-            $data[] = generate_image($sizes, $file);
+            $extension = $file->getClientOriginalExtension();
+            $filename =  sha1(Str::random(32)).".".$extension;
+
+            $path = storage_path('app/public/masterproduct');
+            if(!file_exists($path)){
+              mkdir($path, 0755, true);
+            }
+            $file->storeAs('/public/masterproduct', $filename);
+            $data[] = array('filename' => $filename, 'images' => array(
+                'masterproduct' => image_url('masterproduct', $filename),
+                '175x175' => image_url('masterproduct', $filename)
+            ));
         }
 
         return ['status' => 'success', 'data' => $data];
@@ -54,20 +65,22 @@ class ProductController extends Controller
     public function getOption(Request $request)
     {
         $return = '';
-        $option_set = \App\Models\Product\OptionSet::find($request->set_id);
-        $options = \App\Models\Product\Option::whereIn('id', json_decode($option_set->value, true))->get();
-        if ($options) {
-            foreach ($options as $option) {
-                $return .= '
-          <div class="form-group">
-          <label class="text-uppercase">'.$option->title.'</label>
-          <input type="checkbox" name="options[]" style="display:none;" id="'.generate_key($option->title).'" title="'.$option->title.'" title-id="'.$option->title.'" title-en="'.$option->title.'"/>
-          <ul class="list-unstyled d-flex flex-wrap">';
-                foreach ($option->details as $detail) {
-                    $return .= '<li><label style="width:100px;margin-left:10px;"><input class="option-detail" type="checkbox" name="'.$detail->title.'" parent="'.generate_key($option->title).'" value="'.$detail->title.'" title="'.$detail->title.'" title-id="'.$detail->title.'" title-en="'.$detail->title.'" key="'.generate_key($option->title.$detail->title).'" image="'.$detail->image.'">&nbsp;&nbsp;'.$detail->title.'</label></li>';
-                }
+        if($request->set_id) {
+            $option_set = \App\Models\Product\OptionSet::find($request->set_id);
+            $options = \App\Models\Product\Option::whereIn('id', json_decode($option_set->value, true))->get();
+            if ($options) {
+                foreach ($options as $option) {
+                    $return .= '
+              <div class="form-group">
+              <label class="text-uppercase">'.$option->title.'</label>
+              <input type="checkbox" name="options[]" style="display:none;" id="'.generate_key($option->title).'" title="'.$option->title.'" title-id="'.$option->title.'" title-en="'.$option->title.'"/>
+              <ul class="list-unstyled d-flex flex-wrap">';
+                    foreach ($option->details as $detail) {
+                        $return .= '<li><label style="width:100px;margin-left:10px;"><input class="option-detail" type="checkbox" name="'.$detail->title.'" parent="'.generate_key($option->title).'" value="'.$detail->title.'" title="'.$detail->title.'" title-id="'.$detail->title.'" title-en="'.$detail->title.'" key="'.generate_key($option->title.$detail->title).'" image="'.$detail->image.'">&nbsp;&nbsp;'.$detail->title.'</label></li>';
+                    }
 
-                $return .= '</ul></div>';
+                    $return .= '</ul></div>';
+                }
             }
         }
 
@@ -122,9 +135,6 @@ class ProductController extends Controller
             'is_publish'             => $request->is_publish,
             'order_weight'           => 0,
             'title'                  => $request->title,
-            'production_cost'        => $request->production_cost,
-            'fulfillment_cost'       => $request->fulfillment_cost,
-            'selling_price'          => $request->selling_price,
             'prism_id'               => $request->prism_id,
             'production_time'        => $request->production_time,
             'fulfillment_time'       => $request->fulfillment_time,

@@ -32,7 +32,7 @@ class ProductResource extends JsonResource
 
         $image = optional(ProductImage::where('product_id', $this->id)->pluck('image'))->first();
 
-        $array['image'] = '<img width="40" src="'.image_url('70x70', $image).'"/>';
+        $array['image'] = '<img width="40" src="'.image_url('masterproduct', $image).'"/>';
 
         $array['action'] = '<a class="text-color:icon no-underline mr-3 delete" href="javascript:void(0)" url="'.route('product.bulkdelete').'" id="'.$this->id.'"><i class="fas fa-fw fa-trash"></i></a><a class="text-color:icon no-underline" href="'.route('product.edit',
                 ['id' => $this->id]).'"><i class="fas fa-fw fa-edit"></i></a>';

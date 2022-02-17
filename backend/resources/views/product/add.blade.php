@@ -97,7 +97,7 @@
                                         return [
                                             'filename' => $image,
                                             'images' => [
-                                                '175x175' => image_url('175x175',$image)
+                                                '175x175' => image_url('masterproduct',$image)
                                             ]
                                         ];
                                     }, old('images', []))

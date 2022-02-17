@@ -12,7 +12,7 @@
                 </div>
             </div>
         </a>
-        <a href="{{ route('products.designer') }}"
+        <a href="javascript:void(0);"
            class="stepper__step {{ request()->routeIs(['products.designer', 'products.additional']) ? 'stepper__step--stepped' : '' }}">
             <div class="stepper__numbering">2</div>
             <div class="stepper__step-content">
