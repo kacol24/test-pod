@@ -285,7 +285,7 @@ class ProductController extends Controller
                     'sku_code'           => $input['sku'.$idx],
                     'stock'              => $input['stock'.$idx],
                     'production_cost'    => $input['production_cost'.$idx],
-                    'fulfillment_cost'   => $input['default_fulfillment_cost'],
+                    'fulfillment_cost'   => $input['fulfillment_cost'.$idx],
                     'selling_price'      => $input['selling_price'.$idx],
                     'weight'             => ($input['weight'.$idx]) ? intval($input['weight'.$idx]) : 0,
                     'width'              => ($input['width'.$idx]) ? intval($input['width'.$idx]) : 0,
