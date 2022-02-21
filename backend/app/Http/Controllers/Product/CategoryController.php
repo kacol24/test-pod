@@ -52,6 +52,7 @@ class CategoryController extends Controller
         $data = [
             'page_title' => 'Add Category',
             'active'     => 'product',
+            'parents' => category_tree(Category::active()->orderBy('order_weight', 'asc')->get())
         ];
 
         return view('product/category/add', $data);
@@ -86,7 +87,7 @@ class CategoryController extends Controller
                 $input['order_weight'] = 0;
             }
             $category = Category::create([
-                'parent_id'    => 0,
+                'parent_id'    => $input['parent'],
                 'order_weight' => $input['order_weight'],
                 'is_active'    => (isset($input['is_active'])) ? $input['is_active'] : 1,
                 'image'        => $input['image'],
@@ -108,6 +109,7 @@ class CategoryController extends Controller
             'page_title' => 'Edit Category',
             'entity'     => Category::where('id', $id)->first(),
             'active'     => 'product',
+            'parents' => category_tree(Category::active()->orderBy('order_weight', 'asc')->get())
         ];
 
         return view('product/category/edit', $data);
@@ -143,7 +145,7 @@ class CategoryController extends Controller
                 $input['order_weight'] = 0;
             }
             $category = Category::where('id', $id)->first();
-            $category->parent_id = 0;
+            $category->parent_id = $input['parent'];
             $category->order_weight = $input['order_weight'];
             $category->name = $input['title'];
             $category->is_active = (isset($input['is_active'])) ? $input['is_active'] : 1;

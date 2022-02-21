@@ -34,6 +34,25 @@
                                 <div class="card p-0 mt-3">
                                     <div class="card-body">
                                         <div class="form-group">
+                                            <label class="text-uppercase"
+                                                   for="stock">{{ __('general.set_as_parent') }}</label>
+                                            <select class="form-control" name="parent" id="stock">
+                                                <option value="0">{{ __('general.parent') }}</option>
+                                                @foreach($parents as $parent)
+                                                    <option
+                                                        value="{{$parent->id}}">{{$parent->name}}</option>
+                                                    @if(isset($parent->children))
+                                                        @foreach($parent->children as $child1)
+                                                            <option
+                                                                value="{{$child1->id}}">{{$parent->name}}
+                                                                - {{$child1->name}}</option>
+                                                        @endforeach
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label class="text-uppercase" for="title">Category Name</label>
                                             <input type="text" class="form-control" name="title" id="title"
                                                    placeholder="Category Name"

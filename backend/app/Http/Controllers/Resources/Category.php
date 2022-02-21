@@ -24,7 +24,7 @@ class Category extends JsonResource
         $array = [
             'id'     => $this->id,
             'title'  => $this->name,
-            'parent' => ($this->parent_id) ? $this->parent->title : '',
+            'parent' => ($this->parent_id) ? $this->parent->name : '',
             'active' => $active,
             'action' => '<a class="text-color:icon no-underline mr-3 delete" href="javascript:void(0)" url="'.route('category.delete').'" id="'.$this->id.'"><i class="fas fa-fw fa-trash"></i></a><a class="text-color:icon no-underline" href="'.route('category.edit',
                     ['id' => $this->id]).'"><i class="fas fa-fw fa-edit"></i></a>',

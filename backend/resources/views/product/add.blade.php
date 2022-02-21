@@ -183,7 +183,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    
+
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-uppercase" for="production_time">Production Time
@@ -303,16 +303,65 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="category_id">
-                                                Category
-                                            </label>
-                                            <select class="custom-select" id="category_id" name="category_id" required>
-                                                @foreach(\App\Models\Product\Category::active()->get() as $category)
-                                                    <option value="{{ $category->id }}">
-                                                        {{ $category->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                            <label class="text-uppercase" for="categories">Categories</label>
+                                            <div class="dropdown">
+                                                <div class="input-group" id="dropdownCategory" data-toggle="dropdown"
+                                                     aria-haspopup="true" aria-expanded="false">
+                                                    <input type="text"
+                                                           class="form-control selectcategory dropdown-toggle"
+                                                           placeholder="Category">
+                                                    <div class="input-group-append">
+                                                    <span class="input-group-text" id="basic-addon1"><img
+                                                            src="{{asset('backend/images/selectcat-image.png')}}"
+                                                            alt=""></span>
+                                                    </div>
+                                                </div>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownCategory">
+                                                    @foreach($categories as $category)
+                                                        <a class="dropdown-item" href="javascript:void(0);"
+                                                           tabIndex="-1">
+                                                            <label><input class="category"
+                                                                          data-value="{{$category->name}}"
+                                                                          id="checkbox{{$category->id}}"
+                                                                          name="category_id[]"
+                                                                          parent="{{$category->parent_id}}"
+                                                                          type="checkbox"
+                                                                          value="{{$category->id}}"/>&nbsp;{{$category->name}}
+                                                            </label>
+                                                        </a>
+                                                        @if(isset($category->children))
+                                                            @foreach($category->children as $child1)
+                                                                <a class="dropdown-item" href="javascript:void(0);"
+                                                                   tabIndex="-1">
+                                                                    <label class="pl-3"><input class="category"
+                                                                                               data-value="{{$child1->name}}"
+                                                                                               id="checkbox{{$child1->id}}"
+                                                                                               name="category_id[]"
+                                                                                               parent="{{$child1->parent_id}}"
+                                                                                               type="checkbox"
+                                                                                               value="{{$child1->id}}"/>&nbsp;{{$child1->name}}
+                                                                    </label>
+                                                                </a>
+                                                                @if(isset($child1->children))
+                                                                    @foreach($child1->children as $child2)
+                                                                        <a class="dropdown-item"
+                                                                           href="javascript:void(0);">
+                                                                            <label class="pl-5"><input class="category"
+                                                                                                       data-value="{{$child2->name}}"
+                                                                                                       id="checkbox{{$child2->id}}"
+                                                                                                       name="category_id[]"
+                                                                                                       parent="{{$child2->parent_id}}"
+                                                                                                       type="checkbox"
+                                                                                                       value="{{$child2->id}}"/>&nbsp;{{$child2->name}}
+                                                                            </label>
+                                                                        </a>
+                                                                    @endforeach
+                                                                @endif
+                                                            @endforeach
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">

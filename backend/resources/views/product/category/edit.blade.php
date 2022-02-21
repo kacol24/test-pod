@@ -10,7 +10,7 @@
         @foreach ($errors->all() as $error)
             <div class="alert alert-danger">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <img src="{{asset('images/error-icon.png')}}" alt=""> {{$error}}
+                <img src="{{asset('backend/images/error-icon.png')}}" alt=""> {{$error}}
             </div>
         @endforeach
         <form class="form-validate" action="{{route('category.update',['id' => $entity->id])}}" method="post"
@@ -38,6 +38,29 @@
                             <div class="tab-pane fade show active" id="blogoverview" role="tabpanel">
                                 <div class="card p-0 mt-3">
                                     <div class="card-body">
+                                        <div class="form-group">
+                                            <label class="text-uppercase"
+                                                   for="stock">{{ __('general.set_as_parent') }}</label>
+                                            <select class="form-control" name="parent" id="stock">
+                                                <option value="0">{{ __('general.parent') }}</option>
+                                                @foreach($parents as $parent)
+                                                    @if($parent->id != $entity->id)
+                                                        <option @if($entity->parent_id==$parent->id) selected="selected"
+                                                                @endif value="{{$parent->id}}">{{$parent->name}}</option>
+                                                    @endif
+                                                    @if(isset($parent->children))
+                                                        @foreach($parent->children as $child1)
+                                                            @if($child1->id != $entity->id)
+                                                                <option
+                                                                    @if($entity->parent_id==$child1->id) selected="selected"
+                                                                    @endif value="{{$child1->id}}">{{$parent->name}}
+                                                                    - {{$child1->name}}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
 
                                         <div class="form-group">
                                             <label class="text-uppercase" for="title">Category Name</label>

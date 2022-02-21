@@ -19,6 +19,11 @@ class Category extends Model
         $query->where('is_active', 1);
     }
 
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
+
     function products($limit = 5)
     {
         return $this->belongsToMany('Core\Models\Product\Product', 'master_category_master_product')

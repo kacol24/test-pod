@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Resources\ProductResource;
+use App\Models\Product\Category;
 use App\Models\Product\Option;
 use App\Models\Product\OptionSet;
 use App\Models\Product\Product;
@@ -96,7 +97,8 @@ class ProductController extends Controller
             'active'      => 'product',
             'options'     => $options,
             'option_sets' => OptionSet::get(),
-            'capacities' => Capacity::all()
+            'capacities' => Capacity::all(),
+            'categories' => category_tree(Category::active()->orderBy('order_weight', 'asc')->get())
         ];
 
         return view('product.add', $data);
@@ -325,6 +327,7 @@ class ProductController extends Controller
             'page_title'        => 'Edit Product',
             'active'            => 'product',
             'options'           => Option::all(),
+            'categories' => category_tree(Category::active()->orderBy('order_weight', 'asc')->get())
         ];
 
         return view('product/edit', $data);
@@ -494,7 +497,7 @@ class ProductController extends Controller
     }
 
     private function uploadCanvas($file, $type) {
-        $key = 'PrinterousCustomerCanvasDemo123!@#';        
+        $key = 'PrinterousCustomerCanvasDemo123!@#';
         $url = "https://canvas.printerous.com/production/Canvas/Edge/api/ProductTemplates/".$type."/pod";
 
         $name = ($type == 'designs') ? 'design' : 'preview_mockups';
