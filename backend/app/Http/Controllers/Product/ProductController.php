@@ -155,9 +155,7 @@ class ProductController extends Controller
             'capacity_id'            => $request->capacity_id,
         ]);
 
-        $product->categories()->sync([
-            $request->category_id,
-        ]);
+        $product->categories()->sync($request->category_id);
 
         foreach($request->template_design_name as $i => $design_name) {
             $filename = "";
@@ -314,19 +312,16 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::where('id', $id)->first();
-        $selected_category = [];
-        foreach ($product->categories as $category) {
-            $selected_category[] = $category['category_id'];
-        }
 
         $data = [
             'entity'            => $product,
             'product_options'   => $this->getProductOptions($id),
-            'selected_category' => $selected_category,
+            'selected_category' => $product->categories->pluck('id')->toArray(),
             'option_sets'       => OptionSet::get(),
             'page_title'        => 'Edit Product',
             'active'            => 'product',
             'options'           => Option::all(),
+            'capacities' => Capacity::all(),
             'categories' => category_tree(Category::active()->orderBy('order_weight', 'asc')->get())
         ];
 
@@ -367,9 +362,7 @@ class ProductController extends Controller
             $product->description = $input['description'];
             $product->save();
 
-            $product->categories()->sync([
-                $request->category_id,
-            ]);
+            $product->categories()->sync($request->category_id);
 
             #Product Images
             ProductImage::where('product_id', $product->id)->delete();
