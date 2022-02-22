@@ -135,4 +135,14 @@ class Product extends Model
         return $this->hasMany('App\Models\Product\ProductSku', 'product_id', 'id')->whereNotNull('option_detail_key1')
                     ->whereNull('product_skus.deleted_at')->orderBy('price', 'asc');
     }
+
+    public function templates()
+    {
+        return $this->hasMany(Template::class);
+    }
+
+    public function previews()
+    {
+        return $this->hasMany(Preview::class);
+    }
 }

@@ -135,7 +135,7 @@
                                             <label class="text-uppercase" for="capacity_id">Capacity</label>
                                             <select class="form-control" name="capacity_id">
                                                 @foreach($capacities as $capacity)
-                                                <option value="{{$capacity->id}}">{{$capacity->title}}</option>
+                                                    <option value="{{$capacity->id}}">{{$capacity->title}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -312,7 +312,7 @@
                                                            placeholder="Category">
                                                     <div class="input-group-append">
                                                     <span class="input-group-text" id="basic-addon1"><img
-                                                            src="{{asset('backend/images/selectcat-image.png')}}"
+                                                            src="{{asset('images/selectcat-image.png')}}"
                                                             alt=""></span>
                                                     </div>
                                                 </div>
@@ -429,7 +429,8 @@
                                                 @foreach(['square', 'circle'] as $radio)
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio" name="shape"
-                                                               id="shape_{{ $radio }}" value="{{ $radio }}">
+                                                               id="shape_{{ $radio }}"
+                                                               value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
                                                         <label class="form-check-label" for="shape_{{ $radio }}">
                                                             {{ Str::title($radio) }}
                                                         </label>
@@ -447,7 +448,8 @@
                                                 @foreach(['portrait', 'landscape'] as $radio)
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio" name="orientation"
-                                                               id="orientation_{{ $radio }}" value="{{ $radio }}">
+                                                               id="orientation_{{ $radio }}"
+                                                               value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
                                                         <label class="form-check-label" for="orientation_{{ $radio }}">
                                                             {{ Str::title($radio) }}
                                                         </label>
@@ -465,9 +467,10 @@
                                                 @foreach(['mm', 'cm'] as $radio)
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio" name="unit"
-                                                               id="unit_{{ $radio }}" value="{{ $radio }}">
+                                                               id="unit_{{ $radio }}"
+                                                               value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
                                                         <label class="form-check-label" for="unit_{{ $radio }}">
-                                                            {{ Str::title($radio) }}
+                                                            {{ $radio }}
                                                         </label>
                                                     </div>
                                                 @endforeach
@@ -484,7 +487,8 @@
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio"
                                                                name="enable_resize"
-                                                               id="resize_{{ $radio }}" value="{{ $index }}">
+                                                               id="resize_{{ $radio }}"
+                                                               value="{{ $index }}" {{ $loop->first ? 'checked' : '' }}>
                                                         <label class="form-check-label" for="resize_{{ $radio }}">
                                                             {{ Str::title($radio) }}
                                                         </label>
