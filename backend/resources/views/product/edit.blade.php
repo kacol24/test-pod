@@ -2,7 +2,7 @@
 
 @section('content')
     <main class="pb-3 pb-md-5" role="main" style=""
-          x-data="{language: '{{session('language')}}', status: {{($entity->is_publish) ? $entity->is_publish : 0}}}">
+          x-data="{language: '{{session('language')}}', status: {{(old('is_publish')) ? old('is_publish') : 0}}}">
         <div class="container container--crud mb-3 mb-md-0">
             @foreach ($errors->all() as $error)
                 <div class="alert alert-danger">
@@ -13,7 +13,7 @@
             <div class="row justify-content-between">
                 <div class="col-5 col-md-auto d-none d-md-flex align-items-center">
                     <h1 class="page-title m-0">
-                        {{Lang::get('product.addproduct')}}
+                        {{Lang::get('product.editproduct')}}
                     </h1>
                 </div>
                 <div class="col-12 col-md">
@@ -98,7 +98,7 @@
                                         return [
                                             'filename' => $image['image'],
                                             'images' => [
-                                                '175x175' => image_url('175x175',$image['image'])
+                                                '175x175' => image_url('masterproduct',$image['image'])
                                             ]
                                         ];
                                     }, $entity->images->toArray())
@@ -116,14 +116,37 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-uppercase" for="title">Product Name</label>
                                             <input type="text" class="form-control" name="title" id="title" required
                                                    placeholder="Product Name" value="{{$entity->title}}">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-uppercase" for="prism_id">Product ID in PRISM</label>
+                                            <input type="text" class="form-control" name="prism_id" id="prism_id"
+                                                   required
+                                                   placeholder="Product ID in PRISM" value="{{$entity->prism_id}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-uppercase" for="capacity_id">Capacity</label>
+                                            <select class="form-control" name="capacity_id">
+                                                @foreach($capacities as $capacity)
+                                                    <option
+                                                        value="{{$capacity->id}}" {{ $entity->capacity_id == $capacity->id ? 'selected' : '' }}>
+                                                        {{$capacity->title}}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
                                         <label class="text-uppercase" for="production_cost">
                                             Production Cost (IDR)
                                         </label>
@@ -137,7 +160,7 @@
                                                    value="{{$entity->default_sku->production_cost}}">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <label class="text-uppercase" for="fulfillment_cost">
                                             Fulfillment Cost (IDR)
                                         </label>
@@ -151,7 +174,7 @@
                                                    value="{{$entity->default_sku->fulfillment_cost}}">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <label class="text-uppercase" for="selling_price">
                                             Selling Price
                                         </label>
@@ -167,14 +190,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="text-uppercase" for="prism_id">Product ID in PRISM</label>
-                                            <input type="text" class="form-control" name="prism_id" id="prism_id"
-                                                   required
-                                                   placeholder="Product ID in PRISM" value="{{$entity->prism_id}}">
-                                        </div>
-                                    </div>
+
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-uppercase" for="production_time">Production Time
@@ -196,6 +212,17 @@
                                                    value="{{$entity->fulfillment_time}}">
                                         </div>
                                     </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-uppercase" for="threshold">
+                                                Threshold
+                                            </label>
+                                            <input type="number" class="form-control text-right" name="threshold"
+                                                   id="threshold"
+                                                   placeholder="Threshold" required
+                                                   value="{{$entity->threshold}}">
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="text-uppercase" for="description">Product Description</label>
@@ -215,15 +242,14 @@
                                                 (gram)</label>
                                             <input type="number" class="form-control default" name="default_weight"
                                                    id="default_weight" placeholder="{{Lang::get('product.weight')}}"
-                                                   value="{{$entity->default_sku->weight}}"
-                                                   data-toggle="tooltip" required
+                                                   value="{{$entity->default_sku->weight}}" data-toggle="tooltip"
+                                                   required
                                                    data-placement="top" title="{{Lang::get('product.youcanweight')}}">
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group">
-                                            <label class="text-uppercase" for="sku"> Stock Keeping Unit (SKU)
-                                                Code</label>
+                                            <label class="text-uppercase" for="sku">SKU Code</label>
                                             <input type="text" class="form-control default" name="default_sku" id="sku"
                                                    placeholder="SKU" value="{{$entity->default_sku->sku_code}}"
                                                    data-toggle="tooltip"
@@ -244,7 +270,7 @@
                                             <label class="text-uppercase" for="width">Width (cm)</label>
                                             <input type="number" class="form-control default" name="default_width"
                                                    id="width" placeholder="{{Lang::get('product.width')}}"
-                                                   value="{{$entity->default_sku->width}}"
+                                                   value="{{($entity->default_sku->width) ? $entity->default_sku->width : 1}}"
                                                    data-toggle="tooltip" min="0" data-placement="top" required
                                                    title="{{Lang::get('product.youcanwidth')}}">
                                         </div>
@@ -254,7 +280,7 @@
                                             <label class="text-uppercase" for="length">Length (CM)</label>
                                             <input type="number" class="form-control default" name="default_length"
                                                    id="length" placeholder="{{Lang::get('product.length')}}"
-                                                   value="{{$entity->default_sku->length}}"
+                                                   value="{{($entity->default_sku->length) ? $entity->default_sku->length : 1}}"
                                                    data-toggle="tooltip" min="0" data-placement="top" required
                                                    title="{{Lang::get('product.youcanlength')}}">
                                         </div>
@@ -264,7 +290,7 @@
                                             <label class="text-uppercase" for="height">Height (CM)</label>
                                             <input type="number" class="form-control default" name="default_height"
                                                    id="height" placeholder="{{Lang::get('product.height')}}"
-                                                   value="{{$entity->default_sku->height}}"
+                                                   value="{{($entity->default_sku->height) ? $entity->default_sku->height : 1}}"
                                                    data-toggle="tooltip" data-placement="top" min="0" required
                                                    title="{{Lang::get('product.youcanheight')}}">
                                         </div>
@@ -310,7 +336,7 @@
                                                                           parent="{{$category->parent_id}}"
                                                                           type="checkbox"
                                                                           value="{{$category->id}}"/>&nbsp;{{$category->name}}
-                                            </label>
+                                                            </label>
                                                         </a>
                                                         @if(isset($category->children))
                                                             @foreach($category->children as $child1)
@@ -344,7 +370,7 @@
                                                                 @endif
                                                             @endforeach
                                                         @endif
-                                                @endforeach
+                                                    @endforeach
                                                 </div>
                                             </div>
                                         </div>
@@ -414,8 +440,8 @@
                                                 @foreach(['square', 'circle'] as $radio)
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio" name="shape"
-                                                               {{ $entity->shape == $radio ? 'checked' : '' }}
-                                                               id="shape_{{ $radio }}" value="{{ $radio }}">
+                                                               id="shape_{{ $radio }}"
+                                                               value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
                                                         <label class="form-check-label" for="shape_{{ $radio }}">
                                                             {{ Str::title($radio) }}
                                                         </label>
@@ -433,8 +459,8 @@
                                                 @foreach(['portrait', 'landscape'] as $radio)
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio" name="orientation"
-                                                               {{ $entity->orientation == $radio ? 'checked' : '' }}
-                                                               id="orientation_{{ $radio }}" value="{{ $radio }}">
+                                                               id="orientation_{{ $radio }}"
+                                                               value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
                                                         <label class="form-check-label" for="orientation_{{ $radio }}">
                                                             {{ Str::title($radio) }}
                                                         </label>
@@ -452,10 +478,10 @@
                                                 @foreach(['mm', 'cm'] as $radio)
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio" name="unit"
-                                                               {{ $entity->unit == $radio ? 'checked' : '' }}
-                                                               id="unit_{{ $radio }}" value="{{ $radio }}">
+                                                               id="unit_{{ $radio }}"
+                                                               value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
                                                         <label class="form-check-label" for="unit_{{ $radio }}">
-                                                            {{ Str::title($radio) }}
+                                                            {{ $radio }}
                                                         </label>
                                                     </div>
                                                 @endforeach
@@ -472,8 +498,8 @@
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="radio"
                                                                name="enable_resize"
-                                                               {{ $entity->enable_resize == $radio ? 'checked' : '' }}
-                                                               id="resize_{{ $radio }}" value="{{ $index }}">
+                                                               id="resize_{{ $radio }}"
+                                                               value="{{ $index }}" {{ $loop->first ? 'checked' : '' }}>
                                                         <label class="form-check-label" for="resize_{{ $radio }}">
                                                             {{ Str::title($radio) }}
                                                         </label>
@@ -519,9 +545,9 @@
                             </div>
                         </div>
                         <div class="card p-0 mt-3"
-                             x-data="{
-                                    templates: ['']
-                                 }">
+                             x-data='{
+                                    templates: @json($entity->templates)
+                                 }'>
                             <div class="card-header d-flex align-items-center justify-content-between">
                                 <div>
                                     <i class="fas fa-fw fa-dollar-sign"></i>
@@ -570,8 +596,7 @@
                                                         </label>
                                                         <input type="text" class="form-control"
                                                                name="template_design_name[]"
-                                                               id="template_design_name"
-                                                               value="{{$entity->template_design_name[0]}}">
+                                                               id="template_design_name" x-model="template.design_name">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
@@ -581,8 +606,7 @@
                                                         </label>
                                                         <input type="text" class="form-control"
                                                                name="template_page_name[]"
-                                                               id="template_page_name"
-                                                               value="{{$entity->template_page_name[0]}}">
+                                                               id="template_page_name" x-model="template.page_name">
                                                     </div>
                                                 </div>
                                             </div>
@@ -592,9 +616,9 @@
                             </div>
                         </div>
                         <div class="card p-0 mt-3"
-                             x-data="{
-                                    templates: ['']
-                                 }">
+                             x-data='{
+                                    templates: @json($entity->previews)
+                                 }'>
                             <div class="card-header d-flex align-items-center justify-content-between">
                                 <div>
                                     <i class="fas fa-fw fa-dollar-sign"></i>
@@ -640,8 +664,8 @@
                                                         <label class="text-uppercase" for="preview_name">
                                                             Preview Name
                                                         </label>
-                                                        <input type="text" class="form-control" name="preview_name[]"
-                                                               id="preview_name" value="{{$entity->preview_name[0]}}">
+                                                        <input type="text" class="form-control" name="preview_name[]" x-model="template.preview_name"
+                                                               id="preview_name">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
@@ -651,8 +675,7 @@
                                                         </label>
                                                         <input type="text" class="form-control"
                                                                name="preview_thumbnail_name[]"
-                                                               id="preview_thumbnail_name"
-                                                               value="{{$entity->preview_thumbnail_name[0]}}">
+                                                               id="preview_thumbnail_name" x-model="template.thumbnail_name">
                                                     </div>
                                                 </div>
                                             </div>
@@ -660,8 +683,8 @@
                                                 <label class="text-uppercase" for="preview_file_config">
                                                     File Config
                                                 </label>
-                                                <textarea class="form-control" name="preview_file_config[]"
-                                                          id="preview_file_config">{{$entity->preview_file_config[0]}}</textarea>
+                                                <textarea class="form-control" name="preview_file_config[]" x-model="template.file_config"
+                                                          id="preview_file_config"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -756,12 +779,12 @@
                             </div>
                         </div>
                         <button class="btn btn-primary px-5 ml-3" type="submit">
-                            Save Product
+                            Create Product
                         </button>
                     </div>
                 </div>
                 <input type="hidden" name="is_publish" x-model="status">
-                <input type="hidden" name="product_options" value="{{json_encode($product_options)}}"/>
+                <input type="hidden" name="product_options" value=""/>
                 <input type="hidden" name="product_skus" value=""/>
             </form>
         </div>
