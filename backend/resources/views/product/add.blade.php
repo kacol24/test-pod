@@ -736,6 +736,9 @@
                                         <th data-width="120" data-field="production_cost">
                                             Production Cost (IDR)
                                         </th>
+                                        <th data-width="120" data-field="fulfillment_cost">
+                                            Fulfillment Cost (IDR)
+                                        </th>
                                         <th data-width="120" data-field="selling_price">
                                             Selling Price (IDR)
                                         </th>

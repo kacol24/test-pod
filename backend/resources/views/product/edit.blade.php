@@ -663,27 +663,25 @@
                         <div class="card mt-3 p-0">
                             <div class="card-body p-0">
                                 <table id="table-variant" data-mobile-responsive="true" data-toggle="table">
-                                    <thead class="text-uppercase">
+                                    <thead>
                                     <tr>
                                         <th data-field="variant">Variant</th>
-                                        <th data-field="sku" data-width="100">SKU</th>
-                                        <th data-field="stock" data-width="100">Stock</th>
+                                        <th data-field="sku">SKU</th>
+                                        <th data-field="stock">Stock</th>
                                         <th data-width="180" data-field="dimensi">Dimension (cm)</th>
                                         <th data-width="10" data-field="weight">{{Lang::get('product.weight')}}(gr)</th>
-                                        <th data-field="production_cost" data-width="100">
-                                            Production Cost
+                                        <th data-width="120" data-field="production_cost">
+                                            Production Cost (IDR)
                                         </th>
-                                        <th data-field="fulfillment_cost" data-width="100">
-                                            Fulfillment Cost
+                                        <th data-width="120" data-field="fulfillment_cost">
+                                            Fulfillment Cost (IDR)
                                         </th>
-                                        <th data-field="selling_price" data-width="100">
-                                            Selling Price
+                                        <th data-width="120" data-field="selling_price">
+                                            Selling Price (IDR)
                                         </th>
                                     </tr>
                                     </thead>
-                                    <tbody>
-
-                                    </tbody>
+                                    <tbody></tbody>
                                 </table>
                             </div>
                         </div>
@@ -726,21 +724,20 @@
         var old_sku = <?php echo json_encode($entity->skus); ?>;
         var option_rows = [];
         var bind_image_to_sku = false;
+        var lang = 'en';
+        var outlets = [];
+        var stocks = [];
     </script>
     <script src="{{asset('js/product.js')}}"></script>
     <script src="{{asset('js/jquery.priceformat.min.js')}}"></script>
     <script src="{{asset('js/typeahead.min.js')}}"></script>
     <script src="{{asset('js/bootstrap-tagsinput.js')}}"></script>
-    <script type="text/javascript">
+    <script>
         set_select_category();
         generate_option();
     </script>
     @include('product.partials.modaloptionset')
     @include('product.partials.modaloptionmanual')
-@endpush
-
-@push('styles')
-    <link rel="stylesheet" href="{{asset('css/bootstrap-tagsinput.css')}}"/>
     <style>
         .bootstrap-tagsinput {
             width: 100%;
@@ -767,3 +764,6 @@
     </style>
 @endpush
 
+@push('styles')
+    <link rel="stylesheet" href="{{asset('css/bootstrap-tagsinput.css')}}"/>
+@endpush
