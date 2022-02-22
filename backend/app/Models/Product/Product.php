@@ -138,11 +138,6 @@ class Product extends Model
 
     public function templates()
     {
-        return $this->hasMany(Template::class);
-    }
-
-    public function previews()
-    {
-        return $this->hasMany(Preview::class);
+        return $this->hasMany(Template::class, 'product_id');
     }
 }

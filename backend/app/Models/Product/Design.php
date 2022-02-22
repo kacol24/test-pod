@@ -2,13 +2,14 @@
 
 namespace App\Models\Product;
 
-use Cache;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Preview extends Model
+class Design extends Model
 {
-    protected $table = 'master_template_previews';
+    use HasFactory;
+
+    protected $table = 'master_template_designs';
 
     protected $guarded = ['id'];
 
