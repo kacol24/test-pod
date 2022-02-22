@@ -130,6 +130,36 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'title'            => 'required',
+            'prism_id'         => 'required',
+            'production_time'  => 'required',
+            'fulfillment_time' => 'required',
+            'threshold'        => 'required',
+            'description'      => 'required',
+            'size_chart'       => 'required',
+            'capacity_id'      => 'required',
+
+            'templates.*.design_name'   => 'required',
+            'templates.*.price'         => 'required',
+            'templates.*.shape'         => 'required',
+            'templates.*.orientation'   => 'required',
+            'templates.*.unit'          => 'required',
+            'templates.*.enable_resize' => 'required',
+            'templates.*.bleed'         => 'required',
+            'templates.*.safety_line'   => 'required',
+            'templates.*.width'         => 'required',
+            'templates.*.height'        => 'required',
+            'templates.*.ratio'         => 'required',
+
+            'templates.*.design.*.file'      => 'required',
+            'templates.*.design.*.page_name' => 'required',
+
+            'templates.*.preview.*.file'           => 'required',
+            'templates.*.preview.*.preview_name'   => 'required',
+            'templates.*.preview.*.thumbnail_name' => 'required',
+            'templates.*.preview.*.file_config'    => 'required',
+        ]);
         $input = $request->all();
 
         \DB::beginTransaction();

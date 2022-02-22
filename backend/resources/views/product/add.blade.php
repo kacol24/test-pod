@@ -7,7 +7,7 @@
             @foreach ($errors->all() as $error)
                 <div class="alert alert-danger">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    <img src="{{asset('backend/images/error-icon.png')}}" alt=""> {{$error}}
+                    <img src="{{asset('images/error-icon.png')}}" alt=""> {{$error}}
                 </div>
             @endforeach
             <div class="row justify-content-between">
@@ -431,7 +431,7 @@
                             <div class="card-body">
                                 <div class="accordion" id="accordionExample">
                                     <template x-for="(template, index) in templates" :key="index">
-                                        <div class="card p-0 mb-3 rounded">
+                                        <div class="card p-0 mb-3 rounded border">
                                             <div
                                                 class="card-header m-0 rounded p-3 d-flex align-items-center justify-content-between">
                                                 <div class="form-group w-100 m-0 d-flex align-items-center">
@@ -457,8 +457,7 @@
                                                     </a>
                                                 </template>
                                             </div>
-                                            <div :id="'collapse_template_' + index" class="collapse show"
-                                                 data-parent="#accordionExample">
+                                            <div :id="'collapse_template_' + index" class="collapse show">
                                                 <div class="card-body p-3">
                                                     <div class="form-group">
                                                         <label class="text-uppercase" for="template_price">
@@ -477,13 +476,11 @@
                                                                 <div>
                                                                     @foreach(['square', 'circle'] as $radio)
                                                                         <div class="form-check form-check-inline">
-                                                                            <input class="form-check-input"
-                                                                                   type="radio"
-                                                                                   :name="'templates['+ index +'][shape]'"
-                                                                                   id="shape_{{ $radio }}"
-                                                                                   value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
-                                                                            <label class="form-check-label"
-                                                                                   for="shape_{{ $radio }}">
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input"
+                                                                                       type="radio"
+                                                                                       :name="'templates['+ index +'][shape]'"
+                                                                                       value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
                                                                                 {{ Str::title($radio) }}
                                                                             </label>
                                                                         </div>
@@ -499,13 +496,11 @@
                                                                 <div>
                                                                     @foreach(['portrait', 'landscape'] as $radio)
                                                                         <div class="form-check form-check-inline">
-                                                                            <input class="form-check-input"
-                                                                                   type="radio"
-                                                                                   :name="'templates['+ index +'][orientation]'"
-                                                                                   id="orientation_{{ $radio }}"
-                                                                                   value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
-                                                                            <label class="form-check-label"
-                                                                                   for="orientation_{{ $radio }}">
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input"
+                                                                                       type="radio"
+                                                                                       :name="'templates['+ index +'][orientation]'"
+                                                                                       value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
                                                                                 {{ Str::title($radio) }}
                                                                             </label>
                                                                         </div>
@@ -521,13 +516,11 @@
                                                                 <div>
                                                                     @foreach(['mm', 'cm'] as $radio)
                                                                         <div class="form-check form-check-inline">
-                                                                            <input class="form-check-input"
-                                                                                   type="radio"
-                                                                                   :name="'templates['+ index +'][unit]'"
-                                                                                   id="unit_{{ $radio }}"
-                                                                                   value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
-                                                                            <label class="form-check-label"
-                                                                                   for="unit_{{ $radio }}">
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input"
+                                                                                       type="radio"
+                                                                                       :name="'templates['+ index +'][unit]'"
+                                                                                       value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
                                                                                 {{ $radio }}
                                                                             </label>
                                                                         </div>
@@ -543,13 +536,11 @@
                                                                 <div>
                                                                     @foreach(['no', 'yes'] as $index => $radio)
                                                                         <div class="form-check form-check-inline">
-                                                                            <input class="form-check-input"
-                                                                                   type="radio"
-                                                                                   :name="'templates['+ index +'][enable_resize]'"
-                                                                                   id="resize_{{ $radio }}"
-                                                                                   value="{{ $index }}" {{ $loop->first ? 'checked' : '' }}>
-                                                                            <label class="form-check-label"
-                                                                                   for="resize_{{ $radio }}">
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input"
+                                                                                       type="radio"
+                                                                                       :name="'templates['+ index +'][enable_resize]'"
+                                                                                       value="{{ $index }}" {{ $loop->first ? 'checked' : '' }}>
                                                                                 {{ Str::title($radio) }}
                                                                             </label>
                                                                         </div>
@@ -770,13 +761,13 @@
                                         <th data-field="stock">Stock</th>
                                         <th data-width="180" data-field="dimensi">Dimension (cm)</th>
                                         <th data-width="10" data-field="weight">{{Lang::get('product.weight')}}(gr)</th>
-                                        <th data-width="120" data-field="production_cost">
+                                        <th data-width="100" data-field="production_cost">
                                             Production Cost (IDR)
                                         </th>
-                                        <th data-width="120" data-field="fulfillment_cost">
+                                        <th data-width="100" data-field="fulfillment_cost">
                                             Fulfillment Cost (IDR)
                                         </th>
-                                        <th data-width="120" data-field="selling_price">
+                                        <th data-width="100" data-field="selling_price">
                                             Selling Price (IDR)
                                         </th>
                                     </tr>
