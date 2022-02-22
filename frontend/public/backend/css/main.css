@@ -6,7 +6,7 @@ body {
   display: none !important;
 }
 
-.font-poppins, .card td, .card th, .card .card-subtitle, .card .card-title, .nav-pills .nav-link, .page-title, #site_nav #main_nav .nav-item .nav-link, .btn, * {
+.font-poppins, .card td, .card th, .card .card-subtitle, .card .card-title, .nav-pills .nav-link, .page-title, #site_nav #main_nav .dropdown-menu .dropdown-header, #site_nav #main_nav .nav-item .nav-link, .btn, * {
   font-family: "Poppins", sans-serif;
 }
 
@@ -264,6 +264,28 @@ body {
   font-size: 14px;
   line-height: 22px;
   color: #000000;
+}
+#site_nav #main_nav .dropdown-menu {
+  padding: 5px 0;
+  min-width: 280px;
+}
+#site_nav #main_nav .dropdown-menu li {
+  padding: 5px 10px;
+}
+#site_nav #main_nav .dropdown-menu .dropdown-header {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: #000000;
+}
+#site_nav #main_nav .dropdown-menu .dropdown-item {
+  height: 40px;
+  border-radius: 4px;
+}
+#site_nav #main_nav .dropdown-menu .dropdown-item:hover {
+  background: #1665D8;
+  color: #fff;
 }
 
 .page-title {

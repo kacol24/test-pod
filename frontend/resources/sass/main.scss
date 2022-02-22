@@ -92,6 +92,35 @@ body {
                 color: #000000;
             }
         }
+
+        .dropdown-menu {
+            padding: 5px 0;
+            min-width: 280px;
+
+            li {
+                padding: 5px 10px;
+            }
+
+            .dropdown-header {
+                //font-family: Poppins;
+                @extend %font-poppins;
+                font-style: normal;
+                font-weight: 500;
+                font-size: 12px;
+                line-height: 18px;
+                color: #000000;
+            }
+
+            .dropdown-item {
+                height: 40px;
+                border-radius: 4px;
+
+                &:hover {
+                    background: #1665D8;
+                    color: #fff;
+                }
+            }
+        }
     }
 }
 

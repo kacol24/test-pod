@@ -80,7 +80,7 @@
                 {{ session(\App\Models\Store::SESSION_KEY)->storename }}
             </span>
         </a>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu dropdown-menu-end">
             <li>
                 <a class="dropdown-item" href="{{ route('myaccount') }}">
                     My Profile
@@ -106,13 +106,18 @@
                     My Team
                 </a>
             </li>
-            <li>
+            <li class="p-0">
                 <hr class="dropdown-divider">
+            </li>
+            <li class="p-0">
+                <h6 class="dropdown-header text-uppercase">
+                    Switch to other account
+                </h6>
             </li>
             <li>
                 <form action="{{ route('logout') }}" method="post">
                     @csrf
-                    <a href="#" class="dropdown-item" onclick="this.closest('form').submit()">
+                    <a href="#" class="dropdown-item border border-color:black" onclick="this.closest('form').submit()">
                         Logout
                     </a>
                 </form>
