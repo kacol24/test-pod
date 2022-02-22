@@ -167,5 +167,10 @@
         </script>
         @stack('styles')
         @stack('scripts')
+        <style>
+            .btn-sm {
+                height: 29px;
+            }
+        </style>
     </body>
 </html>

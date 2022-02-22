@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Resources\ProductResource;
+use App\Models\Product\Capacity;
 use App\Models\Product\Category;
 use App\Models\Product\Option;
 use App\Models\Product\OptionSet;
@@ -12,13 +13,10 @@ use App\Models\Product\ProductImage;
 use App\Models\Product\ProductOption;
 use App\Models\Product\ProductOptionDetail;
 use App\Models\Product\ProductSku;
-use App\Models\Product\Capacity;
-use App\Models\Product\Template;
-use App\Models\Product\Preview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -47,17 +45,19 @@ class ProductController extends Controller
             // $data[] = generate_image($sizes, $file);
 
             $extension = $file->getClientOriginalExtension();
-            $filename =  sha1(Str::random(32)).".".$extension;
+            $filename = sha1(Str::random(32)).".".$extension;
 
             $path = storage_path('app/public/masterproduct');
-            if(!file_exists($path)){
-              mkdir($path, 0755, true);
+            if (! file_exists($path)) {
+                mkdir($path, 0755, true);
             }
             $file->storeAs('/public/masterproduct', $filename);
-            $data[] = array('filename' => $filename, 'images' => array(
-                'masterproduct' => image_url('masterproduct', $filename),
-                '175x175' => image_url('masterproduct', $filename)
-            ));
+            $data[] = [
+                'filename' => $filename, 'images' => [
+                    'masterproduct' => image_url('masterproduct', $filename),
+                    '175x175'       => image_url('masterproduct', $filename),
+                ],
+            ];
         }
 
         return ['status' => 'success', 'data' => $data];
@@ -66,7 +66,7 @@ class ProductController extends Controller
     public function getOption(Request $request)
     {
         $return = '';
-        if($request->set_id) {
+        if ($request->set_id) {
             $option_set = \App\Models\Product\OptionSet::find($request->set_id);
             $options = \App\Models\Product\Option::whereIn('id', json_decode($option_set->value, true))->get();
             if ($options) {
@@ -97,8 +97,8 @@ class ProductController extends Controller
             'active'      => 'product',
             'options'     => $options,
             'option_sets' => OptionSet::get(),
-            'capacities' => Capacity::all(),
-            'categories' => category_tree(Category::active()->orderBy('order_weight', 'asc')->get())
+            'capacities'  => Capacity::all(),
+            'categories'  => category_tree(Category::active()->orderBy('order_weight', 'asc')->get()),
         ];
 
         return view('product.add', $data);
@@ -134,71 +134,77 @@ class ProductController extends Controller
 
         \DB::beginTransaction();
         $product = Product::create([
-            'is_publish'             => $request->is_publish,
-            'order_weight'           => 0,
-            'title'                  => $request->title,
-            'prism_id'               => $request->prism_id,
-            'production_time'        => $request->production_time,
-            'fulfillment_time'       => $request->fulfillment_time,
-            'threshold'              => $request->threshold,
-            'description'            => $request->description,
-            'size_chart'             => $request->size_chart,
-            'shape'                  => $request->shape,
-            'orientation'            => $request->orientation,
-            'unit'                   => $request->unit,
-            'enable_resize'          => $request->enable_resize,
-            'bleed'                  => $request->bleed,
-            'safety_line'            => $request->safety_line,
-            'template_width'         => $request->template_width,
-            'template_height'        => $request->template_height,
-            'ratio'                  => $request->ratio,
-            'capacity_id'            => $request->capacity_id,
+            'is_publish'       => $request->is_publish,
+            'order_weight'     => 0,
+            'title'            => $request->title,
+            'prism_id'         => $request->prism_id,
+            'production_time'  => $request->production_time,
+            'fulfillment_time' => $request->fulfillment_time,
+            'threshold'        => $request->threshold,
+            'description'      => $request->description,
+            'size_chart'       => $request->size_chart,
+            'capacity_id'      => $request->capacity_id,
         ]);
 
         $product->categories()->sync($request->category_id);
 
-        foreach($request->template_design_name as $i => $design_name) {
-            $filename = "";
-            if ($request->hasFile('template_file') && isset($request->file('template_file')[$i])) {
-                $file = $request->file('template_file')[$i];
-                $extension = $file->getClientOriginalExtension();
-                $filename = sha1(Str::random(32)).".".$extension;
-                $path = storage_path('app/templates');
-                if (! file_exists($path)) {
-                    mkdir($path, 0755, true);
-                }
-                $file->storeAs('/templates', $filename);
-                $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
-                $template = Template::create(array(
-                    'product_id' => $product->id,
-                    'file' => $filename,
-                    'design_name' => $request->template_design_name[$i],
-                    'page_name' => $request->template_page_name[$i],
-                    'customer_canvas' => $canvas,
-                ));
-            }
-        }
+        foreach ($request->templates as $index => $template) {
+            $productTemplate = $product->templates()->create([
+                'design_name'   => $template['design_name'],
+                'price'         => $template['price'],
+                'shape'         => $template['shape'],
+                'orientation'   => $template['orientation'],
+                'unit'          => $template['unit'],
+                'enable_resize' => $template['enable_resize'],
+                'bleed'         => $template['bleed'],
+                'safety_line'   => $template['safety_line'],
+                'width'         => $template['width'],
+                'height'        => $template['height'],
+                'ratio'         => $template['ratio'],
+            ]);
 
-        foreach($request->preview_name as $i => $preview) {
-            $filename = "";
-            if ($request->hasFile('preview_file') && isset($request->file('preview_file')[$i])) {
-                $file = $request->file('preview_file')[$i];
-                $extension = $file->getClientOriginalExtension();
-                $filename = sha1(Str::random(32)).".".$extension;
-                $path = storage_path('app/previews');
-                if (! file_exists($path)) {
-                    mkdir($path, 0755, true);
+            foreach ($template['design'] as $designIndex => $design) {
+                $filename = '';
+                $fileKey = 'templates.'.$index.'.design.'.$designIndex.'.file';
+                if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
+                    $file = $request->file($fileKey);
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = sha1(Str::random(32)).".".$extension;
+                    $path = storage_path('app/templates');
+                    if (! file_exists($path)) {
+                        mkdir($path, 0755, true);
+                    }
+                    $file->storeAs('/templates', $filename);
+                    $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
                 }
-                $file->storeAs('/previews', $filename);
-                $canvas = $this->uploadCanvas(Storage::path('previews/'.$filename), 'mockups');
-                Preview::create(array(
-                    'product_id' => $product->id,
-                    'file' => $filename,
-                    'preview_name' => $request->preview_name[$i],
-                    'thumbnail_name' => $request->preview_thumbnail_name[$i],
-                    'file_config' => $request->preview_file_config[$i],
+                $productTemplate->designs()->create([
+                    'file'            => $filename,
+                    'page_name'       => $design['page_name'],
                     'customer_canvas' => $canvas,
-                ));
+                ]);
+            }
+
+            foreach ($template['preview'] as $previewIndex => $preview) {
+                $filename = '';
+                $fileKey = 'templates.'.$index.'.preview.'.$previewIndex.'.file';
+                if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
+                    $file = $request->file($fileKey);
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = sha1(Str::random(32)).".".$extension;
+                    $path = storage_path('app/templates');
+                    if (! file_exists($path)) {
+                        mkdir($path, 0755, true);
+                    }
+                    $file->storeAs('/templates', $filename);
+                    $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
+                }
+                $productTemplate->previews()->create([
+                    'file'            => $filename,
+                    'preview_name'    => $preview['preview_name'],
+                    'thumbnail_name'  => $preview['thumbnail_name'],
+                    'file_config'     => $preview['file_config'],
+                    'customer_canvas' => $canvas,
+                ]);
             }
         }
 
@@ -321,8 +327,8 @@ class ProductController extends Controller
             'page_title'        => 'Edit Product',
             'active'            => 'product',
             'options'           => Option::all(),
-            'capacities' => Capacity::all(),
-            'categories' => category_tree(Category::active()->orderBy('order_weight', 'asc')->get())
+            'capacities'        => Capacity::all(),
+            'categories'        => category_tree(Category::active()->orderBy('order_weight', 'asc')->get()),
         ];
 
         return view('product/edit', $data);
@@ -468,6 +474,21 @@ class ProductController extends Controller
         return redirect()->route('product.list')->with('status', 'Success edit product');
     }
 
+    public function bulkDelete(Request $request)
+    {
+        if (is_array($request->input('ids'))) {
+            Product::whereIn('id', $request->input('ids'))->delete();
+            ProductSku::whereIn('product_id', $request->input('ids'))->delete();
+        } else {
+            Product::whereIn('id', json_decode($request->input('ids'), true))->delete();
+            ProductSku::whereIn('product_id', json_decode($request->input('ids'), true))->delete();
+        }
+
+        if ($request->input('back_url')) {
+            return redirect($request->input('back_url'));
+        }
+    }
+
     private function getProductOptions($id)
     {
         $options = ProductOption::where('product_id', $id)->orderBy('id', 'asc')->with('details')->get();
@@ -475,36 +496,24 @@ class ProductController extends Controller
         return $options->toArray();
     }
 
-    public function bulkDelete(Request $request) {
-        if(is_array($request->input('ids'))) {
-          Product::whereIn('id', $request->input('ids'))->delete();
-          ProductSku::whereIn('product_id', $request->input('ids'))->delete();
-        }
-        else {
-          Product::whereIn('id', json_decode($request->input('ids'),true))->delete();
-          ProductSku::whereIn('product_id', json_decode($request->input('ids'),true))->delete();
-        }
-
-        if($request->input('back_url'))
-          return redirect($request->input('back_url'));
-    }
-
-    private function uploadCanvas($file, $type) {
+    private function uploadCanvas($file, $type)
+    {
         $key = 'PrinterousCustomerCanvasDemo123!@#';
         $url = "https://canvas.printerous.com/production/Canvas/Edge/api/ProductTemplates/".$type."/pod";
 
         $name = ($type == 'designs') ? 'design' : 'preview_mockups';
-        $post = array($name => curl_file_create($file));
+        $post = [$name => curl_file_create($file)];
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL,$url);
-        curl_setopt($ch, CURLOPT_POST,1);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "X-CustomersCanvasAPIKey: ".$key,
-        ));
+        ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $result=curl_exec ($ch);
-        curl_close ($ch);
+        $result = curl_exec($ch);
+        curl_close($ch);
+
         return $result;
     }
 }
