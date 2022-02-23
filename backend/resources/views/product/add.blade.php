@@ -163,7 +163,8 @@
                                             </div>
                                             <input type="tel" class="form-control price text-right" id="production_cost"
                                                    required
-                                                   name="default_production_cost" value="{{old('default_production_cost')}}">
+                                                   name="default_production_cost"
+                                                   value="{{old('default_production_cost')}}">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -176,7 +177,8 @@
                                             </div>
                                             <input type="tel" class="form-control price text-right"
                                                    id="fulfillment_cost" required
-                                                   name="default_fulfillment_cost" value="{{old('default_fulfillment_cost')}}">
+                                                   name="default_fulfillment_cost"
+                                                   value="{{old('default_fulfillment_cost')}}">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -189,7 +191,8 @@
                                             </div>
                                             <input type="tel" class="form-control price text-right"
                                                    id="selling_price" required
-                                                   name="default_selling_price" value="{{old('default_selling_price')}}">
+                                                   name="default_selling_price"
+                                                   value="{{old('default_selling_price')}}">
                                         </div>
                                     </div>
                                 </div>
@@ -331,39 +334,42 @@
                                                     @foreach($categories as $category)
                                                         <a class="dropdown-item" href="javascript:void(0);"
                                                            tabIndex="-1">
-                                                            <label><input class="category"
-                                                                          data-value="{{$category->name}}"
-                                                                          id="checkbox{{$category->id}}"
-                                                                          name="category_id[]"
-                                                                          parent="{{$category->parent_id}}"
-                                                                          type="checkbox"
-                                                                          value="{{$category->id}}"/>&nbsp;{{$category->name}}
+                                                            <label class="m-0 d-flex align-items-center">
+                                                                <input class="category mr-1"
+                                                                       data-value="{{$category->name}}"
+                                                                       id="checkbox{{$category->id}}"
+                                                                       name="category_id[]"
+                                                                       parent="{{$category->parent_id}}"
+                                                                       type="checkbox"
+                                                                       value="{{$category->id}}"/>&nbsp;{{$category->name}}
                                                             </label>
                                                         </a>
                                                         @if(isset($category->children))
                                                             @foreach($category->children as $child1)
                                                                 <a class="dropdown-item" href="javascript:void(0);"
                                                                    tabIndex="-1">
-                                                                    <label class="pl-3"><input class="category"
-                                                                                               data-value="{{$child1->name}}"
-                                                                                               id="checkbox{{$child1->id}}"
-                                                                                               name="category_id[]"
-                                                                                               parent="{{$child1->parent_id}}"
-                                                                                               type="checkbox"
-                                                                                               value="{{$child1->id}}"/>&nbsp;{{$child1->name}}
+                                                                    <label class="pl-3 m-0 d-flex align-items-center">
+                                                                        <input class="category mr-1"
+                                                                               data-value="{{$child1->name}}"
+                                                                               id="checkbox{{$child1->id}}"
+                                                                               name="category_id[]"
+                                                                               parent="{{$child1->parent_id}}"
+                                                                               type="checkbox"
+                                                                               value="{{$child1->id}}"/>&nbsp;{{$child1->name}}
                                                                     </label>
                                                                 </a>
                                                                 @if(isset($child1->children))
                                                                     @foreach($child1->children as $child2)
                                                                         <a class="dropdown-item"
                                                                            href="javascript:void(0);">
-                                                                            <label class="pl-5"><input class="category"
-                                                                                                       data-value="{{$child2->name}}"
-                                                                                                       id="checkbox{{$child2->id}}"
-                                                                                                       name="category_id[]"
-                                                                                                       parent="{{$child2->parent_id}}"
-                                                                                                       type="checkbox"
-                                                                                                       value="{{$child2->id}}"/>&nbsp;{{$child2->name}}
+                                                                            <label class="pl-5 m-0 d-flex align-items-center">
+                                                                                <input class="category mr-1"
+                                                                                       data-value="{{$child2->name}}"
+                                                                                       id="checkbox{{$child2->id}}"
+                                                                                       name="category_id[]"
+                                                                                       parent="{{$child2->parent_id}}"
+                                                                                       type="checkbox"
+                                                                                       value="{{$child2->id}}"/>&nbsp;{{$child2->name}}
                                                                             </label>
                                                                         </a>
                                                                     @endforeach
@@ -772,14 +778,14 @@
                                         <th data-field="stock">Stock</th>
                                         <th data-width="180" data-field="dimensi">Dimension (cm)</th>
                                         <th data-width="10" data-field="weight">{{Lang::get('product.weight')}}(gr)</th>
-                                        <th data-width="100" data-field="production_cost">
-                                            Production Cost (IDR)
+                                        <th data-width="80" data-field="production_cost">
+                                            Production Cost
                                         </th>
-                                        <th data-width="100" data-field="fulfillment_cost">
-                                            Fulfillment Cost (IDR)
+                                        <th data-width="80" data-field="fulfillment_cost">
+                                            Fulfillment Cost
                                         </th>
-                                        <th data-width="100" data-field="selling_price">
-                                            Selling Price (IDR)
+                                        <th data-width="80" data-field="selling_price">
+                                            Selling Price
                                         </th>
                                     </tr>
                                     </thead>

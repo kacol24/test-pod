@@ -151,17 +151,17 @@ class ProductController extends Controller
 
         foreach ($request->templates as $index => $template) {
             $productTemplate = $product->templates()->create([
-                'design_name'   => $template['design_name'],
-                'price'         => $template['price'],
-                'shape'         => $template['shape'],
-                'orientation'   => $template['orientation'],
-                'unit'          => $template['unit'],
-                'enable_resize' => $template['enable_resize'],
-                'bleed'         => $template['bleed'],
-                'safety_line'   => $template['safety_line'],
-                'width'         => $template['width'],
-                'height'        => $template['height'],
-                'ratio'         => $template['ratio'],
+                'design_name'     => $template['design_name'],
+                'price'           => $template['price'],
+                'shape'           => $template['shape'],
+                'orientation'     => $template['orientation'],
+                'unit'            => $template['unit'],
+                'enable_resize'   => $template['enable_resize'],
+                'bleed'           => $template['bleed'],
+                'safety_line'     => $template['safety_line'],
+                'template_width'  => $template['width'],
+                'template_height' => $template['height'],
+                'ratio'           => $template['ratio'],
             ]);
 
             foreach ($template['design'] as $designIndex => $design) {
