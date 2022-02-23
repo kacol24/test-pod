@@ -485,6 +485,7 @@
                                             </div>
                                             <div :id="'collapse_template_' + index" class="collapse show">
                                                 <div class="card-body p-3">
+                                                    <input type="hidden" :name="'templates['+ index +'][id]'" x-model="template.id">
                                                     <div class="form-group">
                                                         <label class="text-uppercase" for="template_price">
                                                             Price
@@ -647,13 +648,15 @@
                                                                                 </a>
                                                                             </div>
                                                                         </template>
+                                                                        <input type="hidden"
+                                                                               :name="'templates['+ index +'][design]['+designIndex+'][id]'" x-model="design.id">
                                                                         <div class="form-group">
                                                                             <label class="text-uppercase">
                                                                                 File
                                                                             </label>
                                                                             <input type="file"
                                                                                    class="form-control-file"
-                                                                                   :name="'templates['+ index +'][design][][file]'">
+                                                                                   :name="'templates['+ index +'][design]['+designIndex+'][file]'">
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <a :href="'{{ asset('templates') }}/' + design.file"
@@ -665,7 +668,7 @@
                                                                             </label>
                                                                             <input type="text" class="form-control"
                                                                                    x-model="design.page_name"
-                                                                                   :name="'templates['+ index +'][design][][page_name]'">
+                                                                                   :name="'templates['+ index +'][design]['+designIndex+'][page_name]'">
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -702,6 +705,9 @@
                                                                                 </a>
                                                                             </div>
                                                                         </template>
+                                                                        <input type="hidden"
+                                                                               :name="'templates['+ index +'][preview]['+previewIndex+'][id]'"
+                                                                               x-model="preview.id">
                                                                         <div class="form-group">
                                                                             <label class="text-uppercase"
                                                                                    for="template_file">
@@ -838,7 +844,7 @@
                             </div>
                         </div>
                         <button class="btn btn-primary px-5 ml-3" type="submit">
-                            Create Product
+                            Update Product
                         </button>
                     </div>
                 </div>

@@ -5,15 +5,19 @@ namespace App\Http\Controllers\Product;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Resources\ProductResource;
 use App\Http\Requests\ProductRequest;
+use App\Http\Requests\ProductUpdateRequest;
 use App\Models\Product\Capacity;
 use App\Models\Product\Category;
+use App\Models\Product\Design;
 use App\Models\Product\Option;
 use App\Models\Product\OptionSet;
+use App\Models\Product\Preview;
 use App\Models\Product\Product;
 use App\Models\Product\ProductImage;
 use App\Models\Product\ProductOption;
 use App\Models\Product\ProductOptionDetail;
 use App\Models\Product\ProductSku;
+use App\Models\Product\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -335,24 +339,9 @@ class ProductController extends Controller
         return view('product/edit', $data);
     }
 
-    public function update(Request $request, $id)
+    public function update(ProductUpdateRequest $request, $id)
     {
         $request->flash();
-
-        $validation = [
-            'title' => 'required',
-        ];
-
-        if ($request->input('is_publish')) {
-            $validation['images'] = 'required';
-            $validation['category_id'] = 'required';
-        }
-
-        $validator = \Validator::make($request->all(), $validation);
-
-        if ($validator->fails()) {
-            return redirect()->route('product.edit', ['id' => $id])->withErrors($validator)->withInput();
-        }
 
         $input = $request->all();
         if (! isset($input['is_featured'])) {
@@ -364,10 +353,101 @@ class ProductController extends Controller
             if (isset($input['is_publish'])) {
                 $product->is_publish = $input['is_publish'];
             }
-            $product->updated_at = date('Y-m-d H:i:s');
-            $product->title = $input['title'];
-            $product->description = $input['description'];
+            $product->title = $request->title;
+            $product->prism_id = $request->prism_id;
+            $product->production_time = $request->production_time;
+            $product->fulfillment_time = $request->fulfillment_time;
+            $product->threshold = $request->threshold;
+            $product->description = $request->description;
+            $product->size_chart = $request->size_chart;
+            $product->capacity_id = $request->capacity_id;
             $product->save();
+
+            foreach ($request->templates as $index => $template) {
+                if ($template['id']) {
+                    $productTemplate = Template::find($template['id']);
+                }
+                $data = [
+                    'design_name'     => $template['design_name'],
+                    'price'           => $template['price'],
+                    'shape'           => $template['shape'],
+                    'orientation'     => $template['orientation'],
+                    'unit'            => $template['unit'],
+                    'enable_resize'   => $template['enable_resize'],
+                    'bleed'           => $template['bleed'],
+                    'safety_line'     => $template['safety_line'],
+                    'template_width'  => $template['width'],
+                    'template_height' => $template['height'],
+                    'ratio'           => $template['ratio'],
+                ];
+                if ($productTemplate) {
+                    $productTemplate->update($data);
+                } else {
+                    $productTemplate = $product->templates()->create($data);
+                }
+
+                foreach ($template['design'] as $designIndex => $design) {
+                    if ($design['id']) {
+                        $productDesign = Design::find($design['id']);
+                    }
+                    $data = [
+                        'page_name' => $design['page_name'],
+                    ];
+                    $fileKey = 'templates.'.$index.'.design.'.$designIndex.'.file';
+                    if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
+                        $file = $request->file($fileKey);
+                        $extension = $file->getClientOriginalExtension();
+                        $filename = sha1(Str::random(32)).".".$extension;
+                        $path = storage_path('app/templates');
+                        if (! file_exists($path)) {
+                            mkdir($path, 0755, true);
+                        }
+                        $file->storeAs('/templates', $filename);
+                        $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
+                        $data = [
+                            'file'            => $filename,
+                            'customer_canvas' => $canvas,
+                        ];
+                    }
+                    if ($productDesign) {
+                        $productDesign->update($data);
+                    } else {
+                        $productTemplate->designs()->create($data);
+                    }
+                }
+
+                foreach ($template['preview'] as $previewIndex => $preview) {
+                    if ($preview['id']) {
+                        $productPreview = Preview::find($preview['id']);
+                    }
+                    $data = [
+                        'preview_name'   => $preview['preview_name'],
+                        'thumbnail_name' => $preview['thumbnail_name'],
+                        'file_config'    => $preview['file_config'],
+                    ];
+                    $fileKey = 'templates.'.$index.'.preview.'.$previewIndex.'.file';
+                    if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
+                        $file = $request->file($fileKey);
+                        $extension = $file->getClientOriginalExtension();
+                        $filename = sha1(Str::random(32)).".".$extension;
+                        $path = storage_path('app/previews');
+                        if (! file_exists($path)) {
+                            mkdir($path, 0755, true);
+                        }
+                        $file->storeAs('/templates', $filename);
+                        $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
+                        $data = [
+                            'file'            => $filename,
+                            'customer_canvas' => $canvas,
+                        ];
+                    }
+                    if ($productPreview) {
+                        $productPreview->update($data);
+                    } else {
+                        $productTemplate->previews()->create($data);
+                    }
+                }
+            }
 
             $product->categories()->sync($request->category_id);
 
@@ -444,7 +524,6 @@ class ProductController extends Controller
                         $productsku->width = $input['width'.$idx];
                         $productsku->length = $input['length'.$idx];
                         $productsku->height = $input['height'.$idx];
-                        $productsku->image_no = (isset($input['image_no'.$idx])) ? $input['image_no'.$idx] : 0;
                         $productsku->save();
                         $productsku->restore();
                     } else {
@@ -461,7 +540,6 @@ class ProductController extends Controller
                             'width'              => $input['width'.$idx],
                             'length'             => $input['length'.$idx],
                             'height'             => $input['height'.$idx],
-                            'image_no'           => (isset($input['image_no'.$idx])) ? $input['image_no'.$idx] : 0,
                         ]);
                     }
                 }
