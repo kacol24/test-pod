@@ -4,12 +4,23 @@
     <main class="pb-3 pb-md-5" role="main" style=""
           x-data="{language: '{{session('language')}}', status: {{(old('is_publish')) ? old('is_publish') : 0}}}">
         <div class="container container--crud mb-3 mb-md-0">
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-danger">
+            @if($errors->any())
+                <div class="alert alert-danger d-flex justify-content-between">
+                    <div class="d-flex">
+                        <div class="mr-3">
+                            <img src="{{asset('images/error-icon.png')}}" alt="">
+                        </div>
+                        <ul class="list-unstyled m-0">
+                            @foreach ($errors->all() as $error)
+                                <li>
+                                    {{ $error }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    <img src="{{asset('images/error-icon.png')}}" alt=""> {{$error}}
                 </div>
-            @endforeach
+            @endif
             <div class="row justify-content-between">
                 <div class="col-5 col-md-auto d-none d-md-flex align-items-center">
                     <h1 class="page-title m-0">
@@ -152,7 +163,7 @@
                                             </div>
                                             <input type="tel" class="form-control price text-right" id="production_cost"
                                                    required
-                                                   name="default_production_cost" value="{{old('production_cost')}}">
+                                                   name="default_production_cost" value="{{old('default_production_cost')}}">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -165,7 +176,7 @@
                                             </div>
                                             <input type="tel" class="form-control price text-right"
                                                    id="fulfillment_cost" required
-                                                   name="default_fulfillment_cost" value="{{old('fulfillment_cost')}}">
+                                                   name="default_fulfillment_cost" value="{{old('default_fulfillment_cost')}}">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -178,7 +189,7 @@
                                             </div>
                                             <input type="tel" class="form-control price text-right"
                                                    id="selling_price" required
-                                                   name="default_selling_price" value="{{old('selling_price')}}">
+                                                   name="default_selling_price" value="{{old('default_selling_price')}}">
                                         </div>
                                     </div>
                                 </div>
