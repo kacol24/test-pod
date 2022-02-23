@@ -192,7 +192,7 @@ class ProductController extends Controller
                     $file = $request->file($fileKey);
                     $extension = $file->getClientOriginalExtension();
                     $filename = sha1(Str::random(32)).".".$extension;
-                    $path = storage_path('app/templates');
+                    $path = storage_path('app/previews');
                     if (! file_exists($path)) {
                         mkdir($path, 0755, true);
                     }

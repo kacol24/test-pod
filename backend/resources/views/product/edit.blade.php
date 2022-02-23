@@ -1,15 +1,26 @@
 @extends('layout')
 
 @section('content')
-    <main class="pb-3 pb-md-5" role="main" style=""
-          x-data="{language: '{{session('language')}}', status: {{(old('is_publish')) ? old('is_publish') : 0}}}">
+    <main class="pb-3 pb-md-5" role="main"
+          x-data="{language: '{{session('language')}}', status: {{ $entity->is_publish }}}">
         <div class="container container--crud mb-3 mb-md-0">
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-danger">
+            @if($errors->any())
+                <div class="alert alert-danger d-flex justify-content-between">
+                    <div class="d-flex">
+                        <div class="mr-3">
+                            <img src="{{asset('images/error-icon.png')}}" alt="">
+                        </div>
+                        <ul class="list-unstyled m-0">
+                            @foreach ($errors->all() as $error)
+                                <li>
+                                    {{ $error }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    <img src="{{asset('backend/images/error-icon.png')}}" alt=""> {{$error}}
                 </div>
-            @endforeach
+            @endif
             <div class="row justify-content-between">
                 <div class="col-5 col-md-auto d-none d-md-flex align-items-center">
                     <h1 class="page-title m-0">
@@ -26,7 +37,8 @@
                                     <span x-text="status==0 ? 'Inactive' : 'Active'"></span>
                                 </button>
                                 <div aria-labelledby="dropdownMenuButton" class="dropdown-menu">
-                                    <a class="dropdown-item" href="javascript:void(0);" x-on:click="status=1">Active</a>
+                                    <a class="dropdown-item" href="javascript:void(0);"
+                                       x-on:click="status=1">Active</a>
                                     <a class="dropdown-item" href="javascript:void(0);"
                                        x-on:click="status=0">Inactive</a>
                                 </div>
@@ -137,7 +149,7 @@
                                             <select class="form-control" name="capacity_id">
                                                 @foreach($capacities as $capacity)
                                                     <option
-                                                        value="{{$capacity->id}}" {{ $entity->capacity_id == $capacity->id ? 'selected' : '' }}>
+                                                        value="{{$capacity->id}}" {{ $entity->capacity_id == $capacity->id }}>
                                                         {{$capacity->title}}
                                                     </option>
                                                 @endforeach
@@ -190,7 +202,6 @@
                                     </div>
                                 </div>
                                 <div class="row">
-
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-uppercase" for="production_time">Production Time
@@ -270,7 +281,7 @@
                                             <label class="text-uppercase" for="width">Width (cm)</label>
                                             <input type="number" class="form-control default" name="default_width"
                                                    id="width" placeholder="{{Lang::get('product.width')}}"
-                                                   value="{{($entity->default_sku->width) ? $entity->default_sku->width : 1}}"
+                                                   value="{{$entity->default_sku->width}}"
                                                    data-toggle="tooltip" min="0" data-placement="top" required
                                                    title="{{Lang::get('product.youcanwidth')}}">
                                         </div>
@@ -280,7 +291,7 @@
                                             <label class="text-uppercase" for="length">Length (CM)</label>
                                             <input type="number" class="form-control default" name="default_length"
                                                    id="length" placeholder="{{Lang::get('product.length')}}"
-                                                   value="{{($entity->default_sku->length) ? $entity->default_sku->length : 1}}"
+                                                   value="{{$entity->default_sku->length}}"
                                                    data-toggle="tooltip" min="0" data-placement="top" required
                                                    title="{{Lang::get('product.youcanlength')}}">
                                         </div>
@@ -290,7 +301,7 @@
                                             <label class="text-uppercase" for="height">Height (CM)</label>
                                             <input type="number" class="form-control default" name="default_height"
                                                    id="height" placeholder="{{Lang::get('product.height')}}"
-                                                   value="{{($entity->default_sku->height) ? $entity->default_sku->height : 1}}"
+                                                   value="{{$entity->default_sku->height}}"
                                                    data-toggle="tooltip" data-placement="top" min="0" required
                                                    title="{{Lang::get('product.youcanheight')}}">
                                         </div>
@@ -328,42 +339,46 @@
                                                     @foreach($categories as $category)
                                                         <a class="dropdown-item" href="javascript:void(0);"
                                                            tabIndex="-1">
-                                                            <label><input class="category"
-                                                                          {{ in_array($category->id,$selected_category) ? 'checked' : '' }}
-                                                                          data-value="{{$category->name}}"
-                                                                          id="checkbox{{$category->id}}"
-                                                                          name="category_id[]"
-                                                                          parent="{{$category->parent_id}}"
-                                                                          type="checkbox"
-                                                                          value="{{$category->id}}"/>&nbsp;{{$category->name}}
+                                                            <label class="m-0 d-flex align-items-center">
+                                                                <input class="category mr-1"
+                                                                       {{ in_array($category->id,$selected_category) ? 'checked' : '' }}
+                                                                       data-value="{{$category->name}}"
+                                                                       id="checkbox{{$category->id}}"
+                                                                       name="category_id[]"
+                                                                       parent="{{$category->parent_id}}"
+                                                                       type="checkbox"
+                                                                       value="{{$category->id}}"/>&nbsp;{{$category->name}}
                                                             </label>
                                                         </a>
                                                         @if(isset($category->children))
                                                             @foreach($category->children as $child1)
                                                                 <a class="dropdown-item" href="javascript:void(0);"
                                                                    tabIndex="-1">
-                                                                    <label class="pl-3"><input class="category"
-                                                                                               {{ in_array($child1->id,$selected_category) ? 'checked' : '' }}
-                                                                                               data-value="{{$child1->name}}"
-                                                                                               id="checkbox{{$child1->id}}"
-                                                                                               name="category_id[]"
-                                                                                               parent="{{$child1->parent_id}}"
-                                                                                               type="checkbox"
-                                                                                               value="{{$child1->id}}"/>&nbsp;{{$child1->name}}
+                                                                    <label class="pl-3 m-0 d-flex align-items-center">
+                                                                        <input class="category mr-1"
+                                                                               {{ in_array($child1->id,$selected_category) ? 'checked' : '' }}
+                                                                               data-value="{{$child1->name}}"
+                                                                               id="checkbox{{$child1->id}}"
+                                                                               name="category_id[]"
+                                                                               parent="{{$child1->parent_id}}"
+                                                                               type="checkbox"
+                                                                               value="{{$child1->id}}"/>&nbsp;{{$child1->name}}
                                                                     </label>
                                                                 </a>
                                                                 @if(isset($child1->children))
                                                                     @foreach($child1->children as $child2)
                                                                         <a class="dropdown-item"
                                                                            href="javascript:void(0);">
-                                                                            <label class="pl-5"><input class="category"
-                                                                                                       {{ in_array($child2->id,$selected_category) ? 'checked' : '' }}
-                                                                                                       data-value="{{$child2->name}}"
-                                                                                                       id="checkbox{{$child2->id}}"
-                                                                                                       name="category_id[]"
-                                                                                                       parent="{{$child2->parent_id}}"
-                                                                                                       type="checkbox"
-                                                                                                       value="{{$child2->id}}"/>&nbsp;{{$child2->name}}
+                                                                            <label
+                                                                                class="pl-5 m-0 d-flex align-items-center">
+                                                                                <input class="category mr-1"
+                                                                                       {{ in_array($child2->id,$selected_category) ? 'checked' : '' }}
+                                                                                       data-value="{{$child2->name}}"
+                                                                                       id="checkbox{{$child2->id}}"
+                                                                                       name="category_id[]"
+                                                                                       parent="{{$child2->parent_id}}"
+                                                                                       type="checkbox"
+                                                                                       value="{{$child2->id}}"/>&nbsp;{{$child2->name}}
                                                                             </label>
                                                                         </a>
                                                                     @endforeach
@@ -420,131 +435,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card p-0 mt-3">
-                            <div class="card-header d-flex align-items-center justify-content-between">
-                                <div>
-                                    <i class="fas fa-fw fa-dollar-sign"></i>
-                                    <h5 class="card-title d-inline-block">
-                                        Template Information
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="" class="text-uppercase">
-                                                Shape
-                                            </label>
-                                            <div>
-                                                @foreach(['square', 'circle'] as $radio)
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="shape"
-                                                               id="shape_{{ $radio }}"
-                                                               value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
-                                                        <label class="form-check-label" for="shape_{{ $radio }}">
-                                                            {{ Str::title($radio) }}
-                                                        </label>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="" class="text-uppercase">
-                                                Orientation
-                                            </label>
-                                            <div>
-                                                @foreach(['portrait', 'landscape'] as $radio)
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="orientation"
-                                                               id="orientation_{{ $radio }}"
-                                                               value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
-                                                        <label class="form-check-label" for="orientation_{{ $radio }}">
-                                                            {{ Str::title($radio) }}
-                                                        </label>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="" class="text-uppercase">
-                                                Unit
-                                            </label>
-                                            <div>
-                                                @foreach(['mm', 'cm'] as $radio)
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="unit"
-                                                               id="unit_{{ $radio }}"
-                                                               value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
-                                                        <label class="form-check-label" for="unit_{{ $radio }}">
-                                                            {{ $radio }}
-                                                        </label>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="" class="text-uppercase">
-                                                Enable Resize?
-                                            </label>
-                                            <div>
-                                                @foreach(['no', 'yes'] as $index => $radio)
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio"
-                                                               name="enable_resize"
-                                                               id="resize_{{ $radio }}"
-                                                               value="{{ $index }}" {{ $loop->first ? 'checked' : '' }}>
-                                                        <label class="form-check-label" for="resize_{{ $radio }}">
-                                                            {{ Str::title($radio) }}
-                                                        </label>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="text-uppercase" for="bleed">
-                                        Bleed
-                                    </label>
-                                    <textarea class="form-control" name="bleed" id="bleed">{{$entity->bleed}}</textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label class="text-uppercase" for="safety_line">
-                                        Safety Line
-                                    </label>
-                                    <textarea class="form-control" name="safety_line"
-                                              id="safety_line">{{$entity->safety_line}}</textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label class="text-uppercase" for="template_width">
-                                        Template Width
-                                    </label>
-                                    <textarea class="form-control" name="template_width"
-                                              id="template_width">{{$entity->template_width}}</textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label class="text-uppercase" for="template_height">
-                                        Template Height
-                                    </label>
-                                    <textarea class="form-control" name="template_height"
-                                              id="template_height">{{$entity->template_height}}</textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label class="text-uppercase" for="ratio">
-                                        Ratio
-                                    </label>
-                                    <textarea class="form-control" name="ratio" id="ratio">{{$entity->ratio}}</textarea>
-                                </div>
-                            </div>
-                        </div>
                         <div class="card p-0 mt-3"
+                             x-cloak
                              x-data='{
                                     templates: @json($entity->templates)
                                  }'>
@@ -552,7 +444,7 @@
                                 <div>
                                     <i class="fas fa-fw fa-dollar-sign"></i>
                                     <h5 class="card-title d-inline-block">
-                                        Template File
+                                        Templates
                                     </h5>
                                 </div>
                                 <small class="text-color:tertiary font-size:14 text-right">
@@ -564,131 +456,298 @@
                                 </small>
                             </div>
                             <div class="card-body">
-                                <template x-for="(template, index) in templates" :key="index">
-                                    <div class="card p-0 mb-3 rounded">
-                                        <div
-                                            class="card-header p-3 rounded d-flex align-items-center justify-content-between">
-                                            <div class="form-group w-100 m-0 d-flex align-items-center">
-                                                <label class="text-uppercase mb-0 mr-3" for="template_file">
-                                                    File
-                                                </label>
-                                                <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" id="template_file"
-                                                           name="template_file[]">
-                                                    <label class="custom-file-label" for="template_file">
-                                                        Choose file
+                                <div class="accordion" id="accordionExample">
+                                    <template x-for="(template, index) in templates" :key="index">
+                                        <div class="card p-0 mb-3 rounded border">
+                                            <div
+                                                class="card-header m-0 rounded p-3 d-flex align-items-center justify-content-between">
+                                                <div class="form-group w-100 m-0 d-flex align-items-center">
+                                                    <button class="btn btn-link" type="button"
+                                                            data-toggle="collapse"
+                                                            :data-target="'#collapse_template_' + index"
+                                                            aria-expanded="true" aria-controls="collapseOne">
+                                                        <i class="fas fa-fw fa-angle-down m-0"></i>
+                                                    </button>
+                                                    <label class="text-uppercase text-nowrap m-0 mr-3"
+                                                           for="template_design_name">
+                                                        Design Name
                                                     </label>
+                                                    <input type="text" class="form-control"
+                                                           :name="'templates['+ index +'][design_name]'"
+                                                           id="template_design_name" x-model="template.design_name">
                                                 </div>
+                                                <template x-if="templates.length > 1">
+                                                    <a href="#" class="btn btn-danger btn-sm text-white ml-3"
+                                                       @click.prevent="templates.splice(index, 1)">
+                                                        <i class="fas fa-fw fa-trash m-0 text-white"></i>
+                                                    </a>
+                                                </template>
                                             </div>
-                                            <template x-if="index !== 0">
-                                                <a href="#" class="btn btn-danger btn-sm text-white ml-3"
-                                                   @click.prevent="templates.splice(index, 1)">
-                                                    <i class="fas fa-fw fa-trash m-0 text-white"></i>
-                                                </a>
-                                            </template>
-                                        </div>
-                                        <div class="card-body p-3">
-                                            <div class="row">
-                                                <div class="col-md-6">
+                                            <div :id="'collapse_template_' + index" class="collapse show">
+                                                <div class="card-body p-3">
                                                     <div class="form-group">
-                                                        <label class="text-uppercase" for="template_design_name">
-                                                            Design Name
+                                                        <label class="text-uppercase" for="template_price">
+                                                            Price
                                                         </label>
-                                                        <input type="text" class="form-control"
-                                                               name="template_design_name[]"
-                                                               id="template_design_name" x-model="template.design_name">
+                                                        <input type="tel" class="form-control price text-right"
+                                                               :name="'templates['+ index +'][price]'"
+                                                               id="template_price" x-model="template.price">
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="" class="text-uppercase">
+                                                                    Shape
+                                                                </label>
+                                                                <div>
+                                                                    @foreach(['square', 'circle'] as $radio)
+                                                                        <div class="form-check form-check-inline">
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input"
+                                                                                       type="radio"
+                                                                                       x-model="template.shape"
+                                                                                       :name="'templates['+ index +'][shape]'"
+                                                                                       value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
+                                                                                {{ Str::title($radio) }}
+                                                                            </label>
+                                                                        </div>
+                                                                    @endforeach
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="" class="text-uppercase">
+                                                                    Orientation
+                                                                </label>
+                                                                <div>
+                                                                    @foreach(['portrait', 'landscape'] as $radio)
+                                                                        <div class="form-check form-check-inline">
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input"
+                                                                                       type="radio"
+                                                                                       x-model="template.orientation"
+                                                                                       :name="'templates['+ index +'][orientation]'"
+                                                                                       value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
+                                                                                {{ Str::title($radio) }}
+                                                                            </label>
+                                                                        </div>
+                                                                    @endforeach
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="" class="text-uppercase">
+                                                                    Unit
+                                                                </label>
+                                                                <div>
+                                                                    @foreach(['mm', 'cm'] as $radio)
+                                                                        <div class="form-check form-check-inline">
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input"
+                                                                                       type="radio"
+                                                                                       x-model="template.unit"
+                                                                                       :name="'templates['+ index +'][unit]'"
+                                                                                       value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
+                                                                                {{ $radio }}
+                                                                            </label>
+                                                                        </div>
+                                                                    @endforeach
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="" class="text-uppercase">
+                                                                    Enable Resize?
+                                                                </label>
+                                                                <div>
+                                                                    @foreach(['no', 'yes'] as $index => $radio)
+                                                                        <div class="form-check form-check-inline">
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input"
+                                                                                       type="radio"
+                                                                                       x-model="template.enable_resize"
+                                                                                       :name="'templates['+ index +'][enable_resize]'"
+                                                                                       value="{{ $index }}" {{ $loop->first ? 'checked' : '' }}>
+                                                                                {{ Str::title($radio) }}
+                                                                            </label>
+                                                                        </div>
+                                                                    @endforeach
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="text-uppercase">
+                                                            Bleed
+                                                        </label>
+                                                        <textarea class="form-control" x-model="template.bleed"
+                                                                  :name="'templates['+ index +'][bleed]'"></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="text-uppercase">
+                                                            Safety Line
+                                                        </label>
+                                                        <textarea class="form-control" x-model="template.safety_line"
+                                                                  :name="'templates['+ index +'][safety_line]'"></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="text-uppercase">
+                                                            Template Width
+                                                        </label>
+                                                        <textarea class="form-control" x-model="template.template_width"
+                                                                  :name="'templates['+ index +'][width]'"></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="text-uppercase">
+                                                            Template Height
+                                                        </label>
+                                                        <textarea class="form-control"
+                                                                  x-model="template.template_height"
+                                                                  :name="'templates['+ index +'][height]'"></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="text-uppercase">
+                                                            Ratio
+                                                        </label>
+                                                        <textarea class="form-control" x-model="template.ratio"
+                                                                  :name="'templates['+ index +'][ratio]'"></textarea>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6"
+                                                             x-data='{
+                                                                designs: template.designs
+                                                            }'>
+                                                            <div
+                                                                class="form-group d-flex align-items-center justify-content-between">
+                                                                <h5 class="card-title">
+                                                                    Designs
+                                                                </h5>
+                                                                <small
+                                                                    class="text-color:tertiary font-size:14 text-right">
+                                                                    <a href="#" class="btn btn-primary btn-sm py-0"
+                                                                       @click.prevent="designs.push('')">
+                                                                        <i class="fas fa-plus fa-fw"></i>
+                                                                        Add
+                                                                    </a>
+                                                                </small>
+                                                            </div>
+                                                            <template x-for="(design, designIndex) in designs"
+                                                                      :key="designIndex">
+                                                                <div class="card p-0 mb-3">
+                                                                    <div class="card-body p-3 position-relative">
+                                                                        <template x-if="designs.length > 1">
+                                                                            <div class="position-absolute"
+                                                                                 style="right: 0;top: 0;">
+                                                                                <a href="#" class="text-color:red"
+                                                                                   @click.prevent="designs.splice(designIndex, 1)">
+                                                                                    <i class="fas fa-fw fa-times m-0"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                        </template>
+                                                                        <div class="form-group">
+                                                                            <label class="text-uppercase">
+                                                                                File
+                                                                            </label>
+                                                                            <input type="file"
+                                                                                   class="form-control-file"
+                                                                                   :name="'templates['+ index +'][design][][file]'">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <a :href="'{{ asset('templates') }}/' + design.file"
+                                                                               x-text="design.file" target="_blank"></a>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="text-uppercase">
+                                                                                Page Name
+                                                                            </label>
+                                                                            <input type="text" class="form-control"
+                                                                                   x-model="design.page_name"
+                                                                                   :name="'templates['+ index +'][design][][page_name]'">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                        <div class="col-md-6"
+                                                             x-data='{
+                                                                previews: template.previews
+                                                            }'>
+                                                            <div
+                                                                class="form-group d-flex align-items-center justify-content-between">
+                                                                <h5 class="card-title">
+                                                                    Previews
+                                                                </h5>
+                                                                <small
+                                                                    class="text-color:tertiary font-size:14 text-right">
+                                                                    <a href="#" class="btn btn-primary btn-sm py-0"
+                                                                       @click.prevent="previews.push('')">
+                                                                        <i class="fas fa-plus fa-fw"></i>
+                                                                        Add
+                                                                    </a>
+                                                                </small>
+                                                            </div>
+                                                            <template x-for="(preview, previewIndex) in previews"
+                                                                      :key="previewIndex">
+                                                                <div class="card p-0 mb-3">
+                                                                    <div class="card-body p-3 position-relative">
+                                                                        <template x-if="previews.length > 1">
+                                                                            <div class="position-absolute"
+                                                                                 style="right: 0;top: 0;">
+                                                                                <a href="#" class="text-color:red"
+                                                                                   @click.prevent="previews.splice(previewIndex, 1)">
+                                                                                    <i class="fas fa-fw fa-times m-0"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                        </template>
+                                                                        <div class="form-group">
+                                                                            <label class="text-uppercase"
+                                                                                   for="template_file">
+                                                                                File
+                                                                            </label>
+                                                                            <input type="file" class="form-control-file"
+                                                                                   :name="'templates['+ index +'][preview]['+previewIndex+'][file]'">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <a :href="'{{ asset('previews') }}/' + preview.file"
+                                                                               x-text="preview.file" target="_blank"></a>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="text-uppercase">
+                                                                                Preview Name
+                                                                            </label>
+                                                                            <input type="text" class="form-control"
+                                                                                   x-model="preview.preview_name"
+                                                                                   :name="'templates['+ index +'][preview]['+previewIndex+'][preview_name]'">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="text-uppercase">
+                                                                                Thumbnail Name
+                                                                            </label>
+                                                                            <input type="text" class="form-control"
+                                                                                   x-model="preview.thumbnail_name"
+                                                                                   :name="'templates['+ index +'][preview]['+previewIndex+'][thumbnail_name]'">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="text-uppercase">
+                                                                                File Config
+                                                                            </label>
+                                                                            <input type="text" class="form-control"
+                                                                                   x-model="preview.file_config"
+                                                                                   :name="'templates['+ index +'][preview]['+previewIndex+'][file_config]'">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="text-uppercase" for="template_page_name">
-                                                            Page Name
-                                                        </label>
-                                                        <input type="text" class="form-control"
-                                                               name="template_page_name[]"
-                                                               id="template_page_name" x-model="template.page_name">
-                                                    </div>
-                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
-                        <div class="card p-0 mt-3"
-                             x-data='{
-                                    templates: @json($entity->previews)
-                                 }'>
-                            <div class="card-header d-flex align-items-center justify-content-between">
-                                <div>
-                                    <i class="fas fa-fw fa-dollar-sign"></i>
-                                    <h5 class="card-title d-inline-block">
-                                        Preview File
-                                    </h5>
+                                    </template>
                                 </div>
-                                <small class="text-color:tertiary font-size:14 text-right">
-                                    <a href="#" class="btn btn-primary btn-sm py-0"
-                                       @click.prevent="templates.push('')">
-                                        <i class="fas fa-plus fa-fw"></i>
-                                        Add
-                                    </a>
-                                </small>
-                            </div>
-                            <div class="card-body">
-                                <template x-for="(template, index) in templates" :key="index">
-                                    <div class="card p-0 mb-3">
-                                        <div
-                                            class="card-header p-3 rounded d-flex align-items-center justify-content-between">
-                                            <div class="form-group w-100 m-0 d-flex align-items-center">
-                                                <label class="text-uppercase mb-0 mr-3" for="preview_file">
-                                                    File
-                                                </label>
-                                                <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" id="preview_file"
-                                                           name="preview_file[]">
-                                                    <label class="custom-file-label" for="preview_file">Choose
-                                                        file</label>
-                                                </div>
-                                            </div>
-                                            <template x-if="index !== 0">
-                                                <a href="#" class="btn btn-danger btn-sm text-white ml-3"
-                                                   @click.prevent="templates.splice(index, 1)">
-                                                    <i class="fas fa-fw fa-trash m-0 text-white"></i>
-                                                </a>
-                                            </template>
-                                        </div>
-                                        <div class="card-body p-3">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="text-uppercase" for="preview_name">
-                                                            Preview Name
-                                                        </label>
-                                                        <input type="text" class="form-control" name="preview_name[]" x-model="template.preview_name"
-                                                               id="preview_name">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="text-uppercase" for="preview_thumbnail_name">
-                                                            Thumbnail Name
-                                                        </label>
-                                                        <input type="text" class="form-control"
-                                                               name="preview_thumbnail_name[]"
-                                                               id="preview_thumbnail_name" x-model="template.thumbnail_name">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="text-uppercase" for="preview_file_config">
-                                                    File Config
-                                                </label>
-                                                <textarea class="form-control" name="preview_file_config[]" x-model="template.file_config"
-                                                          id="preview_file_config"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </template>
                             </div>
                         </div>
                     </div>
@@ -745,14 +804,14 @@
                                         <th data-field="stock">Stock</th>
                                         <th data-width="180" data-field="dimensi">Dimension (cm)</th>
                                         <th data-width="10" data-field="weight">{{Lang::get('product.weight')}}(gr)</th>
-                                        <th data-width="120" data-field="production_cost">
-                                            Production Cost (IDR)
+                                        <th data-width="80" data-field="production_cost">
+                                            Production Cost
                                         </th>
-                                        <th data-width="120" data-field="fulfillment_cost">
-                                            Fulfillment Cost (IDR)
+                                        <th data-width="80" data-field="fulfillment_cost">
+                                            Fulfillment Cost
                                         </th>
-                                        <th data-width="120" data-field="selling_price">
-                                            Selling Price (IDR)
+                                        <th data-width="80" data-field="selling_price">
+                                            Selling Price
                                         </th>
                                     </tr>
                                     </thead>
@@ -795,10 +854,10 @@
     <script type="text/javascript">
         var base_url = "{{url('js/library')}}";
         var upload_url = "{{route('product.upload')}}";
+        var bind_image_to_sku = false;
         var options = <?php echo json_encode($product_options); ?>;
         var old_sku = <?php echo json_encode($entity->skus); ?>;
         var option_rows = [];
-        var bind_image_to_sku = false;
         var lang = 'en';
         var outlets = [];
         var stocks = [];
