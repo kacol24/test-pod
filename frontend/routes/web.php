@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Account\SwitchStoreController;
 use App\Http\Controllers\Account\WalletController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TopupController;
@@ -24,6 +25,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('/dashboard', 'dashboard')->name('dashboard');
+    Route::get('switch-store/{storename}', [SwitchStoreController::class, 'switch'])->name('switchstore');
 
     Route::view('my-account', 'account.myaccount')->name('myaccount');
     Route::view('my-purchases', 'account.mypurchases')->name('myorders');

@@ -114,14 +114,15 @@
                     Switch to other account
                 </h6>
             </li>
-            <li>
-                <form action="{{ route('logout') }}" method="post">
-                    @csrf
-                    <a href="#" class="dropdown-item border border-color:black" onclick="this.closest('form').submit()">
-                        Logout
+            @foreach(auth()->user()->stores as $store)
+                @continue(session(\App\Models\Store::SESSION_KEY)->storename == $store->storename)
+                <li>
+                    <a href="{{ route('switchstore', $store->storename) }}"
+                       class="dropdown-item border border-color:black">
+                        {{ $store->storename }}
                     </a>
-                </form>
-            </li>
+                </li>
+            @endforeach
         </ul>
     </li>
     <li class="nav-item me-3 border-start ps-4 d-none d-md-flex">
