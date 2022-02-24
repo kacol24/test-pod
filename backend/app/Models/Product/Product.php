@@ -16,17 +16,6 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'enable_resize'          => 'boolean',
-        'template_file'          => 'array',
-        'template_design_name'   => 'array',
-        'template_page_name'     => 'array',
-        'preview_file'           => 'array',
-        'preview_name'           => 'array',
-        'preview_thumbnail_name' => 'array',
-        'preview_file_config'    => 'array',
-    ];
-
     function option1()
     {
         $lang = language($this);
@@ -139,5 +128,15 @@ class Product extends Model
     public function templates()
     {
         return $this->hasMany(Template::class, 'product_id');
+    }
+
+    public function previews()
+    {
+        return $this->hasManyThrough(Preview::class, Template::class, 'product_id', 'template_id');
+    }
+
+    public function designs()
+    {
+        return $this->hasManyThrough(Design::class, Template::class, 'product_id', 'template_id');
     }
 }

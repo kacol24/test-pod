@@ -348,207 +348,217 @@ class ProductController extends Controller
             $input['is_featured'] = 0;
         }
         DB::beginTransaction();
-        try {
-            $product = Product::where('id', $id)->first();
-            if (isset($input['is_publish'])) {
-                $product->is_publish = $input['is_publish'];
-            }
-            $product->title = $request->title;
-            $product->prism_id = $request->prism_id;
-            $product->production_time = $request->production_time;
-            $product->fulfillment_time = $request->fulfillment_time;
-            $product->threshold = $request->threshold;
-            $product->description = $request->description;
-            $product->size_chart = $request->size_chart;
-            $product->capacity_id = $request->capacity_id;
-            $product->save();
+        $product = Product::where('id', $id)->first();
+        if (isset($input['is_publish'])) {
+            $product->is_publish = $input['is_publish'];
+        }
+        $product->title = $request->title;
+        $product->prism_id = $request->prism_id;
+        $product->production_time = $request->production_time;
+        $product->fulfillment_time = $request->fulfillment_time;
+        $product->threshold = $request->threshold;
+        $product->description = $request->description;
+        $product->size_chart = $request->size_chart;
+        $product->capacity_id = $request->capacity_id;
+        $product->save();
 
-            foreach ($request->templates as $index => $template) {
-                if ($template['id']) {
-                    $productTemplate = Template::find($template['id']);
-                }
-                $data = [
-                    'design_name'     => $template['design_name'],
-                    'price'           => $template['price'],
-                    'shape'           => $template['shape'],
-                    'orientation'     => $template['orientation'],
-                    'unit'            => $template['unit'],
-                    'enable_resize'   => $template['enable_resize'],
-                    'bleed'           => $template['bleed'],
-                    'safety_line'     => $template['safety_line'],
-                    'template_width'  => $template['width'],
-                    'template_height' => $template['height'],
-                    'ratio'           => $template['ratio'],
-                ];
-                if ($productTemplate) {
-                    $productTemplate->update($data);
-                } else {
-                    $productTemplate = $product->templates()->create($data);
-                }
+        $templatesData = collect();
+        foreach ($request->templates as $index => $template) {
+            $rootTemplate = [
+                'design_name'     => $template['design_name'],
+                'price'           => $template['price'],
+                'shape'           => $template['shape'],
+                'orientation'     => $template['orientation'],
+                'unit'            => $template['unit'],
+                'enable_resize'   => $template['enable_resize'],
+                'bleed'           => $template['bleed'],
+                'safety_line'     => $template['safety_line'],
+                'template_width'  => $template['width'],
+                'template_height' => $template['height'],
+                'ratio'           => $template['ratio'],
+            ];
 
-                foreach ($template['design'] as $designIndex => $design) {
-                    if ($design['id']) {
-                        $productDesign = Design::find($design['id']);
-                    }
-                    $data = [
-                        'page_name' => $design['page_name'],
-                    ];
-                    $fileKey = 'templates.'.$index.'.design.'.$designIndex.'.file';
-                    if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
-                        $file = $request->file($fileKey);
-                        $extension = $file->getClientOriginalExtension();
-                        $filename = sha1(Str::random(32)).".".$extension;
-                        $path = storage_path('app/templates');
-                        if (! file_exists($path)) {
-                            mkdir($path, 0755, true);
-                        }
-                        $file->storeAs('/templates', $filename);
-                        $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
-                        $data = [
-                            'file'            => $filename,
-                            'customer_canvas' => $canvas,
-                        ];
-                    }
-                    if ($productDesign) {
-                        $productDesign->update($data);
-                    } else {
-                        $productTemplate->designs()->create($data);
-                    }
+            foreach ($template['design'] ?? [] as $designIndex => $design) {
+                if ($design['id']) {
+                    $theDesign = Design::find($design['id'])->toArray();
                 }
-
-                foreach ($template['preview'] as $previewIndex => $preview) {
-                    if ($preview['id']) {
-                        $productPreview = Preview::find($preview['id']);
+                $theDesign['page_name'] = $design['page_name'];
+                $fileKey = 'templates.'.$index.'.design.'.$designIndex.'.file';
+                if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
+                    $file = $request->file($fileKey);
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = sha1(Str::random(32)).".".$extension;
+                    $path = storage_path('app/templates');
+                    if (! file_exists($path)) {
+                        mkdir($path, 0755, true);
                     }
-                    $data = [
-                        'preview_name'   => $preview['preview_name'],
-                        'thumbnail_name' => $preview['thumbnail_name'],
-                        'file_config'    => $preview['file_config'],
-                    ];
-                    $fileKey = 'templates.'.$index.'.preview.'.$previewIndex.'.file';
-                    if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
-                        $file = $request->file($fileKey);
-                        $extension = $file->getClientOriginalExtension();
-                        $filename = sha1(Str::random(32)).".".$extension;
-                        $path = storage_path('app/previews');
-                        if (! file_exists($path)) {
-                            mkdir($path, 0755, true);
-                        }
-                        $file->storeAs('/templates', $filename);
-                        $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
-                        $data = [
-                            'file'            => $filename,
-                            'customer_canvas' => $canvas,
-                        ];
-                    }
-                    if ($productPreview) {
-                        $productPreview->update($data);
-                    } else {
-                        $productTemplate->previews()->create($data);
-                    }
+                    $file->storeAs('/templates', $filename);
+                    $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
+                    $theDesign['file'] = $filename;
+                    $theDesign['customer_canvas'] = $canvas;
                 }
+                $rootTemplate['design'][] = $theDesign;
             }
 
-            $product->categories()->sync($request->category_id);
+            foreach ($template['preview'] ?? [] as $previewIndex => $preview) {
+                if ($preview['id']) {
+                    $thePreview = Preview::find($preview['id'])->toArray();
+                }
+                $thePreview['preview_name'] = $preview['preview_name'];
+                $thePreview['thumbnail_name'] = $preview['thumbnail_name'];
+                $thePreview['file_config'] = $preview['file_config'];
+                $fileKey = 'templates.'.$index.'.preview.'.$previewIndex.'.file';
+                if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
+                    $file = $request->file($fileKey);
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = sha1(Str::random(32)).".".$extension;
+                    $path = storage_path('app/previews');
+                    if (! file_exists($path)) {
+                        mkdir($path, 0755, true);
+                    }
+                    $file->storeAs('/templates', $filename);
+                    $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
+                    $thePreview['file'] = $filename;
+                    $thePreview['customer_canvas'] = $canvas;
+                }
+                $rootTemplate['preview'][] = $thePreview;
+            }
+            $templatesData->push($rootTemplate);
+        }
 
-            #Product Images
-            ProductImage::where('product_id', $product->id)->delete();
-            if (isset($input['images']) && is_array($input['images'])) {
-                foreach ($input['images'] as $idx => $image) {
-                    ProductImage::create(['product_id' => $product->id, 'image' => $image, 'order_weight' => $idx]);
-                }
+        Design::whereIn('id', $product->designs->pluck('id')->toArray())->delete();
+        Preview::whereIn('id', $product->previews->pluck('id')->toArray())->delete();
+        Template::whereIn('id', $product->templates->pluck('id')->toArray())->delete();
+        foreach ($templatesData as $templateData) {
+            $template = $product->templates()->create([
+                'design_name'     => $templateData['design_name'],
+                'price'           => $templateData['price'],
+                'shape'           => $templateData['shape'],
+                'orientation'     => $templateData['orientation'],
+                'unit'            => $templateData['unit'],
+                'enable_resize'   => $templateData['enable_resize'],
+                'bleed'           => $templateData['bleed'],
+                'safety_line'     => $templateData['safety_line'],
+                'template_width'  => $templateData['template_width'],
+                'template_height' => $templateData['template_height'],
+                'ratio'           => $templateData['ratio'],
+            ]);
+
+            foreach ($templateData['design'] as $designData) {
+                $template->designs()->create([
+                    'file'            => $designData['file'],
+                    'page_name'       => $designData['page_name'],
+                    'customer_canvas' => $designData['customer_canvas'],
+                ]);
             }
-            #Product Options
-            foreach ($product->options as $option) {
-                foreach ($option->details as $option_detail) {
-                    $option_detail->delete();
-                }
-                $option->delete();
+
+            foreach ($templateData['preview'] as $previewData) {
+                $template->previews()->create([
+                    'file'            => $previewData['file'],
+                    'preview_name'    => $previewData['preview_name'],
+                    'thumbnail_name'  => $previewData['thumbnail_name'],
+                    'file_config'     => $previewData['file_config'],
+                    'customer_canvas' => $previewData['customer_canvas'],
+                ]);
             }
-            ProductOption::where('product_id', $product->id)->delete();
-            if (isset($input['product_options']) && is_array(json_decode($input['product_options']))) {
-                foreach (json_decode($input['product_options']) as $option) {
-                    $product_option = ProductOption::create([
-                        'product_id' => $product->id,
-                        'title'      => $option->title,
+        }
+
+        $product->categories()->sync($request->category_id);
+
+        #Product Images
+        ProductImage::where('product_id', $product->id)->delete();
+        if (isset($input['images']) && is_array($input['images'])) {
+            foreach ($input['images'] as $idx => $image) {
+                ProductImage::create(['product_id' => $product->id, 'image' => $image, 'order_weight' => $idx]);
+            }
+        }
+        #Product Options
+        foreach ($product->options as $option) {
+            foreach ($option->details as $option_detail) {
+                $option_detail->delete();
+            }
+            $option->delete();
+        }
+        ProductOption::where('product_id', $product->id)->delete();
+        if (isset($input['product_options']) && is_array(json_decode($input['product_options']))) {
+            foreach (json_decode($input['product_options']) as $option) {
+                $product_option = ProductOption::create([
+                    'product_id' => $product->id,
+                    'title'      => $option->title,
+                ]);
+
+                foreach ($option->details as $opt_detail) {
+                    $product_option_detail = ProductOptionDetail::create([
+                        'option_id' => $product_option->id,
+                        'title'     => $opt_detail->title,
+                        'key'       => $opt_detail->key,
                     ]);
 
-                    foreach ($option->details as $opt_detail) {
-                        $product_option_detail = ProductOptionDetail::create([
-                            'option_id' => $product_option->id,
-                            'title'     => $opt_detail->title,
-                            'key'       => $opt_detail->key,
-                        ]);
-
-                        if (isset($opt_detail->image)) {
-                            $product_option_detail->image = $opt_detail->image;
-                            $product_option_detail->save();
-                        }
+                    if (isset($opt_detail->image)) {
+                        $product_option_detail->image = $opt_detail->image;
+                        $product_option_detail->save();
                     }
                 }
             }
-            #Default Product Option
-            ProductSku::where('product_id', $product->id)->delete();
-            ProductSku::where('product_id', $product->id)->whereNull('option_detail_key1')
-                      ->whereNull('option_detail_key2')->restore();
-            $sku = ProductSku::where('product_id', $product->id)->whereNull('option_detail_key1')
-                             ->whereNull('option_detail_key2')->first();
-
-            $sku->sku_code = $input['default_sku'];
-            $sku->weight = $input['default_weight'];
-            $sku->production_cost = $input['default_production_cost'];
-            $sku->fulfillment_cost = $input['default_fulfillment_cost'];
-            $sku->selling_price = $input['default_selling_price'];
-            $sku->stock = $input['default_stock'];
-            $sku->width = $input['default_width'];
-            $sku->length = $input['default_length'];
-            $sku->height = $input['default_height'];
-            $sku->save();
-
-            if (isset($input['product_skus']) && is_array(json_decode($input['product_skus']))) {
-                foreach (json_decode($input['product_skus']) as $idx => $sku) {
-                    if (! isset($sku->key2)) {
-                        $sku->key2 = null;
-                    }
-
-                    $productsku = ProductSku::withTrashed()->where('product_id', $product->id)
-                                            ->where('option_detail_key1', $sku->key1)
-                                            ->where('option_detail_key2', $sku->key2)->first();
-                    if ($productsku) {
-                        $productsku->sku_code = $input['sku'.$idx];
-                        $productsku->weight = $input['weight'.$idx];
-                        $productsku->production_cost = $input['production_cost'.$idx];
-                        $productsku->fulfillment_cost = $input['fulfillment_cost'.$idx];
-                        $productsku->selling_price = $input['selling_price'.$idx];
-                        $productsku->stock = $input['stock'.$idx];
-                        $productsku->width = $input['width'.$idx];
-                        $productsku->length = $input['length'.$idx];
-                        $productsku->height = $input['height'.$idx];
-                        $productsku->save();
-                        $productsku->restore();
-                    } else {
-                        $sku = ProductSku::create([
-                            'product_id'         => $product->id,
-                            'option_detail_key1' => $sku->key1,
-                            'option_detail_key2' => $sku->key2,
-                            'sku_code'           => $input['sku'.$idx],
-                            'weight'             => $input['weight'.$idx],
-                            'production_cost'    => $input['production_cost'.$idx],
-                            'fulfillment_cost'   => $input['fulfillment_cost'.$idx],
-                            'selling_price'      => $input['selling_price'.$idx],
-                            'stock'              => $input['stock'.$idx],
-                            'width'              => $input['width'.$idx],
-                            'length'             => $input['length'.$idx],
-                            'height'             => $input['height'.$idx],
-                        ]);
-                    }
-                }
-            }
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollback();
-            throw new \Exception($e->getMessage());
         }
+        #Default Product Option
+        ProductSku::where('product_id', $product->id)->delete();
+        ProductSku::where('product_id', $product->id)->whereNull('option_detail_key1')
+                  ->whereNull('option_detail_key2')->restore();
+        $sku = ProductSku::where('product_id', $product->id)->whereNull('option_detail_key1')
+                         ->whereNull('option_detail_key2')->first();
+
+        $sku->sku_code = $input['default_sku'];
+        $sku->weight = $input['default_weight'];
+        $sku->production_cost = $input['default_production_cost'];
+        $sku->fulfillment_cost = $input['default_fulfillment_cost'];
+        $sku->selling_price = $input['default_selling_price'];
+        $sku->stock = $input['default_stock'];
+        $sku->width = $input['default_width'];
+        $sku->length = $input['default_length'];
+        $sku->height = $input['default_height'];
+        $sku->save();
+
+        if (isset($input['product_skus']) && is_array(json_decode($input['product_skus']))) {
+            foreach (json_decode($input['product_skus']) as $idx => $sku) {
+                if (! isset($sku->key2)) {
+                    $sku->key2 = null;
+                }
+
+                $productsku = ProductSku::withTrashed()->where('product_id', $product->id)
+                                        ->where('option_detail_key1', $sku->key1)
+                                        ->where('option_detail_key2', $sku->key2)->first();
+                if ($productsku) {
+                    $productsku->sku_code = $input['sku'.$idx];
+                    $productsku->weight = $input['weight'.$idx];
+                    $productsku->production_cost = $input['production_cost'.$idx];
+                    $productsku->fulfillment_cost = $input['fulfillment_cost'.$idx];
+                    $productsku->selling_price = $input['selling_price'.$idx];
+                    $productsku->stock = $input['stock'.$idx];
+                    $productsku->width = $input['width'.$idx];
+                    $productsku->length = $input['length'.$idx];
+                    $productsku->height = $input['height'.$idx];
+                    $productsku->save();
+                    $productsku->restore();
+                } else {
+                    $sku = ProductSku::create([
+                        'product_id'         => $product->id,
+                        'option_detail_key1' => $sku->key1,
+                        'option_detail_key2' => $sku->key2,
+                        'sku_code'           => $input['sku'.$idx],
+                        'weight'             => $input['weight'.$idx],
+                        'production_cost'    => $input['production_cost'.$idx],
+                        'fulfillment_cost'   => $input['fulfillment_cost'.$idx],
+                        'selling_price'      => $input['selling_price'.$idx],
+                        'stock'              => $input['stock'.$idx],
+                        'width'              => $input['width'.$idx],
+                        'length'             => $input['length'.$idx],
+                        'height'             => $input['height'.$idx],
+                    ]);
+                }
+            }
+        }
+        DB::commit();
 
         return redirect()->route('product.list')->with('status', 'Success edit product');
     }

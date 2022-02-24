@@ -619,7 +619,7 @@
                                                     <div class="row">
                                                         <div class="col-md-6"
                                                              x-data='{
-                                                                designs: template.designs
+                                                                designs: template.designs ?? [""]
                                                             }'>
                                                             <div
                                                                 class="form-group d-flex align-items-center justify-content-between">
@@ -676,7 +676,7 @@
                                                         </div>
                                                         <div class="col-md-6"
                                                              x-data='{
-                                                                previews: template.previews
+                                                                previews: template.previews ?? [""]
                                                             }'>
                                                             <div
                                                                 class="form-group d-flex align-items-center justify-content-between">
