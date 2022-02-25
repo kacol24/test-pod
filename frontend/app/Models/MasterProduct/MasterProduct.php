@@ -136,4 +136,9 @@ class MasterProduct extends Model
         return $this->hasMany('App\Models\MasterProduct\MasterProductSku', 'product_id', 'id')->whereNotNull('option_detail_key1')
                     ->whereNull('product_skus.deleted_at')->orderBy('price', 'asc');
     }
+
+    function templates()
+    {
+        return $this->hasMany('App\Models\MasterProduct\Template', 'product_id', 'id');
+    }
 }

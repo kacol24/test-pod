@@ -30,8 +30,11 @@ class ProductController extends Controller
 
     public function designer($id)
     {
+        $masterproduct = MasterProduct::find($id);
+        $templates = $masterproduct->templates;
         return view('product.designer', array(
-            'masterproduct' => MasterProduct::find($id)
+            'masterproduct' => $masterproduct,
+            'templates' => $templates
         ));
     }
 

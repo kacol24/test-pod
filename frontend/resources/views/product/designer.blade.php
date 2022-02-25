@@ -19,6 +19,27 @@
                             <div class="text-nowrap mr-3">
                                 <i class="fas fa-fw fa-image"></i>
                                 <h5 class="card-title d-inline-block">
+                                    Template
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="card-body pt-3">
+                            <div class="row">
+                                <div class="col-md">
+                                    <select name="template" class="form-control"> 
+                                        @foreach($templates as $template)
+                                        <option>{{$template->design_name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card p-0 mt-3">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <div class="text-nowrap mr-3">
+                                <i class="fas fa-fw fa-money-bill"></i>
+                                <h5 class="card-title d-inline-block">
                                     Pricing
                                 </h5>
                             </div>
