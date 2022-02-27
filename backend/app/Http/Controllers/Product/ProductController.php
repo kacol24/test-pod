@@ -201,7 +201,7 @@ class ProductController extends Controller
                         mkdir($path, 0755, true);
                     }
                     $file->storeAs('/templates', $filename);
-                    $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
+                    $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'preview_mockups');
                 }
                 $productTemplate->previews()->create([
                     'file'            => $filename,
@@ -417,7 +417,7 @@ class ProductController extends Controller
                         mkdir($path, 0755, true);
                     }
                     $file->storeAs('/templates', $filename);
-                    $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
+                    $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'preview_mockups');
                     $thePreview['file'] = $filename;
                     $thePreview['customer_canvas'] = $canvas;
                 }
