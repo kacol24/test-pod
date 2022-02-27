@@ -28,7 +28,7 @@
                                 <div class="col-md">
                                     <select name="template" class="form-control"> 
                                         @foreach($templates as $template)
-                                        <option>{{$template->design_name}}</option>
+                                        <option value="{{$template->id}}">{{$template->design_name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -120,17 +120,365 @@
                                 Back
                             </a>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">
+                        <button type="submit" id="continue" class="btn btn-primary w-100">
                             Continue
                         </button>
                     </div>
                 </div>
             </div>
             <div class="col-md-7">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem commodi distinctio doloribus ea esse
-                facilis fugiat illo iure maiores nemo nihil nostrum porro quod quos reprehenderit, soluta tempora totam,
-                vel!
+                <iframe class="content__iframe" id="editorFrame"></iframe>
             </div>
         </div>
     </div>
 @endsection
+@push('scripts')
+    <style type="text/css">
+        .content__iframe {
+          height: 100%;
+          width: 100%;
+          min-height: calc(100vh - 76px);
+          min-height: calc(100vh - 76px);
+        }
+    </style>
+    <link href="https://canvas.printerous.com/production/Canvas/Edge/Configuration/customCss/loader.css" rel="stylesheet" />
+    <script id="CcIframeApiScript" type="text/javascript" src="https://canvas.printerous.com/production/Canvas/Edge/Resources/Generated/IframeApi.js"></script>
+
+    <script type="text/javascript">
+        let user_id = "{{session('current_store')->id}}";
+        let redirect_type = "editor";
+        let state_id = "77ee187f-bc11-4ac4-8c5c-f393b786e4b9";
+        let final_product;
+        let shape;
+        let safety_line;
+        let bleed;
+        let config;
+        let surfaces;
+        let editor;
+        let mockups;
+        var templates = {!!json_encode($templates)!!};
+
+        function mmToPoint(mm) {
+          var inch = mm / 25.4;
+          var point = 72 * inch;
+          console.log(point);
+          return point;
+        }
+
+        $(function(){
+            defineTemplate($("select[name='template']").val());
+
+            $("select[name='template']").change(function(){
+                defineTemplate($(this).val());
+            });     
+        });
+
+        function defineTemplate(id) {
+            templates.map(function(el,idx) {
+                if(el.id == id) {
+                    surfaces = [];
+                    mockups = [];
+                    return setupEditor(el); 
+                }
+            });
+        }
+
+        function setupEditor(template) {
+            // template.previews.map(function(el,idx){
+            //     mockups.push({
+            //         down: el.customer_canvas,
+            //     });
+            // });
+
+            template.designs.map(function(el,idx){
+                surfaces.push({
+                    name: el.page_name,
+                    printAreas: [
+                      {
+                        designFile: el.customer_canvas,
+                        designLocation: null
+                      }
+                    ],
+                    proofImage: {
+                      fileFormat: "PNG",
+                      rgbColorProfileName: "Adobe RGB (1998)",
+                      mockupEnabled: false
+                    },
+                });
+            });
+
+            
+            let product_definition = {
+                surfaces: surfaces
+            };
+
+            shape = template.shape;
+            safety_line = parseFloat(template.safety_line);
+            bleed = parseFloat(template.bleed);
+
+            config = {
+                initialMode: "Advanced",
+                userId: user_id,
+                customStyle: "toolbox-icon",
+                canvas: {
+                  containerColor: "#E5E5E5",
+                  canvasItemHoverEnabled: true,
+                  violationWarningButtonsEnabled: true,
+                  qualityChangeContainersEnabled: true
+                },
+                widgets: {
+                  ObjectInspector: {
+                    variableItemsEnabled: true,
+                    showItemName: true
+                  },
+                  ItemMenu: {
+                    renameEnabled: true
+                  },
+                  Toolbox: {
+                    buttons: [
+                      {
+                        translationKey: "Toolbox.TEXT",
+                        translationKeyTitle: "Toolbox.TITLE_ADD_TEXT",
+                        iconClass: "prs-icon prs-icon--caption prs-icon-add-text",
+                        buttons: [
+                          {
+                            translationKey: "Toolbox.TEXT",
+                            translationKeyTitle: "Toolbox.TITLE_ADD_TEXT",
+                            iconClass: "prs-icon prs-icon-add-text",
+                            action: "Text"
+                          },
+                          "RichText"
+                        ]
+                      },
+                      {
+                        translationKey: "Toolbox.IMAGE",
+                        translationKeyTitle: "Toolbox.TITLE_ADD_IMAGE",
+                        iconClass: "prs-icon prs-icon--caption prs-icon-add-image",
+                        action: "Image"
+                      },
+                      {
+                        translationKey: "Toolbox.SHAPE",
+                        translationKeyTitle: "Toolbox.TITLE_ADD_SHAPE",
+                        iconClass: "prs-icon prs-icon--caption prs-icon-add-shape",
+                        buttons: ["Line", "Rectangle", "Ellipse"]
+                      },
+                      {
+                        translationKey: "Toolbox.LINEAR_BARCODE",
+                        translationKeyTitle: "Toolbox.TITLE_ADD_LINEAR_BARCODE",
+                        iconClass: "prs-icon prs-icon--caption prs-icon-add-qr",
+                        buttons: ["LinearBarcode", "QrCode"]
+                      }
+                    ]
+                  }
+                },
+
+                rendering: {
+                  hiResOutputDpi: 300
+                },
+                violationWarningsSettings: {
+                  qualityMeter: {
+                    enabled: true,
+                    qualityLevels: {
+                      warning: "99",
+                      bad: "50"
+                    }
+                  }
+                }
+            };
+          
+            let cc_default_product_config = {};
+            if (safety_line > 0) {
+                if (shape == "square") {
+                  cc_default_product_config = {
+                    defaultSafetyLines: [
+                      {
+                        margin: {
+                          horizontal: mmToPoint(bleed),
+                          vertical: mmToPoint(bleed)
+                        },
+                        color: "rgba(255,0,0,255)",
+                        altColor: "rgba(255,0,0,255)",
+                        stepPx: 5,
+                        widthPx: 1
+                      }
+                    ]
+                  };
+                } else if (shape == "circle") {
+                  cc_default_product_config = {
+                    defaultSafetyLines: [
+                      {
+                        margin: {
+                          horizontal: mmToPoint(bleed),
+                          vertical: mmToPoint(bleed)
+                        },
+                        borderRadius: "100%",
+                        color: "rgba(255,0,0,255)",
+                        altColor: "rgba(255,0,0,255)",
+                        stepPx: 5,
+                        widthPx: 1
+                      }
+                    ]
+                  };
+                }
+            }
+
+            if (state_id) {
+                final_product = state_id;
+            } else {
+                final_product = $.extend(product_definition, cc_default_product_config);
+            }
+
+            const ResizeRectangleType = {
+                /** Fits the original bounding rectangle into the resulting one and maintains its proportions. */
+                Fit: 0,
+                /** Fills the original bounding rectangle into the resulting one. */
+                Fill: 1,
+                /** Applies an arbitrary resize to items to fit them into the resulting bounding rectangle. */
+                Arbitrary: 2,
+                /** Expands only the canvas. Items remain in their places in the center of the expanded canvas. */
+                Original: 3
+            };
+
+            editor = CustomersCanvas.IframeApi.loadEditor(
+                document.getElementById("editorFrame"),
+                final_product,
+                config
+            ).then(function (editor) {
+                editor.getProduct().then(async function (product) {
+                  var surface_ids = $.map(product.surfaces, function (surface, i) {
+                    return surface.id;
+                  });
+
+                  // check if surface exist.
+                  if (product.surfaces.length > 0) {
+                    selectItem(editor, product);
+                  }
+                });
+
+                $("#continue").click(function(){
+                    editor.finishProductDesign().then(function (result) {
+                        // Verify a state ID and a user ID.
+                        stateId = result.stateId;
+                        userId = result.userId;
+                        // Get links to hi-res outputs.
+                        hiResOutputUrls = result.hiResOutputUrls;
+                        console.log("User " + userId + " successfully saved the product " + stateId);
+                        console.log(hiResOutputUrls[0]);
+                    })
+                });
+
+                // document.getElementById("btn-download").addEventListener("click", async () => {
+                //     editor
+                //       .finishProductDesign()
+                //       .then(async (result) => {
+                //         var link = document.createElement("a");
+                //         var filename = result.hiResOutputUrls[0];
+                //         link.download = filename;
+                //         link.href = filename;
+                //         link.target = "_blank";
+                //         document.body.appendChild(link);
+                //         link.click();
+                //         setTimeout(function () {
+                //           document.body.removeChild(link);
+                //           window.URL.revokeObjectURL(filename);
+                //         }, 100);
+                //       })
+                //       .catch((error) => {
+                //         console.error(error);
+                //       });
+                // });
+            });
+
+          var idxSurface = 0;
+          var selectItem = function (editor, product) {
+            product.switchTo(product.surfaces[idxSurface]).then(function (resp) {
+              let args = {
+                targetType: "surfaces",
+                targetIds: [product.surfaces[idxSurface].id],
+                width: "255",
+                height: "156",
+                defaultOptions: {
+                  resize: 2,
+                  resetPlaceholderContent: false
+                }
+              };
+
+              let args_with_safety = {
+                targetType: "surfaces",
+                targetIds: [product.surfaces[idxSurface].id],
+                width: "272",
+                height: "173",
+                defaultOptions: {
+                  resize: 3,
+                  resetPlaceholderContent: false
+                },
+                containerOptions: {
+                  Background: {
+                    resize: 2
+                  }
+                }
+              };
+
+              var need_resize = false;
+              if (need_resize) {
+                if (!state_id) {
+                  editor.commandManager.execute("resize", args);
+                }
+              }
+              if (safety_line > 0) {
+                if (!state_id) {
+                  editor.commandManager.execute("resize", args_with_safety);
+                }
+              }
+
+              editor.selectItems([
+                {
+                  name: "BG"
+                }
+              ]);
+
+              editor.getSelectedItems().then(function (items) {
+                if (items.length) {
+                  var itemIds = [];
+                  items.forEach(function (item) {
+                    itemIds.push(item.id);
+                  });
+
+                  //resize
+                  let resize_p = {
+                    targetType: "items",
+                    targetIds: itemIds,
+                    width: "272",
+                    height: "173",
+                    defaultOptions: {
+                      resize: 2,
+                      resetPlaceholderContent: false
+                    },
+                    containerOptions: {
+                      Background: {
+                        resize: 2
+                      }
+                    }
+                  };
+                  if (!state_id) {
+                    editor.commandManager.execute("resize", resize_p);
+                  }
+                } else {
+                  console.log("There are no selected items.");
+                }
+
+                idxSurface++;
+                setTimeout(function () {
+                  if (idxSurface < product.surfaces.length) {
+                    selectItem(editor, product);
+                  } else {
+                    product.switchTo(product.surfaces[0]);
+                    $(".overlay-element").remove();
+                  }
+                }, 1000);
+              });
+            });
+          };
+        }
+    </script>
+@endpush
