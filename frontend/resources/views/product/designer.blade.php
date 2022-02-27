@@ -147,7 +147,7 @@
     <script type="text/javascript">
         let user_id = "{{session('current_store')->id}}";
         let redirect_type = "editor";
-        let state_id = "77ee187f-bc11-4ac4-8c5c-f393b786e4b9";
+        let state_id;
         let final_product;
         let shape;
         let safety_line;
