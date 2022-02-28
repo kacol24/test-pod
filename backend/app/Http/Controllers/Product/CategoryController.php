@@ -5,9 +5,6 @@ namespace App\Http\Controllers\Product;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Resources\Category as CategoryResource;
 use App\Models\Product\Category;
-use App\Models\Product\CategoryContent;
-use App\Models\Product\CategorySlug;
-use App\Repositories\Facades\CategoryRepository;
 use Cache;
 use DB;
 use Form;
@@ -168,7 +165,6 @@ class CategoryController extends Controller
     public function delete(Request $request)
     {
         Category::whereIn('id', $request->input('ids'))->delete();
-        Cache::tags('categories'.session('store')->id.app_key())->flush();
     }
 
     public function status(Request $request, $id)
