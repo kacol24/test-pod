@@ -174,10 +174,9 @@ class CategoryController extends Controller
     public function status(Request $request, $id)
     {
         if ($request->input('status') == 'disable') {
-            Category::where('id', $id)->where('store_id', session('store')->id)->update(['is_active' => 0]);
+            Category::where('id', $id)->update(['is_active' => 0]);
         } else {
-            Category::where('id', $id)->where('store_id', session('store')->id)->update(['is_active' => 1]);
+            Category::where('id', $id)->update(['is_active' => 1]);
         }
-        Cache::tags('categories'.session('store')->id.app_key())->flush();
     }
 }
