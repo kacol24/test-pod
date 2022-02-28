@@ -21,10 +21,11 @@ class FeaturePermissionSeeder extends Seeder
         DB::table('feature_permissions')->truncate();
 
         $features = [
-            'product' => 'Product',
-            'banner'  => 'Banner',
-            'admin'   => 'Admin',
-            'role'    => 'Role',
+            'product'   => 'Product',
+            'order'     => 'Order',
+            'banner'    => 'Banner',
+            'admin'     => 'Admin',
+            'role'      => 'Role',
             'category'  => 'Product Category Menu',
             'option'    => 'Product Option Menu',
             'optionset' => 'Product Option Set Menu',
@@ -55,6 +56,11 @@ class FeaturePermissionSeeder extends Seeder
                 'action_name' => 'product.bulkdelete',
                 'feature_id'  => $product->id,
                 'title'       => 'Delete Product',
+            ],
+            [
+                'action_name' => 'order.list',
+                'feature_id'  => $order->id,
+                'title'       => 'View Order',
             ],
             [
                 'action_name' => 'banner.index',

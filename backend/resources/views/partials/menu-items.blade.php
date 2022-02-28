@@ -25,7 +25,7 @@
                 <a class="dropdown-item {{ request()->routeIs(['capacity.list', 'capacity.add', 'capacity.edit']) ? 'active' : '' }}"
                    href="{{route('capacity.list')}}">Capacities</a>
             @endif
-            
+
             @if(check_permission('option.list'))
                 <a class="dropdown-item {{ request()->routeIs(['option.list', 'option.add', 'option.edit']) ? 'active' : '' }}"
                    href="{{route('option.list')}}">{{Lang::get('menuadmin.productoptions')}}</a>
@@ -39,6 +39,15 @@
                    href="{{route('inventory.list')}}">{{Lang::get('product.inventories')}}</a>
             @endif
         </div>
+    </li>
+@endif
+@if(check_permission('order.list'))
+    <li class="nav-item {{ in_array($active, ['order']) ? 'active' : '' }}">
+        <a class="nav-link" href="{{route('order.list')}}">
+            Orders
+            <span
+                class="badge badge-primary rounded-circle">{{ 1 }}</span>
+        </a>
     </li>
 @endif
 @if(check_permission('banner.index'))

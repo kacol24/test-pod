@@ -1,10 +1,11 @@
 <?php
 
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Product\CapacityController;
 use App\Http\Controllers\Product\CategoryController;
 use App\Http\Controllers\Product\OptionController;
 use App\Http\Controllers\Product\OptionSetController;
 use App\Http\Controllers\Product\ProductController;
-use App\Http\Controllers\Product\CapacityController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -107,6 +108,10 @@ Route::group(['prefix' => 'product'], function () {
     Route::get('capacity/edit/{id}', [CapacityController::class, 'edit'])->name('capacity.edit');
     Route::post('capacity/edit/{id}', [CapacityController::class, 'update'])->name('capacity.update');
     Route::post('capacity/delete', [CapacityController::class, 'delete'])->name('capacity.delete');
+});
+
+Route::prefix('orders')->name('order.')->group(function () {
+    Route::get('list', [OrderController::class, 'index'])->name('list');
 });
 
 Route::post('upload/content', ['as' => 'upload.content', 'uses' => 'App\Http\Controllers\UploadController@content']);
