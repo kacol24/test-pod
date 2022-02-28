@@ -35,13 +35,13 @@ class CategoryController extends Controller
             $sorting = $request->sort;
         }
 
-        return CategoryResource::collection(Category::when(! empty($search),
-            function ($query) use ($search) {
-                return $query->where('value', 'like',
-                    "%{$search}%");
-            })
-                                                    ->orderBy($sorting, $order)
-                                                    ->paginate($request->limit));
+        return CategoryResource::collection(
+            Category::when(! empty($search),
+                function ($query) use ($search) {
+                    return $query->where('name', 'like', "%{$search}%");
+                })
+                    ->orderBy($sorting, $order)
+                    ->paginate($request->limit));
     }
 
     public function create()
@@ -49,7 +49,7 @@ class CategoryController extends Controller
         $data = [
             'page_title' => 'Add Category',
             'active'     => 'product',
-            'parents' => category_tree(Category::active()->orderBy('order_weight', 'asc')->get())
+            'parents'    => category_tree(Category::active()->orderBy('order_weight', 'asc')->get()),
         ];
 
         return view('product/category/add', $data);
@@ -106,7 +106,7 @@ class CategoryController extends Controller
             'page_title' => 'Edit Category',
             'entity'     => Category::where('id', $id)->first(),
             'active'     => 'product',
-            'parents' => category_tree(Category::active()->orderBy('order_weight', 'asc')->get())
+            'parents'    => category_tree(Category::active()->orderBy('order_weight', 'asc')->get()),
         ];
 
         return view('product/category/edit', $data);
