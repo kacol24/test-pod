@@ -437,6 +437,7 @@
                         </div>
                         <div class="card p-0 mt-3"
                              x-cloak
+                             id="TemplateApp"
                              x-data='{
                                     templates: @json($entity->templates)
                                  }'>
@@ -449,7 +450,14 @@
                                 </div>
                                 <small class="text-color:tertiary font-size:14 text-right">
                                     <a href="#" class="btn btn-primary btn-sm py-0"
-                                       @click.prevent="templates.push('')">
+                                       @click.prevent="templates.push({
+                                        shape: 'square',
+                                        orientation: 'portrait',
+                                        unit: 'mm',
+                                        enable_resize: '0',
+                                        designs: [{}],
+                                        previews: [{}]
+                                       }); $nextTick(function() { $('.price').priceFormat({ prefix: '', centsLimit: 0 }) })">
                                         <i class="fas fa-plus fa-fw"></i>
                                         Add
                                     </a>
@@ -458,23 +466,19 @@
                             <div class="card-body">
                                 <div class="accordion" id="accordionExample">
                                     <template x-for="(template, index) in templates" :key="index">
-                                        <div class="card p-0 mb-3 rounded border">
+                                        <div class="card p-0 mb-3 rounded border" x-id="['template-accordion']">
                                             <div
                                                 class="card-header m-0 rounded p-3 d-flex align-items-center justify-content-between">
                                                 <div class="form-group w-100 m-0 d-flex align-items-center">
                                                     <button class="btn btn-link" type="button"
                                                             data-toggle="collapse"
-                                                            :data-target="'#collapse_template_' + index"
+                                                            :data-target="'#' + $id('template-accordion', index)"
                                                             aria-expanded="true" aria-controls="collapseOne">
                                                         <i class="fas fa-fw fa-angle-down m-0"></i>
                                                     </button>
-                                                    <label class="text-uppercase text-nowrap m-0 mr-3"
-                                                           for="template_design_name">
+                                                    <label class="text-nowrap m-0" x-text="template.design_name">
                                                         Design Name
                                                     </label>
-                                                    <input type="text" class="form-control"
-                                                           :name="'templates['+ index +'][design_name]'"
-                                                           id="template_design_name" x-model="template.design_name">
                                                 </div>
                                                 <template x-if="templates.length > 1">
                                                     <a href="#" class="btn btn-danger btn-sm text-white ml-3"
@@ -483,16 +487,33 @@
                                                     </a>
                                                 </template>
                                             </div>
-                                            <div :id="'collapse_template_' + index" class="collapse show">
+                                            <div :id="$id('template-accordion', index)" class="collapse show">
                                                 <div class="card-body p-3">
-                                                    <input type="hidden" :name="'templates['+ index +'][id]'" x-model="template.id">
-                                                    <div class="form-group">
-                                                        <label class="text-uppercase" for="template_price">
-                                                            Price
-                                                        </label>
-                                                        <input type="tel" class="form-control price text-right"
-                                                               :name="'templates['+ index +'][price]'"
-                                                               id="template_price" x-model="template.price">
+                                                    <input type="hidden" :name="'templates['+ index +'][id]'"
+                                                           x-model="template.id">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="text-uppercase"
+                                                                       for="template_design_name">
+                                                                    Design Name
+                                                                </label>
+                                                                <input type="text" class="form-control"
+                                                                       :name="'templates['+ index +'][design_name]'"
+                                                                       id="template_design_name"
+                                                                       x-model="template.design_name">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="text-uppercase" for="template_price">
+                                                                    Price
+                                                                </label>
+                                                                <input type="tel" class="form-control price text-right"
+                                                                       :name="'templates['+ index +'][price]'"
+                                                                       id="template_price" x-model="template.price">
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-6">
@@ -508,7 +529,7 @@
                                                                                        type="radio"
                                                                                        x-model="template.shape"
                                                                                        :name="'templates['+ index +'][shape]'"
-                                                                                       value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
+                                                                                       value="{{ $radio }}">
                                                                                 {{ Str::title($radio) }}
                                                                             </label>
                                                                         </div>
@@ -529,7 +550,7 @@
                                                                                        type="radio"
                                                                                        x-model="template.orientation"
                                                                                        :name="'templates['+ index +'][orientation]'"
-                                                                                       value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
+                                                                                       value="{{ $radio }}">
                                                                                 {{ Str::title($radio) }}
                                                                             </label>
                                                                         </div>
@@ -550,7 +571,7 @@
                                                                                        type="radio"
                                                                                        x-model="template.unit"
                                                                                        :name="'templates['+ index +'][unit]'"
-                                                                                       value="{{ $radio }}" {{ $loop->first ? 'checked' : '' }}>
+                                                                                       value="{{ $radio }}">
                                                                                 {{ $radio }}
                                                                             </label>
                                                                         </div>
@@ -571,7 +592,7 @@
                                                                                        type="radio"
                                                                                        x-model="template.enable_resize"
                                                                                        :name="'templates['+ index +'][enable_resize]'"
-                                                                                       value="{{ $index }}" {{ $loop->first ? 'checked' : '' }}>
+                                                                                       value="{{ $index }}">
                                                                                 {{ Str::title($radio) }}
                                                                             </label>
                                                                         </div>
@@ -617,10 +638,7 @@
                                                                   :name="'templates['+ index +'][ratio]'"></textarea>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-md-6"
-                                                             x-data='{
-                                                                designs: template.designs ?? [""]
-                                                            }'>
+                                                        <div class="col-md-6">
                                                             <div
                                                                 class="form-group d-flex align-items-center justify-content-between">
                                                                 <h5 class="card-title">
@@ -629,17 +647,17 @@
                                                                 <small
                                                                     class="text-color:tertiary font-size:14 text-right">
                                                                     <a href="#" class="btn btn-primary btn-sm py-0"
-                                                                       @click.prevent="designs.push('')">
+                                                                       @click.prevent="template.designs.push('')">
                                                                         <i class="fas fa-plus fa-fw"></i>
                                                                         Add
                                                                     </a>
                                                                 </small>
                                                             </div>
-                                                            <template x-for="(design, designIndex) in designs"
+                                                            <template x-for="(design, designIndex) in template.designs"
                                                                       :key="designIndex">
                                                                 <div class="card p-0 mb-3">
                                                                     <div class="card-body p-3 position-relative">
-                                                                        <template x-if="designs.length > 1">
+                                                                        <template x-if="template.designs.length > 1">
                                                                             <div class="position-absolute"
                                                                                  style="right: 0;top: 0;">
                                                                                 <a href="#" class="text-color:red"
@@ -649,7 +667,8 @@
                                                                             </div>
                                                                         </template>
                                                                         <input type="hidden"
-                                                                               :name="'templates['+ index +'][design]['+designIndex+'][id]'" x-model="design.id">
+                                                                               :name="'templates['+ index +'][design]['+designIndex+'][id]'"
+                                                                               x-model="design.id">
                                                                         <div class="form-group">
                                                                             <label class="text-uppercase">
                                                                                 File
@@ -674,10 +693,7 @@
                                                                 </div>
                                                             </template>
                                                         </div>
-                                                        <div class="col-md-6"
-                                                             x-data='{
-                                                                previews: template.previews ?? [""]
-                                                            }'>
+                                                        <div class="col-md-6">
                                                             <div
                                                                 class="form-group d-flex align-items-center justify-content-between">
                                                                 <h5 class="card-title">
@@ -686,17 +702,18 @@
                                                                 <small
                                                                     class="text-color:tertiary font-size:14 text-right">
                                                                     <a href="#" class="btn btn-primary btn-sm py-0"
-                                                                       @click.prevent="previews.push('')">
+                                                                       @click.prevent="template.previews.push('')">
                                                                         <i class="fas fa-plus fa-fw"></i>
                                                                         Add
                                                                     </a>
                                                                 </small>
                                                             </div>
-                                                            <template x-for="(preview, previewIndex) in previews"
-                                                                      :key="previewIndex">
+                                                            <template
+                                                                x-for="(preview, previewIndex) in template.previews"
+                                                                :key="previewIndex">
                                                                 <div class="card p-0 mb-3">
                                                                     <div class="card-body p-3 position-relative">
-                                                                        <template x-if="previews.length > 1">
+                                                                        <template x-if="template.previews.length > 1">
                                                                             <div class="position-absolute"
                                                                                  style="right: 0;top: 0;">
                                                                                 <a href="#" class="text-color:red"
@@ -718,7 +735,8 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <a :href="'{{ asset('previews') }}/' + preview.file"
-                                                                               x-text="preview.file" target="_blank"></a>
+                                                                               x-text="preview.file"
+                                                                               target="_blank"></a>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="text-uppercase">

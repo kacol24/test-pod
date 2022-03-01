@@ -365,6 +365,7 @@ class ProductController extends Controller
         $templatesData = collect();
         foreach ($request->templates as $index => $template) {
             $rootTemplate = [
+                'id'              => $template['id'],
                 'design_name'     => $template['design_name'],
                 'price'           => $template['price'],
                 'shape'           => $template['shape'],
@@ -379,6 +380,7 @@ class ProductController extends Controller
             ];
 
             foreach ($template['design'] ?? [] as $designIndex => $design) {
+                $theDesign = [];
                 if ($design['id']) {
                     $theDesign = Design::find($design['id'])->toArray();
                 }
@@ -401,6 +403,7 @@ class ProductController extends Controller
             }
 
             foreach ($template['preview'] ?? [] as $previewIndex => $preview) {
+                $thePreview = [];
                 if ($preview['id']) {
                     $thePreview = Preview::find($preview['id'])->toArray();
                 }
@@ -430,7 +433,7 @@ class ProductController extends Controller
         Preview::whereIn('id', $product->previews->pluck('id')->toArray())->delete();
         Template::whereIn('id', $product->templates->pluck('id')->toArray())->delete();
         foreach ($templatesData as $templateData) {
-            $template = $product->templates()->create([
+            $updateTemplate = [
                 'design_name'     => $templateData['design_name'],
                 'price'           => $templateData['price'],
                 'shape'           => $templateData['shape'],
@@ -442,24 +445,45 @@ class ProductController extends Controller
                 'template_width'  => $templateData['template_width'],
                 'template_height' => $templateData['template_height'],
                 'ratio'           => $templateData['ratio'],
-            ]);
+            ];
+            if (isset($templateData['id'])) {
+                $template = Template::withTrashed()->find($templateData['id']);
+                $template->restore();
+                $template->update($updateTemplate);
+            } else {
+                $template = $product->templates()->create($updateTemplate);
+            }
 
             foreach ($templateData['design'] as $designData) {
-                $template->designs()->create([
+                $updateDesign = [
                     'file'            => $designData['file'],
                     'page_name'       => $designData['page_name'],
                     'customer_canvas' => $designData['customer_canvas'],
-                ]);
+                ];
+                if (isset($designData['id'])) {
+                    $design = Design::withTrashed()->find($designData['id']);
+                    $design->restore();
+                    $design->update($updateDesign);
+                } else {
+                    $template->designs()->create($updateDesign);
+                }
             }
 
             foreach ($templateData['preview'] as $previewData) {
-                $template->previews()->create([
+                $updatePreview = [
                     'file'            => $previewData['file'],
                     'preview_name'    => $previewData['preview_name'],
                     'thumbnail_name'  => $previewData['thumbnail_name'],
                     'file_config'     => $previewData['file_config'],
                     'customer_canvas' => $previewData['customer_canvas'],
-                ]);
+                ];
+                if (isset($previewData['id'])) {
+                    $preview = Preview::withTrashed()->find($previewData['id']);
+                    $preview->restore();
+                    $preview->update($updatePreview);
+                } else {
+                    $template->previews()->create($updatePreview);
+                }
             }
         }
 
@@ -602,7 +626,7 @@ class ProductController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($ch);
         curl_close($ch);
-        
+
         return Str::of($result)->trim('"');
     }
 }
