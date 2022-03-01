@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Preview extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'master_template_previews';
 
     protected $guarded = ['id'];

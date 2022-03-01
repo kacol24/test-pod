@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Template extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'master_product_templates';
 
     protected $guarded = ['id'];
