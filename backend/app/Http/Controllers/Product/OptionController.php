@@ -150,14 +150,14 @@ class OptionController extends Controller
         try {
             $option = Option::where('id', $id)->first();
             $option->title = $input['title_en'];
+            $option->save();
 
             OptionDetail::where('option_id', $id)->delete();
 
             $details = $input['valueen'];
 
             foreach ($details as $idx => $value) {
-                $option_detail = OptionDetail::where('option_id', $option->id)->where('key', slugify($value))
-                                             ->withTrashed()->first();
+                $option_detail = OptionDetail::where('option_id', $option->id)->where('key', slugify($value))->withTrashed()->first();
                 if ($option_detail) {
                     if ($option_detail->trashed()) {
                         $option_detail->restore();
