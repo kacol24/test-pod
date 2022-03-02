@@ -527,10 +527,14 @@ class ProductController extends Controller
         }
         #Default Product Option
         ProductSku::where('product_id', $product->id)->delete();
-        ProductSku::where('product_id', $product->id)->whereNull('option_detail_key1')
-                  ->whereNull('option_detail_key2')->restore();
-        $sku = ProductSku::where('product_id', $product->id)->whereNull('option_detail_key1')
-                         ->whereNull('option_detail_key2')->first();
+        ProductSku::where('product_id', $product->id)
+                  ->whereNull('option_detail_key1')
+                  ->whereNull('option_detail_key2')
+                  ->restore();
+        $sku = ProductSku::where('product_id', $product->id)
+                         ->whereNull('option_detail_key1')
+                         ->whereNull('option_detail_key2')
+                         ->first();
 
         $sku->sku_code = $input['default_sku'];
         $sku->weight = $input['default_weight'];
@@ -549,10 +553,14 @@ class ProductController extends Controller
                     $sku->key2 = null;
                 }
 
-                $productsku = ProductSku::withTrashed()->where('product_id', $product->id)
+                $productsku = ProductSku::withTrashed()
+                                        ->where('product_id', $product->id)
                                         ->where('option_detail_key1', $sku->key1)
-                                        ->where('option_detail_key2', $sku->key2)->first();
+                                        ->where('option_detail_key2', $sku->key2)
+                                        ->first();
+
                 if ($productsku) {
+                    $productsku->restore();
                     $productsku->sku_code = $input['sku'.$idx];
                     $productsku->weight = $input['weight'.$idx];
                     $productsku->production_cost = $input['production_cost'.$idx];
@@ -563,9 +571,8 @@ class ProductController extends Controller
                     $productsku->length = $input['length'.$idx];
                     $productsku->height = $input['height'.$idx];
                     $productsku->save();
-                    $productsku->restore();
                 } else {
-                    $sku = ProductSku::create([
+                    ProductSku::create([
                         'product_id'         => $product->id,
                         'option_detail_key1' => $sku->key1,
                         'option_detail_key2' => $sku->key2,
