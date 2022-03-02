@@ -19,4 +19,14 @@ class OrderController extends Controller
 
         return view('order.list', $data);
     }
+
+    public function edit($id)
+    {
+        $data = [
+            'page_title' => 'Edit Order',
+            'active'     => 'order',
+        ];
+
+        return view('order.edit', $data);
+    }
 }

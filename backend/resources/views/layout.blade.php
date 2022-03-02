@@ -62,10 +62,143 @@
                     margin-top: -55px !important;
                 }
             }
+
+            .stepper {
+                display: flex;
+                align-items: center;
+                background: #FFFFFF;
+                height: 50px;
+            }
+
+            .stepper__title {
+                font-style: normal;
+                font-weight: 600;
+                font-size: 14px;
+                line-height: 22px;
+                color: #C5CDE2;
+                margin-bottom: 0;
+                margin-left: 5px;
+                margin-right: 30px;
+                white-space: nowrap;
+            }
+
+            .stepper__steps {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                width: 100%;
+            }
+
+            .stepper__step {
+                display: flex;
+                align-items: center;
+                font-family: Poppins, Roboto, sans-serif;
+                font-style: normal;
+                font-weight: 600;
+                font-size: 14px;
+                line-height: 22px;
+                color: #000000;
+                text-decoration: none;
+            }
+
+            .stepper__step:not(:last-child) {
+                margin-right: 10px;
+                flex: 1;
+            }
+
+            .stepper__step:not(:last-child):before {
+                content: "";
+                display: block;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                border: 2px solid #D8DCE6;
+                order: 5;
+                margin-left: 8px;
+            }
+
+            .stepper__step:not(:last-child):after {
+                margin-left: 8px;
+                content: "";
+                display: block;
+                height: 2px;
+                border-top: 2px dashed #D8DCE6;
+                flex: 1;
+            }
+
+            .stepper__step:not(:last-child) .stepper__step-content:after {
+                margin-left: 5px;
+                content: "";
+                display: block;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                border: 2px solid #D8DCE6;
+            }
+
+            .stepper__step--stepped:before {
+                border-color: #1665D8 !important;
+                background-color: #1665D8;
+            }
+
+            .stepper__step--stepped:after {
+                border-top: 2px solid #1665D8 !important;
+            }
+
+            .stepper__step--stepped .stepper__step-content:after {
+                border-color: #1665D8 !important;
+                background-color: #1665D8;
+            }
+
+            .stepper__step--stepped .stepper__numbering {
+                background-color: #1665D8;
+                color: #fff;
+            }
+
+            .stepper__numbering {
+                width: 18px;
+                height: 18px;
+                font-size: 10px;
+                border-radius: 50%;
+                background-color: rgba(22, 101, 216, 0.1);
+                color: #1665D8;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                margin-right: 5px;
+            }
+
+            .stepper__step-content {
+                display: flex;
+                align-items: center;
+            }
+
+            @media (min-width: 768px) {
+                .stepper {
+                    border: 1px solid #EAEDF3;
+                    height: 70px;
+                    padding-left: 25px;
+                    padding-right: 25px;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+                    border-radius: 4px;
+                }
+
+                .stepper__numbering {
+                    margin-right: 15px;
+                    width: 22px;
+                    height: 22px;
+                    font-size: 12px;
+                }
+
+                .stepper__step-content:after {
+                    margin-left: 15px !important;
+                }
+            }
         </style>
         <script src="https://cdn.jsdelivr.net/npm/highcharts@8.2.2/highcharts.min.js"></script>
     </head>
-    <body class="fixed-header">
+    <body class="fixed-header bg-white">
         <div id="loading" class="loading" style="z-index:1100;"></div>
         @include('partials.menu')
 

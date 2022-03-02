@@ -90,6 +90,9 @@ class VerifyRole
             'capacity.datatable',
             'capacity.store',
             'capacity.update',
+
+            'order.list',
+            'order.edit',
         ];
         if (session('admin')) {
             if (! check_permission($request->route()->getName()) && ! in_array($request->route()->getName(),

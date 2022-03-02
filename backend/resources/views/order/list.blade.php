@@ -143,6 +143,47 @@
                                 <th data-field="status">STATUS</th>
                             </tr>
                             </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <a href="{{ route('order.edit', 1) }}">
+                                        INV 2020211
+                                        <small class="d-block text-color:green">Tokopedia</small>
+                                    </a>
+                                </td>
+                                <td>
+                                    Mica
+                                    <small class="d-block text-color:icon">
+                                        08138889999
+                                    </small>
+                                </td>
+                                <td>
+                                    msutanto@gmail.com
+                                    <small class="d-block text-color:icon">
+                                        Jakarta
+                                    </small>
+                                </td>
+                                <td>
+                                    12 May 2018
+                                    <small class="d-block text-color:icon">
+                                        14:00 PM
+                                    </small>
+                                </td>
+                                <td>
+                                    IDR 500.000
+                                    <small class="d-block text-color:icon">
+                                        Bank Transfer
+                                    </small>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge badge-status-1 d-inline-block p-0"
+                                            style="width: 6px;height: 6px;"></span>
+                                        Paid
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>

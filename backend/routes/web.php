@@ -112,6 +112,7 @@ Route::group(['prefix' => 'product'], function () {
 
 Route::prefix('orders')->name('order.')->group(function () {
     Route::get('list', [OrderController::class, 'index'])->name('list');
+    Route::get('edit/{id}', [OrderController::class, 'edit'])->name('edit');
 });
 
 Route::post('upload/content', ['as' => 'upload.content', 'uses' => 'App\Http\Controllers\UploadController@content']);
