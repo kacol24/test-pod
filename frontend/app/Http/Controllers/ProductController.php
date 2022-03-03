@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\MasterProduct\Category;
 use App\Models\MasterProduct\MasterProduct;
+use App\Models\MasterProduct\MasterProductOption;
+use Validator;
 
 class ProductController extends Controller
 {
@@ -15,6 +17,7 @@ class ProductController extends Controller
 
     public function create(Request $request)
     {
+        session(['state_id' => null]);
         $products = MasterProduct::where('is_publish',1);
         if($request->category_id) {
             $products = $products->join('master_category_master_product','master_category_master_product.product_id','=','master_products.id')->where('category_id', $request->category_id);
@@ -24,7 +27,7 @@ class ProductController extends Controller
         })->get();
         return view('product.create', array(
             'categories' => Category::active()->get(),
-            'products' => $products
+            'products' => $products,
         ));
     }
 
@@ -34,8 +37,27 @@ class ProductController extends Controller
         $templates = $masterproduct->templates;
         return view('product.designer', array(
             'masterproduct' => $masterproduct,
-            'templates' => $templates
+            'templates' => $templates,
+            'options' => MasterProductOption::where('product_id',$id)->orderBy('id','asc')->get()
         ));
+    }
+
+    public function saveDesigner(Request $request, $id) {
+        $request->flash();
+
+        $validator = Validator::make($request->all(), [
+          'state_id' => 'required',
+          'print_file' => 'required',
+          'proof_file' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        session(['design' => json_encode($request->all())]);
+
+        return redirect()->route('products.finish');
     }
 
     public function additional()
