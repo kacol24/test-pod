@@ -867,7 +867,7 @@
                     </div>
                 </div>
                 <input type="hidden" name="is_publish" x-model="status">
-                <input type="hidden" name="product_options" value=""/>
+                <input type="hidden" name="product_options" value="{{json_encode($product_options)}}"/>
                 <input type="hidden" name="product_skus" value=""/>
             </form>
         </div>
