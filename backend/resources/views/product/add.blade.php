@@ -309,7 +309,6 @@
                              id="ColorApp"
                              x-data="{
                                     colors: [{}],
-                                    newColor: {},
                                     showDelete: function() {
                                         return this.colors.length > 1
                                     },
@@ -326,7 +325,7 @@
                                 </div>
                                 <small class="text-color:tertiary font-size:14 text-right">
                                     <a href="#" class="btn btn-primary btn-sm py-0"
-                                       @click.prevent="colors.push(newColor)">
+                                       @click.prevent="colors.push({})">
                                         <i class="fas fa-plus fa-fw"></i>
                                         Add
                                     </a>
@@ -719,18 +718,48 @@
                                                                         </template>
                                                                         <div class="form-group">
                                                                             <label class="text-uppercase">
-                                                                                File
-                                                                            </label>
-                                                                            <input type="file"
-                                                                                   class="form-control-file"
-                                                                                   :name="'templates['+ index +'][design][][file]'">
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="text-uppercase">
                                                                                 Page Name
                                                                             </label>
                                                                             <input type="text" class="form-control"
-                                                                                   :name="'templates['+ index +'][design][][page_name]'">
+                                                                                   :name="'templates['+ index +'][design]['+ designIndex +'][page_name]'">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="text-uppercase">
+                                                                                Design File
+                                                                            </label>
+                                                                            <input type="file"
+                                                                                   class="form-control-file"
+                                                                                   :name="'templates['+ index +'][design]['+ designIndex +'][file]'">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="text-uppercase">
+                                                                                Mockup File
+                                                                            </label>
+                                                                            <input type="file"
+                                                                                   class="form-control-file"
+                                                                                   :name="'templates['+ index +'][design]['+ designIndex +'][mockup]'">
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="text-uppercase">
+                                                                                        Mockup Width
+                                                                                    </label>
+                                                                                    <input type="number"
+                                                                                           class="form-control text-right"
+                                                                                           :name="'templates['+ index +'][design]['+ designIndex +'][mockup_width]'">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="text-uppercase">
+                                                                                        Mockup Height
+                                                                                    </label>
+                                                                                    <input type="number"
+                                                                                           class="form-control text-right"
+                                                                                           :name="'templates['+ index +'][design]['+ designIndex +'][mockup_height]'">
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>

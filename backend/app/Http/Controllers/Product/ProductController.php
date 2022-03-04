@@ -153,6 +153,8 @@ class ProductController extends Controller
 
         $product->categories()->sync($request->category_id);
 
+        $product->colors()->createMany($request->colors);
+
         foreach ($request->templates as $index => $template) {
             $productTemplate = $product->templates()->create([
                 'design_name'     => $template['design_name'],

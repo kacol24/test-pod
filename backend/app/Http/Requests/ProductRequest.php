@@ -32,6 +32,9 @@ class ProductRequest extends FormRequest
             'description'      => 'required',
             'capacity_id'      => 'required',
 
+            'colors.*.color' => 'required',
+            'colors.*.name'  => 'required',
+
             'templates.*.design_name' => 'required',
             'templates.*.price'       => 'required',
             //'templates.*.shape'         => 'required',
@@ -57,6 +60,9 @@ class ProductRequest extends FormRequest
     public function attributes()
     {
         return [
+            'colors.*.color' => 'color code',
+            'colors.*.name'  => 'color name',
+
             'templates.*.design_name'   => 'design name',
             'templates.*.price'         => 'price',
             'templates.*.shape'         => 'shape',
