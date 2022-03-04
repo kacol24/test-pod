@@ -309,6 +309,73 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="card p-0 mt-3"
+                             x-cloak
+                             id="ColorApp"
+                             x-data='{
+                                    colors: @json($entity->colors),
+                                    showDelete: function() {
+                                        return this.colors.length > 1
+                                    },
+                                    deleteItem: function(index) {
+                                        this.colors.splice(index, 1);
+                                    }
+                                 }'>
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <div>
+                                    <i class="fas fa-fw fa-dollar-sign"></i>
+                                    <h5 class="card-title d-inline-block">
+                                        Design Colors
+                                    </h5>
+                                </div>
+                                <small class="text-color:tertiary font-size:14 text-right">
+                                    <a href="#" class="btn btn-primary btn-sm py-0"
+                                       @click.prevent="colors.push({})">
+                                        <i class="fas fa-plus fa-fw"></i>
+                                        Add
+                                    </a>
+                                </small>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <template x-for="(color, index) in colors" :key="index">
+                                        <div class="col-md-3">
+                                            <div class="card p-0 mb-3">
+                                                <div class="card-body p-3 position-relative">
+                                                    <template x-if="showDelete()">
+                                                        <div class="position-absolute" style="right: 0;top: 0;">
+                                                            <a href="#" class="text-color:red"
+                                                               @click.prevent="deleteItem(index);">
+                                                                <i class="fas fa-fw fa-times m-0"></i>
+                                                            </a>
+                                                        </div>
+                                                    </template>
+                                                    <input type="hidden"
+                                                           :name="'colors['+ index +'][id]'"
+                                                           x-model="color.id">
+                                                    <div class="form-group">
+                                                        <label class="text-uppercase">
+                                                            Color
+                                                        </label>
+                                                        <input type="color" class="form-control"
+                                                               :name="'colors['+ index +'][color]'"
+                                                               x-model="color.color">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="text-uppercase">
+                                                            Name
+                                                        </label>
+                                                        <input type="text" class="form-control"
+                                                               :name="'colors['+ index +'][name]'"
+                                                               x-model="color.name">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
                         <div class="card p-0 mt-3">
                             <div class="card-header d-flex align-items-center justify-content-between">
                                 <div>
@@ -671,7 +738,15 @@
                                                                                x-model="design.id">
                                                                         <div class="form-group">
                                                                             <label class="text-uppercase">
-                                                                                File
+                                                                                Page Name
+                                                                            </label>
+                                                                            <input type="text" class="form-control"
+                                                                                   x-model="design.page_name"
+                                                                                   :name="'templates['+ index +'][design]['+designIndex+'][page_name]'">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="text-uppercase">
+                                                                                Design File
                                                                             </label>
                                                                             <input type="file"
                                                                                    class="form-control-file"
@@ -679,15 +754,51 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <a :href="'{{ asset('templates') }}/' + design.file"
-                                                                               x-text="design.file" target="_blank"></a>
+                                                                               class="btn btn-default btn-sm"
+                                                                               target="_blank">
+                                                                                <i class="fas fa-fw fa-eye"></i> View
+                                                                                File
+                                                                            </a>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="text-uppercase">
-                                                                                Page Name
+                                                                                Mockup File
                                                                             </label>
-                                                                            <input type="text" class="form-control"
-                                                                                   x-model="design.page_name"
-                                                                                   :name="'templates['+ index +'][design]['+designIndex+'][page_name]'">
+                                                                            <input type="file"
+                                                                                   class="form-control-file"
+                                                                                   :name="'templates['+ index +'][design]['+designIndex+'][mockup_file]'">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <a :href="'{{ asset('templates') }}/' + design.mockup"
+                                                                               class="btn btn-default btn-sm"
+                                                                               target="_blank">
+                                                                                <i class="fas fa-fw fa-eye"></i> View
+                                                                                File
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="text-uppercase">
+                                                                                        Mockup Width
+                                                                                    </label>
+                                                                                    <input type="number"
+                                                                                           class="form-control text-right"
+                                                                                           :name="'templates['+ index +'][design]['+ designIndex +'][mockup_width]'"
+                                                                                           x-model="design.mockup_width">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-group">
+                                                                                    <label class="text-uppercase">
+                                                                                        Mockup Height
+                                                                                    </label>
+                                                                                    <input type="number"
+                                                                                           class="form-control text-right"
+                                                                                           :name="'templates['+ index +'][design]['+ designIndex +'][mockup_height]'"
+                                                                                           x-model="design.mockup_height">
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -735,8 +846,11 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <a :href="'{{ asset('previews') }}/' + preview.file"
-                                                                               x-text="preview.file"
-                                                                               target="_blank"></a>
+                                                                               class="btn btn-default btn-sm"
+                                                                               target="_blank">
+                                                                                <i class="fas fa-fw fa-eye"></i> View
+                                                                                File
+                                                                            </a>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="text-uppercase">
