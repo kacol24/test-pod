@@ -139,4 +139,9 @@ class Product extends Model
     {
         return $this->hasManyThrough(Design::class, Template::class, 'product_id', 'template_id');
     }
+
+    public function colors()
+    {
+        return $this->hasMany(Color::class, 'product_id');
+    }
 }
