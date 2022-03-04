@@ -304,6 +304,71 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="card p-0 mt-3"
+                             x-cloak
+                             id="ColorApp"
+                             x-data="{
+                                    colors: [{}],
+                                    newColor: {},
+                                    showDelete: function() {
+                                        return this.colors.length > 1
+                                    },
+                                    deleteItem: function(index) {
+                                        this.colors.splice(index, 1);
+                                    }
+                                 }">
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <div>
+                                    <i class="fas fa-fw fa-dollar-sign"></i>
+                                    <h5 class="card-title d-inline-block">
+                                        Design Colors
+                                    </h5>
+                                </div>
+                                <small class="text-color:tertiary font-size:14 text-right">
+                                    <a href="#" class="btn btn-primary btn-sm py-0"
+                                       @click.prevent="colors.push(newColor)">
+                                        <i class="fas fa-plus fa-fw"></i>
+                                        Add
+                                    </a>
+                                </small>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <template x-for="(color, index) in colors" :key="index">
+                                        <div class="col-md-3">
+                                            <div class="card p-0 mb-3">
+                                                <div class="card-body p-3 position-relative">
+                                                    <template x-if="showDelete()">
+                                                        <div class="position-absolute" style="right: 0;top: 0;">
+                                                            <a href="#" class="text-color:red"
+                                                               @click.prevent="deleteItem(index);">
+                                                                <i class="fas fa-fw fa-times m-0"></i>
+                                                            </a>
+                                                        </div>
+                                                    </template>
+                                                    <div class="form-group">
+                                                        <label class="text-uppercase">
+                                                            Color
+                                                        </label>
+                                                        <input type="color" class="form-control"
+                                                               :name="'colors['+ index +'][color]'"
+                                                               x-model="color.color">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="text-uppercase">
+                                                            Name
+                                                        </label>
+                                                        <input type="text" class="form-control"
+                                                               :name="'colors['+ index +'][name]'"
+                                                               x-model="color.name">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
                         <div class="card p-0 mt-3">
                             <div class="card-header d-flex align-items-center justify-content-between">
                                 <div>
