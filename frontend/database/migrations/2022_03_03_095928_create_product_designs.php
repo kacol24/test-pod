@@ -19,6 +19,8 @@ class CreateProductDesigns extends Migration
             $table->string('title');
             $table->longText('description');
             $table->string('sku_code');
+            $table->integer('unit_sold')->default();
+            $table->integer('is_publish');
             $table->timestamps();
         });
     }

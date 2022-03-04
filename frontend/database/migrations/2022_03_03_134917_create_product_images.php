@@ -17,7 +17,7 @@ class CreateProductImages extends Migration
             $table->id();
             $table->integer('product_id');
             $table->string('image');
-            $table->integer('order_weight');
+            $table->integer('order_weight')->default(0);
             $table->index('product_id');
             $table->index(['product_id','order_weight']);
         });

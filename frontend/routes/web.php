@@ -24,50 +24,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/test', function () {
-    $key = 'PrinterousCustomerCanvasDemo123!@#';
-
-    $template = Template::find(22);
-    $url = "https://canvas.printerous.com/production/DI/api/rendering/multipage/preview";
-    $pages = array();
-
-    $data = array(
-        "Front" => array(
-            "type" => "image",
-            "image" => "https://canvas.printerous.com/production/Canvas/Edge//api/rendering/GetProofImage/1/cade9173-2b4c-487f-ab48-acb6d1d85c15/0_0.png",
-            "resizeMode" => "fill"
-        )
-    );
-
-    foreach($template->previews as $preview) {
-        if($preview->config && is_array(json_decode($preview->config, true))) {
-            $data = array_merge($data, json_decode($preview->config, true));
-        }
-        $pages[] = array(
-            'template' => $preview->customer_canvas,
-            'format' => 'png',
-            'data' => $data,
-        );
-    }
-
-    $post = array(
-        'pages' => $pages,
-    );
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type:application/json',
-        "X-CustomersCanvasAPIKey: ".$key,
-    ]);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $result = json_decode(curl_exec($ch),true);
-    curl_close($ch);
-
-    var_dump($result);
-});
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('/dashboard', 'dashboard')->name('dashboard');
     Route::get('switch-store/{storename}', [SwitchStoreController::class, 'switch'])->name('switchstore');

@@ -11,4 +11,9 @@ class ProductEditor extends Model
     protected $table = 'product_editors';
     protected $guarded = ['id'];
     // public $timestamps = false;
+
+    public function previews()
+    {
+        return $this->hasMany('App\Models\MasterProduct\Preview', 'template_id', 'template_id');;
+    }
 }

@@ -7,8 +7,8 @@
             <h1 class="font-size:22 fw-600">
                 Product successfully published!
             </h1>
-            <a href="{{ route('products.index') }}" class="btn btn-primary mt-5">
-                Go to products
+            <a href="{{ route('design.index') }}" class="btn btn-primary mt-5">
+                Go to design products
             </a>
         </div>
     </div>

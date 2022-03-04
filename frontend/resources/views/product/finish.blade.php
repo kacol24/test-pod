@@ -17,6 +17,12 @@
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         @endforeach
+        @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{session('error')}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
         <form method="post" action="{{route("design.store")}}">
             {{csrf_field()}}
             <div class="row mt-4">

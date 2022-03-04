@@ -13,6 +13,9 @@ use App\Models\Product\Product;
 use App\Models\Product\ProductOption;
 use App\Models\Product\ProductOptionDetail;
 use App\Models\Product\ProductSku;
+use App\Models\Product\ProductImage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class DesignController extends Controller
 {
@@ -71,6 +74,9 @@ class DesignController extends Controller
 
     public function finish()
     {
+        if(!session('design')) {
+            return redirect()->route('design.create');
+        }
         return view('product.finish');
     }
 
@@ -104,7 +110,8 @@ class DesignController extends Controller
                 'store_id' => session('current_store')->id,
                 'title' => $request->title,
                 'description' => $request->description,
-                'sku_code' => $request->sku_code
+                'sku_code' => $request->sku_code,
+                'is_publish' => $request->is_publish
             ));
 
             $design_data = json_decode(session('design'));
@@ -161,9 +168,13 @@ class DesignController extends Controller
                 'proof_file' => $design_data->proof_file
             ));
 
-            $this->generateImage($product, $masterproduct, $editor);
-
+            $response = $this->generateImage($product, $masterproduct, $editor);
+            if($response['status']=='error') {
+                return redirect()->back()->with('error', $response['message']);
+            }
             DB::commit();
+
+            return redirect()->route('design.saved');
         }catch(\Exception $e){
           DB::rollback();
           throw new \Exception($e->getMessage());
@@ -171,9 +182,76 @@ class DesignController extends Controller
     }
 
     public function generateImage($product, $masterproduct, $editor) {
-        foreach($masterproduct->previews as $preview) {
-            
+        $key = 'PrinterousCustomerCanvasDemo123!@#';
+        $url = "https://canvas.printerous.com/production/DI/api/rendering/multipage/preview";
+        $pages = array();
+
+        $data = array(
+            "Front" => array(
+                "type" => "image",
+                "image" => $editor->proof_file,
+                "resizeMode" => "fill"
+            )
+        );
+
+        foreach($editor->previews as $preview) {
+            if($preview->config && is_array(json_decode($preview->config, true))) {
+                $data = array_merge($data, json_decode($preview->config, true));
+            }
+            $pages[] = array(
+                'template' => $preview->customer_canvas,
+                'format' => 'png',
+                'data' => $data,
+            );
         }
+
+        $post = array(
+            'pages' => $pages,
+        );
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type:application/json',
+            "X-CustomersCanvasAPIKey: ".$key,
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $result = json_decode(curl_exec($ch),true);
+        curl_close($ch);
+
+        if(isset($result['message']) && $result['message']=="Error") {
+            return array('status' => 'error', 'message' => $result['details']);
+        }
+        foreach($result['results'] as $result) {
+            $file = file_get_contents($result['url']);
+            $extension = pathinfo($result['url'], PATHINFO_EXTENSION);
+            $filename = sha1(Str::random(32)).".".$extension;
+            Storage::put('/public/products/'.$filename, $file);
+            ProductImage::create(array(
+                'product_id' => $product->id,
+                'image' => $filename
+            ));
+        }
+
+        foreach($masterproduct->images as $i => $image) {
+            if($i>=1) {
+                $url = env('BACKEND_URL').'/storage/masterproduct/'.$image->image;
+                try {
+                    $file = file_get_contents($url);
+                    $extension = pathinfo($url, PATHINFO_EXTENSION);
+                    $filename = sha1(Str::random(32)).".".$extension;
+                    Storage::put('/public/products/'.$filename, $file);
+                    ProductImage::create(array(
+                        'product_id' => $product->id,
+                        'image' => $filename
+                    ));
+                }catch(\Exception $e){
+                  return array('status' => 'error', 'message' => 'Error get file '.$url);
+                }
+            }
+        }
+        return array('status' => 'success');
     }
 
     /**
