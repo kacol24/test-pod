@@ -19,7 +19,7 @@
         @endforeach
         <div class="row mt-4">
             <div class="col-md-5">
-                <form id="form-design" method="post" action="{{route('products.designer.post', $masterproduct->id)}}">
+                <form id="form-design" method="post" action="{{route('design.post', $masterproduct->id)}}">
                     {{ csrf_field() }}
                     <div class="p-3 p-md-4" style="background: #F6F7F9;">
                         <div class="card p-0">
@@ -81,14 +81,14 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    @php($option = $options->reverse()->first())
+                                    @php($option = $masterproduct->options->reverse()->first())
                                     @foreach($option->details as $detail)
                                     <div class="col-md-6">
                                         <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
                                             <div class="form-check">
                                                 <input class="form-check-input" name="variants[]" checked="checked" type="checkbox" value="{{$detail->key}}"
-                                                       id="flexCheckDefault">
-                                                <label class="form-check-label" for="flexCheckDefault">
+                                                       id="{{$detail->key}}">
+                                                <label class="form-check-label" for="{{$detail->key}}">
                                                     {{$detail->title}}
                                                 </label>
                                             </div>
@@ -185,13 +185,13 @@
                     printAreas: [
                       {
                         designFile: el.customer_canvas,
-                        // designLocation: {X:83,Y:120}
-                        designLocation: null
+                        designLocation: { X: 687.68, Y: 572.32 }
+                        // designLocation: null
                       }
                     ],
-                    // mockup: {
-                    //     down: mockup
-                    // },
+                    mockup: {
+                        down: mockup
+                    },
                     proofImage: {
                       fileFormat: "PNG",
                       rgbColorProfileName: "Adobe RGB (1998)",
@@ -337,17 +337,6 @@
                 final_product,
                 config
             ).then(function (editor) {
-                editor.getProduct().then(async function (product) {
-                  var surface_ids = $.map(product.surfaces, function (surface, i) {
-                    return surface.id;
-                  });
-
-                  // check if surface exist.
-                  if (product.surfaces.length > 0) {
-                    selectItem(editor, product);
-                  }
-                });
-
                 $("#continue").click(function(){
                     editor.finishProductDesign().then(function (result) {
                         // Verify a state ID and a user ID.
@@ -358,30 +347,9 @@
                         $("input[name='state_id']").val(stateId);
                         $("input[name='print_file']").val(hiResOutputUrls[0]);
                         $("input[name='proof_file']").val(result.proofImageUrls);
-                        // $("#form-design").submit();
+                        $("#form-design").submit();
                     })
                 });
-
-                // document.getElementById("btn-download").addEventListener("click", async () => {
-                //     editor
-                //       .finishProductDesign()
-                //       .then(async (result) => {
-                //         var link = document.createElement("a");
-                //         var filename = result.hiResOutputUrls[0];
-                //         link.download = filename;
-                //         link.href = filename;
-                //         link.target = "_blank";
-                //         document.body.appendChild(link);
-                //         link.click();
-                //         setTimeout(function () {
-                //           document.body.removeChild(link);
-                //           window.URL.revokeObjectURL(filename);
-                //         }, 100);
-                //       })
-                //       .catch((error) => {
-                //         console.error(error);
-                //       });
-                // });
             });
 
           var idxSurface = 0;

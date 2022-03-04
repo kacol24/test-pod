@@ -39,7 +39,7 @@
                 <div class="row">
                     @foreach($products as $product)
                         <div class="col-md-3 mb-4">
-                            <a href="{{ route('products.designer', $product->id) }}" class="product-item">
+                            <a href="{{ route('design', $product->id) }}" class="product-item">
                                 <div class="card p-0 rounded-0 shadow-sm">
                                     <div class="card-header p-0 position-relative">
                                         <img src="{{ env('BACKEND_URL').'/storage/masterproduct/'.$product->thumbnail() }}" alt="" class="img-fluid w-100">

@@ -47,7 +47,7 @@
             <div class="modal-body p-4">
                 <div class="row">
                     <div class="col-md-6">
-                        <a href="{{ route('products.create') }}" class="text-decoration-none">
+                        <a href="{{ route('design.create') }}" class="text-decoration-none">
                             <div
                                 class="card shadow-sm text-center p-md-5 d-flex align-items-center justify-content-center text-color:black">
                                 <div style="width: 45px;height: 45px;background: rgba(22, 101, 216, 0.1);"

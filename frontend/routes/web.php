@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Account\SwitchStoreController;
 use App\Http\Controllers\Account\WalletController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\DesignController;
 use App\Http\Controllers\TopupController;
 use App\Http\Controllers\Xendit\XenditController;
 use App\Http\Controllers\Xendit\XenditWebhookController;
@@ -88,14 +88,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('xendit/cc', [XenditController::class, 'creditCard'])->name('xendit.cc');
     Route::post('xendit/e-wallet', [XenditController::class, 'ewallet'])->name('xendit.ewallet');
-
-    Route::get('products/designer/{id}', [ProductController::class, 'designer'])->name('products.designer');
-    Route::post('products/designer/{id}', [ProductController::class, 'saveDesigner'])->name('products.designer.post');
-    Route::get('products/add-more', [ProductController::class, 'additional'])->name('products.additional');
-    Route::get('products/finish', [ProductController::class, 'finish'])->name('products.finish');
-    Route::get('products/saving', [ProductController::class, 'saving'])->name('products.saving');
-    Route::get('products/success', [ProductController::class, 'success'])->name('products.saved');
-    Route::resource('products', ProductController::class);
+    
+    Route::get('design/add-more', [DesignController::class, 'additional'])->name('design.additional');
+    Route::get('design/finish', [DesignController::class, 'finish'])->name('design.finish');
+    Route::post('design/finish', [DesignController::class, 'store'])->name('design.finish.store');
+    Route::get('design/saving', [DesignController::class, 'saving'])->name('design.saving');
+    Route::get('design/success', [DesignController::class, 'success'])->name('design.saved');
+    Route::resource('design', DesignController::class);
+    Route::get('design/product/{id}', [DesignController::class, 'designer'])->name('design');
+    Route::post('design/product/{id}', [DesignController::class, 'saveDesigner'])->name('design.post');
 });
 
 Route::prefix('xendit')->group(function () {

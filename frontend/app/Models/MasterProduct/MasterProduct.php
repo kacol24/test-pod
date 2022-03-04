@@ -111,6 +111,16 @@ class MasterProduct extends Model
         return $this->hasOne('App\Models\MasterProduct\MasterProductSku', 'id', 'sku_id')->whereNull('deleted_at');
     }
 
+    function skuvariants($variants)
+    {
+        $datas = $this->hasMany('App\Models\MasterProduct\MasterProductSku', 'product_id', 'id')->whereIn('option_detail_key1', $variants)->whereNull('deleted_at')->get();
+        if(!$datas->count()) {
+            $datas = $this->hasMany('App\Models\MasterProduct\MasterProductSku', 'product_id', 'id')->whereIn('option_detail_key2', $variants)->whereNull('deleted_at')->get();
+        }
+
+        return $datas;
+    }
+
     function categories()
     {
         return $this->belongsToMany('App\Models\MasterProduct\Category', 'master_category_master_product');
@@ -122,7 +132,7 @@ class MasterProduct extends Model
 
     function options()
     {
-        return $this->hasMany('App\Models\MasterProduct\ProductOption', 'product_id', 'id');
+        return $this->hasMany('App\Models\MasterProduct\MasterProductOption', 'product_id', 'id');
     }
 
     function nooption()
