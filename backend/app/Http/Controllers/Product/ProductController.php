@@ -184,9 +184,24 @@ class ProductController extends Controller
                     $file->storeAs('/templates', $filename);
                     $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
                 }
+                $mockupFileKey = 'templates.'.$index.'.design.'.$designIndex.'.mockup_file';
+                if ($request->hasFile($mockupFileKey) && $request->file($mockupFileKey)->isValid()) {
+                    $file = $request->file($mockupFileKey);
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = sha1(Str::random(32)).".".$extension;
+                    $path = storage_path('app/templates');
+                    if (! file_exists($path)) {
+                        mkdir($path, 0755, true);
+                    }
+                    $file->storeAs('/templates', $filename);
+                    $mockupCanvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'mockups');
+                }
                 $productTemplate->designs()->create([
                     'file'            => $filename,
                     'page_name'       => $design['page_name'],
+                    'mockup'          => $mockupCanvas,
+                    'mockup_width'    => $design['mockup_width'],
+                    'mockup_height'   => $design['mockup_height'],
                     'customer_canvas' => $canvas,
                 ]);
             }
