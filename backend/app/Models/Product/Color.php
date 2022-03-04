@@ -19,4 +19,9 @@ class Color extends Model
     {
         return $this->belongsTo(Product::class, 'product_id');
     }
+
+    public function mockupColors()
+    {
+        return $this->hasMany(MockupColor::class, 'color_id');
+    }
 }

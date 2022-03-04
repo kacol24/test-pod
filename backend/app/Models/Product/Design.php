@@ -20,4 +20,9 @@ class Design extends Model
     {
         return $this->belongsTo(Template::class, 'template_id');
     }
+
+    public function mockupColors()
+    {
+        return $this->hasMany(MockupColor::class, 'design_id');
+    }
 }

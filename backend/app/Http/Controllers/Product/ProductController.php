@@ -10,6 +10,7 @@ use App\Models\Product\Capacity;
 use App\Models\Product\Category;
 use App\Models\Product\Color;
 use App\Models\Product\Design;
+use App\Models\Product\MockupColor;
 use App\Models\Product\Option;
 use App\Models\Product\OptionSet;
 use App\Models\Product\Preview;
@@ -231,6 +232,16 @@ class ProductController extends Controller
                     'thumbnail_name'  => $preview['thumbnail_name'],
                     'file_config'     => $preview['file_config'],
                     'customer_canvas' => $canvas,
+                ]);
+            }
+        }
+
+        foreach ($product->colors as $color) {
+            foreach ($product->designs as $design) {
+                MockupColor::create([
+                    'color_id'        => $color->id,
+                    'design_id'       => $design->id,
+                    'customer_canvas' => $this->uploadMockupColor($design, $color),
                 ]);
             }
         }
@@ -543,6 +554,17 @@ class ProductController extends Controller
             }
         }
 
+        foreach ($product->colors as $color) {
+            foreach ($product->designs as $design) {
+                MockupColor::where([
+                    'color_id'  => $color->id,
+                    'design_id' => $design->id,
+                ])->update([
+                    'customer_canvas' => $this->uploadMockupColor($design, $color),
+                ]);
+            }
+        }
+
         $product->categories()->sync($request->category_id);
 
         #Product Images
@@ -679,6 +701,39 @@ class ProductController extends Controller
 
         $name = ($type == 'designs') ? 'design' : 'preview_mockups';
         $post = [$name => curl_file_create($file)];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "X-CustomersCanvasAPIKey: ".$key,
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return Str::of($result)->trim('"');
+    }
+
+    private function uploadMockupColor(Design $design, Color $color)
+    {
+        $key = 'PrinterousCustomerCanvasDemo123!@#';
+        $url = 'https://canvas.printerous.com/production/DI/api/rendering/preview';
+
+        $post = [
+            'template' => curl_file_create(Storage::path('templates/'.$design->mockup)),
+            'format'   => 'png',
+            'size'     => json_encode([
+                'width'  => $design->mockup_width,
+                'height' => $design->mockup_height,
+            ]),
+            'data'     => json_encode([
+                'Shape' => [
+                    'type'  => 'shape',
+                    'color' => $color->color,
+                ],
+            ]),
+        ];
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 1);
