@@ -674,12 +674,10 @@ class ProductController extends Controller
 
         foreach ($product->colors as $color) {
             foreach ($product->designs as $design) {
-                MockupColor::where([
-                    'color_id'  => $color->id,
-                    'design_id' => $design->id,
-                ])->updateOrCreate([
+                MockupColor::updateOrCreate([
                     'color_id'        => $color->id,
                     'design_id'       => $design->id,
+                ], [
                     'customer_canvas' => $this->uploadMockupColor($design, $color),
                 ]);
             }
