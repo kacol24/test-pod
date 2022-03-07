@@ -744,7 +744,7 @@ class ProductController extends Controller
                 'height' => $design->mockup_height,
             ],
             'data'     => [
-                'Shape' => [
+                'Color' => [
                     'type'  => 'shape',
                     'color' => $color->color,
                 ],
