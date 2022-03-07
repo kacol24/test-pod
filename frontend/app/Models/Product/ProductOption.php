@@ -10,4 +10,8 @@ class ProductOption extends Model {
     protected $table = 'product_options';
     protected $guarded = ['id'];
     public $timestamps = false;
+
+    function details() {
+        return $this->hasMany('App\Models\Product\ProductOptionDetail', 'option_id', 'id');
+    }
 }

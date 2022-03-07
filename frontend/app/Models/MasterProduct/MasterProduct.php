@@ -151,4 +151,9 @@ class MasterProduct extends Model
     {
         return $this->hasMany('App\Models\MasterProduct\Template', 'product_id', 'id');
     }
+
+    function capacity()
+    {
+        return $this->hasOne('App\Models\MasterProduct\Capacity', 'id', 'capacity_id');
+    }
 }

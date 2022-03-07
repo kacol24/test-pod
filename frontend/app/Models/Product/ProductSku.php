@@ -28,4 +28,27 @@ class ProductSku extends Model
     {
         return $this->hasOne('App\Models\Product\ProductOptionDetail', 'key', 'option_detail_key2');
     }
+
+    function getCombinationVariant($selections) {
+        $combination = array();
+        if($this->option_detail_key1) {
+            foreach($selections as $selection) {
+                foreach($selection['options'] as $i => $option) {
+                    if(generate_key($selection['name'].$option['value']) == $this->option_detail_key1) {
+                        $combination[] = $i;
+                    }
+                }
+            }
+        }
+        if($this->option_detail_key2) {
+            foreach($selections as $selection) {
+                foreach($selection['options'] as $i => $option) {
+                    if(generate_key($selection['name'].$option['value']) == $this->option_detail_key2) {
+                        $combination[] = $i;
+                    }
+                }
+            }
+        }
+        return $combination;
+    }
 }
