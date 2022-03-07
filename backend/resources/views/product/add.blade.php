@@ -737,7 +737,7 @@
                                                                             </label>
                                                                             <input type="file"
                                                                                    class="form-control-file"
-                                                                                   :name="'templates['+ index +'][design]['+ designIndex +'][mockup]'">
+                                                                                   :name="'templates['+ index +'][design]['+ designIndex +'][mockup_file]'">
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="col-md-6">
