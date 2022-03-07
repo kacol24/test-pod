@@ -737,7 +737,7 @@ class ProductController extends Controller
         $url = 'https://canvas.printerous.com/production/DI/api/rendering/preview';
 
         $post = [
-            'template' => $design->mockup_customer_canvas.'.psd',
+            'template' => $design->mockup_customer_canvas,
             'format'   => 'png',
             'size'     => [
                 'width'  => $design->mockup_width,
