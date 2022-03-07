@@ -761,6 +761,43 @@
                                                                                 </div>
                                                                             </div>
                                                                         </div>
+                                                                        <div class="form-group">
+                                                                            <label class="text-uppercase">
+                                                                                Design Location
+                                                                            </label>
+                                                                            <div class="row">
+                                                                                <div class="col-md-6">
+                                                                                    <div class="input-group">
+                                                                                        <div
+                                                                                            class="input-group-prepend">
+                                                                                            <span
+                                                                                                class="input-group-text"
+                                                                                                style="background-color:#e9ecef;">
+                                                                                                X
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <input type="text"
+                                                                                               class="form-control"
+                                                                                               :name="'templates['+ index +'][design]['+ designIndex +'][location_x]'">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="input-group">
+                                                                                        <div
+                                                                                            class="input-group-prepend">
+                                                                                            <span
+                                                                                                class="input-group-text"
+                                                                                                style="background-color:#e9ecef;">
+                                                                                                Y
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <input type="text"
+                                                                                               class="form-control"
+                                                                                               :name="'templates['+ index +'][design]['+ designIndex +'][location_y]'">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </template>

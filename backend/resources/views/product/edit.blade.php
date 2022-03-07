@@ -800,6 +800,45 @@
                                                                                 </div>
                                                                             </div>
                                                                         </div>
+                                                                        <div class="form-group">
+                                                                            <label class="text-uppercase">
+                                                                                Design Location
+                                                                            </label>
+                                                                            <div class="row">
+                                                                                <div class="col-md-6">
+                                                                                    <div class="input-group">
+                                                                                        <div
+                                                                                            class="input-group-prepend">
+                                                                                            <span
+                                                                                                class="input-group-text"
+                                                                                                style="background-color:#e9ecef;">
+                                                                                                X
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <input type="tel"
+                                                                                               class="form-control"
+                                                                                               x-model="JSON.parse(design.design_location).X"
+                                                                                               :name="'templates['+ index +'][design]['+ designIndex +'][location_x]'">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="input-group">
+                                                                                        <div
+                                                                                            class="input-group-prepend">
+                                                                                            <span
+                                                                                                class="input-group-text"
+                                                                                                style="background-color:#e9ecef;">
+                                                                                                Y
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <input type="tel"
+                                                                                               class="form-control"
+                                                                                               x-model="JSON.parse(design.design_location).Y"
+                                                                                               :name="'templates['+ index +'][design]['+ designIndex +'][location_y]'">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </template>
@@ -975,7 +1014,7 @@
                                 <a class="dropdown-item" href="javascript:void(0);" x-on:click="status=0">Inactive</a>
                             </div>
                         </div>
-                        <button class="btn btn-primary px-5 ml-3" type="submit">
+                        <button class="btn btn-primary px-5 ml-3" type="submit" x-cloak>
                             Update Product
                         </button>
                     </div>

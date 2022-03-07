@@ -47,8 +47,10 @@ class ProductRequest extends FormRequest
             //'templates.*.height'        => 'required',
             //'templates.*.ratio'         => 'required',
 
-            'templates.*.design.*.file'      => 'required',
-            'templates.*.design.*.page_name' => 'required',
+            'templates.*.design.*.file'       => 'required',
+            'templates.*.design.*.page_name'  => 'required',
+            'templates.*.design.*.location_x' => 'required',
+            'templates.*.design.*.location_y' => 'required',
 
             'templates.*.preview.*.file'           => 'required',
             'templates.*.preview.*.preview_name'   => 'required',

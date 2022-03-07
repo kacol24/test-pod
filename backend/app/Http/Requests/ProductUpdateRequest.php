@@ -46,6 +46,8 @@ class ProductUpdateRequest extends FormRequest
 
             //'templates.*.design.*.file'      => 'required',
             'templates.*.design.*.page_name' => 'required',
+            'templates.*.design.*.location_x' => 'required',
+            'templates.*.design.*.location_y' => 'required',
 
             //'templates.*.preview.*.file'           => 'required',
             'templates.*.preview.*.preview_name'   => 'required',

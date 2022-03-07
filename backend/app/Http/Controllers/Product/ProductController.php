@@ -181,6 +181,10 @@ class ProductController extends Controller
                     //'customer_canvas'        => $canvas,
                     'mockup_width'           => $design['mockup_width'],
                     'mockup_height'          => $design['mockup_height'],
+                    'design_location' => json_encode([
+                        'X' => $design['location_x'],
+                        'Y' => $design['location_y'],
+                    ])
                     //'mockup'                 => $mockupFilename,
                     //'mockup_customer_canvas' => $mockupCanvas,
                 ];
@@ -438,6 +442,10 @@ class ProductController extends Controller
                 $theDesign['page_name'] = $design['page_name'];
                 $theDesign['mockup_width'] = $design['mockup_width'];
                 $theDesign['mockup_height'] = $design['mockup_height'];
+                $theDesign['design_location'] = json_encode([
+                    'X' => $design['location_x'],
+                    'Y' => $design['location_y'],
+                ]);
 
                 $fileKey = 'templates.'.$index.'.design.'.$designIndex.'.file';
                 if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
