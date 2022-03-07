@@ -405,6 +405,17 @@ class ProductController extends Controller
         $product->capacity_id = $request->capacity_id;
         $product->save();
 
+        $product->colors()->delete();
+        foreach ($request->colors ?? [] as $color) {
+            if ($color['id']) {
+                $theColor = Color::withTrashed()->find($color['id']);
+                $theColor->restore();
+                $theColor->update($color);
+            } else {
+                $product->colors()->create($color);
+            }
+        }
+
         $templatesData = collect();
         foreach ($request->templates as $index => $template) {
             $rootTemplate = [
@@ -666,7 +677,9 @@ class ProductController extends Controller
                 MockupColor::where([
                     'color_id'  => $color->id,
                     'design_id' => $design->id,
-                ])->update([
+                ])->updateOrCreate([
+                    'color_id'        => $color->id,
+                    'design_id'       => $design->id,
                     'customer_canvas' => $this->uploadMockupColor($design, $color),
                 ]);
             }
