@@ -32,8 +32,8 @@ class ProductRequest extends FormRequest
             'description'      => 'required',
             'capacity_id'      => 'required',
 
-            'colors.*.color' => 'required',
-            'colors.*.name'  => 'required',
+            //'colors.*.color' => 'required',
+            //'colors.*.name'  => 'required',
 
             'templates.*.design_name' => 'required',
             'templates.*.price'       => 'required',

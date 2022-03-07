@@ -315,7 +315,7 @@
                              x-data='{
                                     colors: @json($entity->colors),
                                     showDelete: function() {
-                                        return this.colors.length > 1
+                                        return true;
                                     },
                                     deleteItem: function(index) {
                                         this.colors.splice(index, 1);
@@ -752,7 +752,7 @@
                                                                                    class="form-control-file"
                                                                                    :name="'templates['+ index +'][design]['+designIndex+'][file]'">
                                                                         </div>
-                                                                        <div class="form-group">
+                                                                        <div class="form-group" x-show="design.file">
                                                                             <a :href="'{{ asset('templates') }}/' + design.file"
                                                                                class="btn btn-default btn-sm"
                                                                                target="_blank">
@@ -768,7 +768,7 @@
                                                                                    class="form-control-file"
                                                                                    :name="'templates['+ index +'][design]['+designIndex+'][mockup_file]'">
                                                                         </div>
-                                                                        <div class="form-group">
+                                                                        <div class="form-group" x-show="design.mockup">
                                                                             <a :href="'{{ asset('templates') }}/' + design.mockup"
                                                                                class="btn btn-default btn-sm"
                                                                                target="_blank">
@@ -844,7 +844,7 @@
                                                                             <input type="file" class="form-control-file"
                                                                                    :name="'templates['+ index +'][preview]['+previewIndex+'][file]'">
                                                                         </div>
-                                                                        <div class="form-group">
+                                                                        <div class="form-group" x-show="preview.file">
                                                                             <a :href="'{{ asset('previews') }}/' + preview.file"
                                                                                class="btn btn-default btn-sm"
                                                                                target="_blank">

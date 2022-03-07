@@ -155,7 +155,9 @@ class ProductController extends Controller
 
         $product->categories()->sync($request->category_id);
 
-        $product->colors()->createMany($request->colors);
+        if ($request->colors) {
+            $product->colors()->createMany($request->colors);
+        }
 
         foreach ($request->templates as $index => $template) {
             $productTemplate = $product->templates()->create([
@@ -173,8 +175,15 @@ class ProductController extends Controller
             ]);
 
             foreach ($template['design'] as $designIndex => $design) {
-                $filename = '';
-
+                $createDesign = [
+                    'page_name'              => $design['page_name'],
+                    //'file'                   => $filename,
+                    //'customer_canvas'        => $canvas,
+                    'mockup_width'           => $design['mockup_width'],
+                    'mockup_height'          => $design['mockup_height'],
+                    //'mockup'                 => $mockupFilename,
+                    //'mockup_customer_canvas' => $mockupCanvas,
+                ];
                 $fileKey = 'templates.'.$index.'.design.'.$designIndex.'.file';
                 if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
                     $file = $request->file($fileKey);
@@ -186,9 +195,10 @@ class ProductController extends Controller
                     }
                     $file->storeAs('/templates', $filename);
                     $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
+                    $createDesign['file'] = $filename;
+                    $createDesign['customer_canvas'] = $canvas;
                 }
 
-                $mockupFilename = '';
                 $mockupFileKey = 'templates.'.$index.'.design.'.$designIndex.'.mockup_file';
                 if ($request->hasFile($mockupFileKey) && $request->file($mockupFileKey)->isValid()) {
                     $file = $request->file($mockupFileKey);
@@ -200,20 +210,20 @@ class ProductController extends Controller
                     }
                     $file->storeAs('/templates', $mockupFilename);
                     $mockupCanvas = $this->uploadCanvas(Storage::path('templates/'.$mockupFilename), 'mockups');
+                    $createDesign['mockup'] = $mockupFilename;
+                    $createDesign['mockup_customer_canvas'] = $mockupCanvas;
                 }
-                $productTemplate->designs()->create([
-                    'file'                   => $filename,
-                    'page_name'              => $design['page_name'],
-                    'mockup'                 => $mockupFilename,
-                    'mockup_customer_canvas' => $mockupCanvas,
-                    'mockup_width'           => $design['mockup_width'],
-                    'mockup_height'          => $design['mockup_height'],
-                    'customer_canvas'        => $canvas,
-                ]);
+                $productTemplate->designs()->create($createDesign);
             }
 
             foreach ($template['preview'] as $previewIndex => $preview) {
-                $filename = '';
+                $createPreview = [
+                    //'file'            => $filename,
+                    'preview_name'    => $preview['preview_name'],
+                    'thumbnail_name'  => $preview['thumbnail_name'],
+                    'file_config'     => $preview['file_config'],
+                    //'customer_canvas' => $canvas,
+                ];
                 $fileKey = 'templates.'.$index.'.preview.'.$previewIndex.'.file';
                 if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
                     $file = $request->file($fileKey);
@@ -225,14 +235,10 @@ class ProductController extends Controller
                     }
                     $file->storeAs('/previews', $filename);
                     $canvas = $this->uploadCanvas(Storage::path('previews/'.$filename), 'mockups');
+                    $createPreview['file'] = $filename;
+                    $createPreview['customer_canvas'] = $canvas;
                 }
-                $productTemplate->previews()->create([
-                    'file'            => $filename,
-                    'preview_name'    => $preview['preview_name'],
-                    'thumbnail_name'  => $preview['thumbnail_name'],
-                    'file_config'     => $preview['file_config'],
-                    'customer_canvas' => $canvas,
-                ]);
+                $productTemplate->previews()->create($createPreview);
             }
         }
 
@@ -396,7 +402,7 @@ class ProductController extends Controller
         $product->save();
 
         $product->colors()->delete();
-        foreach ($request->colors as $color) {
+        foreach ($request->colors ?? [] as $color) {
             if ($color['id']) {
                 $theColor = Color::withTrashed()->find($color['id']);
                 $theColor->restore();

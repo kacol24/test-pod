@@ -308,9 +308,9 @@
                              x-cloak
                              id="ColorApp"
                              x-data="{
-                                    colors: [{}],
+                                    colors: [],
                                     showDelete: function() {
-                                        return this.colors.length > 1
+                                        return true;
                                     },
                                     deleteItem: function(index) {
                                         this.colors.splice(index, 1);
