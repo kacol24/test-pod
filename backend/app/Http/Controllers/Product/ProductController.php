@@ -176,11 +176,11 @@ class ProductController extends Controller
 
             foreach ($template['design'] as $designIndex => $design) {
                 $createDesign = [
-                    'page_name'              => $design['page_name'],
+                    'page_name'       => $design['page_name'],
                     //'file'                   => $filename,
                     //'customer_canvas'        => $canvas,
-                    'mockup_width'           => $design['mockup_width'],
-                    'mockup_height'          => $design['mockup_height'],
+                    'mockup_width'    => $design['mockup_width'],
+                    'mockup_height'   => $design['mockup_height'],
                     'design_location' => json_encode([
                         'X' => $design['location_x'],
                         'Y' => $design['location_y'],
@@ -223,9 +223,9 @@ class ProductController extends Controller
             foreach ($template['preview'] as $previewIndex => $preview) {
                 $createPreview = [
                     //'file'            => $filename,
-                    'preview_name'    => $preview['preview_name'],
-                    'thumbnail_name'  => $preview['thumbnail_name'],
-                    'file_config'     => $preview['file_config'],
+                    'preview_name'   => $preview['preview_name'],
+                    'thumbnail_name' => $preview['thumbnail_name'],
+                    'file_config'    => $preview['file_config'],
                     //'customer_canvas' => $canvas,
                 ];
                 $fileKey = 'templates.'.$index.'.preview.'.$previewIndex.'.file';
@@ -243,16 +243,6 @@ class ProductController extends Controller
                     $createPreview['customer_canvas'] = $canvas;
                 }
                 $productTemplate->previews()->create($createPreview);
-            }
-        }
-
-        foreach ($product->colors as $color) {
-            foreach ($product->designs as $design) {
-                MockupColor::create([
-                    'color_id'        => $color->id,
-                    'design_id'       => $design->id,
-                    'customer_canvas' => $this->uploadMockupColor($design, $color),
-                ]);
             }
         }
 
@@ -351,6 +341,16 @@ class ProductController extends Controller
         }
         \DB::commit();
 
+        foreach ($product->colors as $color) {
+            foreach ($product->designs as $design) {
+                MockupColor::create([
+                    'color_id'        => $color->id,
+                    'design_id'       => $design->id,
+                    'customer_canvas' => $this->uploadMockupColor($design, $color),
+                ]);
+            }
+        }
+
         return redirect()->route('product.list');
     }
 
@@ -404,17 +404,6 @@ class ProductController extends Controller
         $product->size_chart = $request->size_chart;
         $product->capacity_id = $request->capacity_id;
         $product->save();
-
-        $product->colors()->delete();
-        foreach ($request->colors ?? [] as $color) {
-            if ($color['id']) {
-                $theColor = Color::withTrashed()->find($color['id']);
-                $theColor->restore();
-                $theColor->update($color);
-            } else {
-                $product->colors()->create($color);
-            }
-        }
 
         $templatesData = collect();
         foreach ($request->templates as $index => $template) {
@@ -568,17 +557,6 @@ class ProductController extends Controller
             }
         }
 
-        foreach ($product->colors as $color) {
-            foreach ($product->designs as $design) {
-                MockupColor::where([
-                    'color_id'  => $color->id,
-                    'design_id' => $design->id,
-                ])->update([
-                    'customer_canvas' => $this->uploadMockupColor($design, $color),
-                ]);
-            }
-        }
-
         $product->categories()->sync($request->category_id);
 
         #Product Images
@@ -683,6 +661,17 @@ class ProductController extends Controller
         }
         DB::commit();
 
+        foreach ($product->colors as $color) {
+            foreach ($product->designs as $design) {
+                MockupColor::where([
+                    'color_id'  => $color->id,
+                    'design_id' => $design->id,
+                ])->update([
+                    'customer_canvas' => $this->uploadMockupColor($design, $color),
+                ]);
+            }
+        }
+
         return redirect()->route('product.list')->with('status', 'Success edit product');
     }
 
@@ -735,25 +724,27 @@ class ProductController extends Controller
         $url = 'https://canvas.printerous.com/production/DI/api/rendering/preview';
 
         $post = [
-            'template' => curl_file_create(Storage::path('templates/'.$design->mockup)),
+            'template' => $design->mockup_customer_canvas.'.psd',
             'format'   => 'png',
-            'size'     => json_encode([
+            'size'     => [
                 'width'  => $design->mockup_width,
                 'height' => $design->mockup_height,
-            ]),
-            'data'     => json_encode([
+            ],
+            'data'     => [
                 'Shape' => [
                     'type'  => 'shape',
                     'color' => $color->color,
                 ],
-            ]),
+            ],
         ];
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "X-CustomersCanvasAPIKey: ".$key,
+            'Content-Type: application/json',
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($ch);
