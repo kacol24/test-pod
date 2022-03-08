@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\MasterProduct\Template;
 use App\Models\MasterProduct\Category;
 use App\Models\MasterProduct\MasterProduct;
 use App\Models\MasterProduct\MasterProductOption;
@@ -16,6 +17,7 @@ use App\Models\Product\ProductSku;
 use App\Models\Product\ProductImage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class DesignController extends Controller
 {
@@ -93,9 +95,11 @@ class DesignController extends Controller
     public function store(Request $request)
     {
         $request->flash();
-
+        $store_id = session('current_store')->id;
         $validator = Validator::make($request->all(), [
-          'title' => 'required',
+          'title' => ['required', Rule::unique('product_designs')->where(function ($query) use ($store_id) {
+            $query->where('store_id', $store_id);
+          })],
           'description' => 'required',
           'sku_code' => 'required',
         ]);
@@ -107,7 +111,7 @@ class DesignController extends Controller
         DB::beginTransaction();
         try {
             $design = ProductDesign::create(array(
-                'store_id' => session('current_store')->id,
+                'store_id' => $store_id,
                 'title' => $request->title,
                 'description' => $request->description,
                 'sku_code' => $request->sku_code,
@@ -116,6 +120,7 @@ class DesignController extends Controller
 
             $design_data = json_decode(session('design'));
             $masterproduct = MasterProduct::find($design_data->master_product_id);
+            $mastertemplate = Template::find($design_data->template);
 
             $product = Product::create(array(
                 'store_id' => session('current_store')->id,
@@ -152,7 +157,7 @@ class DesignController extends Controller
                     'option_detail_key2' => $sku->option_detail_key2,
                     'sku_code' => $sku->sku_code."-".$design->sku_code,
                     'stock' => 0,
-                    'price' => 50000, #perlu di adjust dari harga designer
+                    'price' => 50000 + $mastertemplate->price, #perlu di adjust dari harga designer
                     'weight' => $sku->weight,
                     'width' => $sku->width,
                     'length' => $sku->length,

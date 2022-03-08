@@ -50,7 +50,7 @@ class Tokopedia {
     $resp = curl_exec($curl);
     $resp = $this->handleResponse($log, $curl, $resp, 'create_product', $input , $shop_id);    
 
-    echo json_encode($resp);
+    return $resp;
   }
 
   public function getCategories() {
