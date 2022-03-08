@@ -217,7 +217,7 @@ function queryProduct(params) {
     params.page = (params.offset + params.limit) / params.limit;
     tablePage = params.page;
     params.status = status;
-    params.category = category;
+    // params.category = category;
     return params;
 }
 

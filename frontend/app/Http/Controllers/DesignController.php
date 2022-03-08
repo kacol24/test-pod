@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DesignDatatableResource;
 use Illuminate\Http\Request;
 use App\Models\MasterProduct\Template;
 use App\Models\MasterProduct\Category;
@@ -21,6 +22,30 @@ use Illuminate\Validation\Rule;
 
 class DesignController extends Controller
 {
+    public function datatable(Request $request)
+    {
+        $input = $request->all();
+
+        $offset = $input['offset'];
+        $limit = $input['limit'];
+        $search = $input['search'];
+        $sorting = 'updated_at';
+        $status = $input['status'];
+        $order = $input['order'];
+
+        if (isset($input['sort'])) {
+            $sorting = $input['sort'];
+        }
+
+        return DesignDatatableResource::collection(
+            ProductDesign::when(! empty($search), function ($query) use ($search) {
+                return $query->where('title', 'like', "%{$search}%");
+            })->when(! empty($status), function ($query) use ($status) {
+                return $query->where('status', $status);
+            })->orderBy($sorting, $order)->paginate($limit)
+        );
+    }
+
     public function index()
     {
         return view('product.index');
