@@ -3,7 +3,7 @@
 @section('content')
     <div class="container container--app">
         @include('partials.product-nav')
-        <div class="text-start text-md-center">
+        <div class="text-start">
             <h1 class="page-title font-size:22">
                 Select Product
             </h1>

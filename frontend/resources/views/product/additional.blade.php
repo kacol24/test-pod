@@ -3,35 +3,16 @@
 @section('content')
     <div class="container container--app">
         @include('partials.product-nav')
-        <div class="text-center">
+        <div class="text-start">
             <h1 class="page-title font-size:22">
-                Design Your Product
+                Great design. Now you can add more products!
             </h1>
             <div class="font-size:14">
-                Tweak and finalize the design and price of this product
+                To help you get up and running, we’ve created some additional products based on your original design.
             </div>
         </div>
         <div class="row mt-4">
             <div class="col-md-5">
-                <input type="search" class="form-control" placeholder="Search product">
-                <ul class="list-group list-group-flush font-size:12 mt-3 d-none d-md-block">
-                    <li class="list-group-item ps-0 text-uppercase text-color:tertiary fw-400">
-                        Categories
-                    </li>
-                    <li class="list-group-item ps-0">
-                        <a href="" class="text-decoration-none text-color:black fw-500">
-                            A second item
-                        </a>
-                    </li>
-                </ul>
-                <div class="d-block d-md-none my-3">
-                    <select class="form-select" aria-label="Default select example">
-                        <option selected>All Categories</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                </div>
                 <div class="card p-0 mt-3 sticky-top" style="background: #F6F7F9;top: 140px;">
                     <div class="card-header border-0 pb-0 d-flex align-items-center justify-content-between"
                          style="background: #F6F7F9;">
@@ -44,14 +25,16 @@
                     <div class="card-body pb-0" style="max-height: 400px; overflow-y: scroll;">
                         <div class="list-group">
                             @foreach(range(1, 5) as $list)
-                                <div
-                                    class="list-group-item p-3 mb-4 d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
+                                <div class="list-group-item p-3 mb-4 d-flex justify-content-between align-items-center">
+                                    <label class="d-flex align-items-center" style="font-family: Poppins;font-style: normal;font-weight: normal;font-size: 14px;line-height: 22px;color: #000000;">
+                                        <span class="me-2 d-block">
+                                            <input class="form-check-input rounded-checkbox" type="checkbox" id="checkboxNoLabel">
+                                        </span>
                                         <img src="{{ asset('images/product-thumbnail.png') }}" alt=""
                                              class="img-fluid me-3"
                                              width="42">
                                         T-Shirt
-                                    </div>
+                                    </label>
                                     <div class="d-flex font-size:12">
                                         <a href="" class="text-color:blue text-decoration-none">
                                             Remove

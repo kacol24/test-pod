@@ -65,6 +65,19 @@
                 margin-top: -55px !important;
             }
         }
+
+        .rounded-checkbox {
+            width: 21px;
+            height: 21px;
+            border-radius: 50% !important;
+        }
+
+        .list-group.product-selection-list .active {
+            background-color: #fff !important;
+            border: 2px solid #000000 !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body class="fixed-header">
