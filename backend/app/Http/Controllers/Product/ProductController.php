@@ -540,6 +540,7 @@ class ProductController extends Controller
                     'mockup_height'          => $designData['mockup_height'],
                     'page_name'              => $designData['page_name'],
                     'customer_canvas'        => $designData['customer_canvas'],
+                    'design_location'        => $designData['design_location'],
                 ];
                 if (isset($designData['id'])) {
                     $design = Design::withTrashed()->find($designData['id']);
@@ -675,8 +676,8 @@ class ProductController extends Controller
         foreach ($product->colors as $color) {
             foreach ($product->designs as $design) {
                 MockupColor::updateOrCreate([
-                    'color_id'        => $color->id,
-                    'design_id'       => $design->id,
+                    'color_id'  => $color->id,
+                    'design_id' => $design->id,
                 ], [
                     'customer_canvas' => $this->uploadMockupColor($design, $color),
                 ]);
