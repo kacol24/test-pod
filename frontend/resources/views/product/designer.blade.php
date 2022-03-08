@@ -3,14 +3,12 @@
 @section('content')
     <div class="container container--app">
         @include('partials.product-nav')
-        <div class="text-center">
             <h1 class="page-title font-size:22">
                 Design Your Product
             </h1>
             <div class="font-size:14">
                 Tweak and finalize the design and price of this product
             </div>
-        </div>
         @foreach ($errors->all() as $error)
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
           {{$error}}
@@ -18,11 +16,49 @@
         </div>
         @endforeach
         <div class="row mt-4">
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <form id="form-design" method="post" action="{{route('design.post', $masterproduct->id)}}">
                     {{ csrf_field() }}
                     <div class="p-3 p-md-4" style="background: #F6F7F9;">
                         <div class="card p-0">
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <div>
+                                    <i class="fas fa-fw fa-cubes"></i>
+                                    <h5 class="card-title d-inline-block">
+                                        Variants
+                                    </h5>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1"
+                                           value="option1">
+                                    <label class="form-check-label" for="inlineCheckbox1">
+                                        All Variants
+                                    </label>
+                            </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    @php($option = $masterproduct->options->reverse()->first())
+                                    @foreach($option->details as $detail)
+                                        <div class="col-md-6">
+                                            <div
+                                                class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" name="variants[]" checked="checked"
+                                                           type="checkbox" value="{{$detail->key}}"
+                                                           id="{{$detail->key}}">
+                                                    <label class="form-check-label" for="{{$detail->key}}">
+                                                        {{$detail->title}}
+                                                    </label>
+                                                </div>
+                                    </div>
+                                </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card p-0 mt-3">
                             <div class="card-header d-flex align-items-center justify-content-between">
                                 <div class="text-nowrap mr-3">
                                     <i class="fas fa-fw fa-image"></i>
@@ -34,15 +70,16 @@
                             <div class="card-body pt-3">
                                 <div class="row">
                                     <div class="col-md">
-                                        <select name="template" class="form-control"> 
+                                        <select name="template" class="form-control">
                                             @foreach($templates as $template)
-                                            <option value="{{$template->id}}">{{$template->design_name}}</option>
+                                                <option value="{{$template->id}}">{{$template->design_name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="card p-0 mt-3">
                             <div class="card-header d-flex align-items-center justify-content-between">
                                 <div class="text-nowrap mr-3">
@@ -52,52 +89,49 @@
                                     </h5>
                                 </div>
                             </div>
-                            <div class="card-body pt-3">
-                                <div class="row">
-                                    <div class="col-md">
-                                        <label for="" class="text-color:black text-uppercase">
-                                            Set Your Price (IDR)
-                                        </label>
-                                    </div>
-                                    <div class="col-12 order-md-5">
-                                        <input type="text" class="form-control">
-                                    </div>
-                                    <div class="col-md-auto order-md-3">
-                                        <small class="text-color:green font-size:12 text-end">
-                                            IDR 30,000 profit/order
-                                        </small>
-                                    </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table m-0">
+                                        <thead>
+                                        <tr class="text-nowrap text-uppercase">
+                                            <th>
+                                                Variant
+                                            </th>
+                                            <th>
+                                                You Buy At
+                                            </th>
+                                            <th>
+                                                You Sell At
+                                            </th>
+                                            <th>
+                                                Your Profit
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="text-nowrap">
+                                            <th class="text-color:black font-size:12 fw-600">
+                                                Small
+                                            </th>
+                                            <td class="text-end">
+                                                80,000
+                                            </td>
+                                            <td>
+                                                <input type="tel" class="form-control price text-end" value="150,000"
+                                                       aria-label="you sell at">
+                                            </td>
+                                            <td class="text-end">
+                                            <span class="text-color:green">
+                                                70,000
+                                            </span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
-                        <div class="card p-0 mt-3">
-                            <div class="card-header d-flex align-items-center justify-content-between">
-                                <div>
-                                    <i class="fas fa-fw fa-cubes"></i>
-                                    <h5 class="card-title d-inline-block">
-                                        Variants
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    @php($option = $masterproduct->options->reverse()->first())
-                                    @foreach($option->details as $detail)
-                                    <div class="col-md-6">
-                                        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
-                                            <div class="form-check">
-                                                <input class="form-check-input" name="variants[]" checked="checked" type="checkbox" value="{{$detail->key}}"
-                                                       id="{{$detail->key}}">
-                                                <label class="form-check-label" for="{{$detail->key}}">
-                                                    {{$detail->title}}
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
+
                         <div class="card p-0 mt-3 border-0" style="background-color: transparent;">
                             <hr>
                             <div class="d-flex justify-content-between mb-3">
@@ -117,9 +151,34 @@
                     </div>
                 </form>
             </div>
-            <div class="col-md-7">
+            <div class="col-md">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card p-0 h-100">
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <h5 class="card-title d-inline-block">
+                                    Product Colors
+                                </h5>
+                            </div>
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    @foreach(range(1, 15) as $color)
+                                        <div class="col-md-6 mb-4">
+                                            <a href="#" class="d-flex align-items-center color-option">
+                                                <span class="color-display" style="background-color:#0D62CA;"></span>
+                                                Blue
+                                            </a>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
                 <iframe class="content__iframe" id="editorFrame"></iframe>
             </div>
+        </div>
+    </div>
         </div>
     </div>
 @endsection
@@ -130,6 +189,25 @@
           width: 100%;
           min-height: calc(100vh - 76px);
           min-height: calc(100vh - 76px);
+        }
+
+        .color-option {
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 12px;
+            line-height: 22px;
+            color: #000000;
+            text-decoration: none;
+        }
+
+        .color-display {
+            border-radius: 50%;
+            border: 1px solid #D8DCE6;
+            box-shadow: 0 1px 1px rgba(22, 29, 37, 0.05), inset 0 2px 0 rgba(255, 255, 255, 0.05);
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
         }
     </style>
     <link href="https://canvas.printerous.com/production/Canvas/Edge/Configuration/customCss/loader.css" rel="stylesheet" />
@@ -165,7 +243,7 @@
 
             $("select[name='template']").change(function(){
                 defineTemplate($(this).val());
-            });     
+            });
         });
 
         function defineTemplate(id) {
@@ -173,7 +251,7 @@
                 if(el.id == id) {
                     surfaces = [];
                     mockups = [];
-                    return setupEditor(el); 
+                    return setupEditor(el);
                 }
             });
         }
@@ -200,7 +278,7 @@
                 });
             });
 
-            
+
             let product_definition = {
                 surfaces: surfaces
             };
@@ -278,7 +356,7 @@
                   }
                 }
             };
-          
+
             let cc_default_product_config = {};
             if (safety_line > 0) {
                 if (shape == "square") {
