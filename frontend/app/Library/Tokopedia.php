@@ -51,6 +51,38 @@ class Tokopedia {
     return $resp;
   }
 
+  public function updateProduct($input, $shop_id) {
+    $url = "https://fs.tokopedia.net/v3/products/fs/".$this->app_id."/edit?shop_id=".$shop_id;
+
+    $log = TokopediaLog::create(array(
+      "type" => "update_product",
+      "request" => json_encode($input),
+      "response" => null
+    ));
+
+    $curl = curl_init();
+    $token = (session('tokopedia_token')) ? session('tokopedia_token') : $this->getToken();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_POST => true,
+      CURLOPT_HEADER => true,
+      CURLOPT_CUSTOMREQUEST => "PATCH",
+      CURLOPT_POSTFIELDS => json_encode($input),
+      CURLOPT_HTTPHEADER => array(
+        'Content-Type: application/json',                                                                                
+        "Authorization: Bearer ".$token,
+      )
+    ));
+
+    $resp = curl_exec($curl);
+    $resp = $this->handleResponse($log, $curl, $resp, 'update_product', $input , $shop_id);    
+
+    return $resp;
+  }
+
   public function setPrice($input, $shop_id) {
     $url = "https://fs.tokopedia.net/inventory/v1/fs/".$this->app_id."/price/update?shop_id=".$shop_id;
 
@@ -147,6 +179,38 @@ class Tokopedia {
     return $resp;
   }
 
+  public function deleteProduct($input, $shop_id) {
+    $url = "https://fs.tokopedia.net/v3/products/fs/".$this->app_id."/delete?shop_id=".$shop_id;
+
+    $log = TokopediaLog::create(array(
+      "type" => "delete_product",
+      "request" => json_encode($input),
+      "response" => null
+    ));
+
+    $curl = curl_init();
+    $token = (session('tokopedia_token')) ? session('tokopedia_token') : $this->getToken();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_POST => true,
+      CURLOPT_HEADER => true,
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_POSTFIELDS => json_encode($input),
+      CURLOPT_HTTPHEADER => array(
+        'Content-Type: application/json',                                                                                
+        "Authorization: Bearer ".$token,
+      )
+    ));
+
+    $resp = curl_exec($curl);
+    $resp = $this->handleResponse($log, $curl, $resp, 'delete_product', $input , $shop_id);    
+
+    return $resp;
+  }
+
   public function setInactiveProduct($input, $shop_id) {
     $url = "https://fs.tokopedia.net/v1/products/fs/".$this->app_id."/inactive?shop_id=".$shop_id;
 
@@ -204,8 +268,35 @@ class Tokopedia {
 
     $resp = curl_exec($curl);
     $resp = $this->handleResponse($log, $curl, $resp, 'category');    
-    echo $token;
-    echo json_encode($resp);
+    return $resp;
+  }
+
+  public function getProduct($product_id) {
+    $url = "https://fs.tokopedia.net/inventory/v1/fs/".$this->app_id."/product/info?product_id=".$product_id;
+
+    $log = TokopediaLog::create(array(
+      "type" => "get_product",
+      "request" => $product_id,
+      "response" => null
+    ));
+
+    $token = (session('tokopedia_token')) ? session('tokopedia_token') : $this->getToken();
+
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_HEADER => true,
+      CURLOPT_CUSTOMREQUEST => "GET",
+      CURLOPT_HTTPHEADER => array(
+        "Authorization: Bearer ".$token
+      )
+    ));
+
+    $resp = curl_exec($curl);
+    $resp = $this->handleResponse($log, $curl, $resp, 'get_product', $product_id);    
+    return $resp;
   }
 
   public function getVariant($category_id) {
@@ -287,6 +378,12 @@ class Tokopedia {
         return $this->setPrice($data, $shop_id);
       }else if($action == 'stock') {
         return $this->setStock($data, $shop_id);
+      }else if($action == 'delete_product') {
+        return $this->deleteProduct($data, $shop_id);
+      }else if($action == 'update_product') {
+        return $this->updateProduct($data, $shop_id);
+      }else if($action == 'get_product') {
+        return $this->getProduct($data);
       }
     }
     $headers=array();

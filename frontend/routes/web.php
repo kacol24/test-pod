@@ -23,28 +23,26 @@ use App\Library\Facades\Tokopedia;
 use App\Models\Product\Product;
 use App\Models\Product\ProductPlatform;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
+use App\Models\TokopediaLog;
+
+Route::post('webhook/tokopedia/orders', function (Request $request) {
+    $log = TokopediaLog::create(array(
+        'type' => 'webhook_order',
+        'request' => json_encode($request->all())
+    ));
+});
 
 Route::get('/create-product', function () {
     $shop_id = 13403511;
     $product = Product::find(8);
 
-    $sku = $product->firstsku();
-    if($product->master_product_id) {
-        $stock = $product->mastersku($sku->option_detail_key1, $sku->option_detail_key2)->stock;
-        $capacity_stock = $product->masterproduct->capacity->capacity;
-        if($capacity_stock < $stock) {
-            $stock = $capacity_stock;
-        }
-        $stock = round($stock*$product->masterproduct->threshold/100);
-    }else {
-        $stock = $sku->stock;
-    }
-
     $images = array();
     foreach($product->images as $image) {
-        $images[] = array('file_path' => asset(Storage::url('public/products/'.$image->image)));
-        // $images[] = array('file_path' => "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/9/27/5510391/5510391_9968635e-a6f4-446a-84d0-ff3a98a5d4a2.jpg");
+        // $images[] = array('file_path' => asset(Storage::url('public/products/'.$image->image)));
+        $images[] = array('file_path' => "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/9/27/5510391/5510391_9968635e-a6f4-446a-84d0-ff3a98a5d4a2.jpg");
     }
+    $sku = $product->firstsku();
     $productdata = array(
         "name" => $product->title,
         "condition" => "NEW",
@@ -52,7 +50,7 @@ Route::get('/create-product', function () {
         "sku" => $sku->sku_code,
         "price" => $sku->price,
         "status" => "LIMITED",
-        "stock" => $stock,
+        "stock" => $sku->stock($product),
         "min_order" => 1,
         "category_id" => 562, #need update
         "dimension" => array(
@@ -65,7 +63,12 @@ Route::get('/create-product', function () {
         "weight_unit" => "GR",
         "is_free_return" => false,
         "is_must_insurance" => false,
-        "pictures" => $images
+        "pictures" => $images,
+        "preorder" => array(
+            "is_active" => true,
+            "duration" => $product->masterproduct->production_time + $product->masterproduct->fulfillment_time,
+            "time_unit" => "DAY"
+        )
     );
 
     $variant = array();
@@ -96,21 +99,11 @@ Route::get('/create-product', function () {
 
         $variantproducts = array();
         foreach($product->skus as $i => $sku) {
-            if($product->master_product_id) {
-                $stock = $product->mastersku($sku->option_detail_key1, $sku->option_detail_key2)->stock;
-                $capacity_stock = $product->masterproduct->capacity->capacity;
-                if($capacity_stock < $stock) {
-                    $stock = $capacity_stock;
-                }
-                $stock = round($stock*$product->masterproduct->threshold/100);
-            }else {
-                $stock = $sku->stock;
-            }
             $variantproducts[] = array(
                 "is_primary" => ($i==0) ? true : false,
                 "status" => "LIMITED",
                 "price" => $sku->price,
-                "stock" => $stock,
+                "stock" => $sku->stock($product),
                 "sku" => $sku->sku_code,
                 "combination" => $sku->getCombinationVariant($selection, $toped_variant['variant_details'])
             );
@@ -139,6 +132,99 @@ Route::get('/create-product', function () {
     }
 });
 
+Route::get('/update-product', function () {
+    $shop_id = 13403511;
+    $product = Product::find(8);
+
+    $images = array();
+    foreach($product->images as $image) {
+        // $images[] = array('file_path' => asset(Storage::url('public/products/'.$image->image)));
+        $images[] = array('file_path' => "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/9/27/5510391/5510391_9968635e-a6f4-446a-84d0-ff3a98a5d4a2.jpg");
+    }
+    $sku = $product->firstsku();
+    $productdata = array(
+        "id" => (int) $product->platform('tokopedia')->platform_product_id,
+        "name" => $product->title,
+        "condition" => "NEW",
+        "description" => $product->description,
+        "sku" => $sku->sku_code,
+        "price" => $sku->price,
+        "status" => "LIMITED",
+        "stock" => $sku->stock($product),
+        "min_order" => 1,
+        "category_id" => 562, #need update
+        "dimension" => array(
+            "height" => $sku->height,
+            "width" => $sku->width,
+            "length" => $sku->length
+        ),
+        "price_currency" => "IDR",
+        "weight" => $sku->weight,
+        "weight_unit" => "GR",
+        "is_free_return" => false,
+        "is_must_insurance" => false,
+        "pictures" => $images,
+        "preorder" => array(
+            "is_active" => true,
+            "duration" => $product->masterproduct->production_time + $product->masterproduct->fulfillment_time,
+            "time_unit" => "DAY"
+        )
+    );
+
+    $variant = array();
+    if($product->skus->count()>1) {
+        $toped_variant = Tokopedia::getVariant($product->masterproduct->tokopedia_category_id);
+
+        $selection = array();
+        foreach($product->options as $option) {
+            foreach($toped_variant['variant_details'] as $variant_detail) {
+                if($variant_detail['name'] == $option->title) {
+                    $options = array();
+                    foreach($option->details as $detail) {
+                        $options[] = array(
+                            'hex_code' => "",
+                            'unit_value_id' => 0,
+                            'value' => $detail->title
+                        );
+                    }
+                    $selection[] = array(
+                        'name' => $variant_detail['name'],
+                        'id' => $variant_detail['variant_id'],
+                        'unit_id' => $variant_detail['units'][0]['variant_unit_id'],
+                        'options' => $options
+                    );
+                }
+            }
+        }
+
+        $variantproducts = array();
+        foreach($product->skus as $i => $sku) {
+            $variantproducts[] = array(
+                "is_primary" => ($i==0) ? true : false,
+                "status" => "LIMITED",
+                "price" => $sku->price,
+                "stock" => $sku->stock($product),
+                "sku" => $sku->sku_code,
+                "combination" => $sku->getCombinationVariant($selection, $toped_variant['variant_details'])
+            );
+        }
+
+        foreach($selection as $i => $select) {
+            unset($select['name']);
+            $selection[$i] = $select;
+        }
+        $variant['products'] = $variantproducts;
+        $variant['selection'] = $selection;
+        // $variant['pictures'] = array(array(
+        //     'file_path' => "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/9/27/5510391/5510391_9968635e-a6f4-446a-84d0-ff3a98a5d4a2.jpg"
+        // ));
+        $productdata['variant'] = $variant;
+    }
+    
+    $data['products'] = array($productdata);
+    $response = Tokopedia::updateProduct($data, $shop_id);
+});
+
 Route::get('/inactive', function () {
     $shop_id = 13403511;
     $data = array(
@@ -149,10 +235,32 @@ Route::get('/inactive', function () {
 
 Route::get('/active', function () {
     $shop_id = 13403511;
-    $data = array(
-        'product_id' => array(3152520682)
-    );
+    $product = Product::find(8);
+
+    if($product->skus->count()>1) {
+        $platform_product = Tokopedia::getProduct((int)$product->platform('tokopedia')->platform_product_id);
+        $product_id = array();
+        foreach($platform_product['data'][0]['variant']['childrenID'] as $variant) {
+            $product_id[] = $variant;
+        }
+        $data = array(
+            'product_id' => $product_id
+        );
+    }else {
+        $data = array(
+            'product_id' => array((int)$product->platform('tokopedia')->platform_product_id)
+        );
+    }
+    
     echo json_encode(Tokopedia::setActiveProduct($data, $shop_id));
+});
+
+Route::get('/delete-product', function () {
+    $shop_id = 13403511;
+    $data = array(
+        'product_id' => array(3152419729)
+    );
+    echo json_encode(Tokopedia::deleteProduct($data, $shop_id));
 });
 
 Route::get('/update-price', function () {
