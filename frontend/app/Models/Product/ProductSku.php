@@ -51,4 +51,19 @@ class ProductSku extends Model
         }
         return $combination;
     }
+
+    public function stock($product) {
+        if($product->master_product_id) {
+            $stock = $product->mastersku($this->option_detail_key1, $this->option_detail_key2)->stock;
+            $capacity_stock = $product->masterproduct->capacity->capacity;
+            if($capacity_stock < $stock) {
+                $stock = $capacity_stock;
+            }
+            $stock = round($stock*$product->masterproduct->threshold/100);
+        }else {
+            $stock = $this->stock;
+        }
+
+        return $stock;
+    }
 }

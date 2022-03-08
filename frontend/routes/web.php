@@ -42,8 +42,8 @@ Route::get('/create-product', function () {
 
     $images = array();
     foreach($product->images as $image) {
-        // $images[] = array('file_path' => asset(Storage::url('public/products/'.$image->image)));
-        $images[] = array('file_path' => "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/9/27/5510391/5510391_9968635e-a6f4-446a-84d0-ff3a98a5d4a2.jpg");
+        $images[] = array('file_path' => asset(Storage::url('public/products/'.$image->image)));
+        // $images[] = array('file_path' => "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/9/27/5510391/5510391_9968635e-a6f4-446a-84d0-ff3a98a5d4a2.jpg");
     }
     $productdata = array(
         "name" => $product->title,
@@ -137,6 +137,68 @@ Route::get('/create-product', function () {
             'platform_product_id' => $response['data']['success_rows_data'][0]['product_id']
         ));
     }
+});
+
+Route::get('/inactive', function () {
+    $shop_id = 13403511;
+    $data = array(
+        'product_id' => array(3152520682)
+    );
+    Tokopedia::setInactiveProduct($data, $shop_id);
+});
+
+Route::get('/active', function () {
+    $shop_id = 13403511;
+    $data = array(
+        'product_id' => array(3152520682)
+    );
+    echo json_encode(Tokopedia::setActiveProduct($data, $shop_id));
+});
+
+Route::get('/update-price', function () {
+    $shop_id = 13403511;
+    $product = Product::find(8);
+
+    $data = array();
+    if($product->skus->count()>1) {
+        foreach($product->skus as $sku) {
+            $data[] = array(
+                'sku' => $sku->sku_code,
+                'new_price' => $sku->price
+            );    
+        }
+    }else {
+        $sku = $product->firstsku();
+        $data[] = array(
+            'product_id' => (int) $product->platform('tokopedia')->platform_product_id,
+            'new_price' => $sku->price
+        );    
+    }
+    
+    echo json_encode(Tokopedia::setPrice($data, $shop_id));
+});
+
+Route::get('/update-stock', function () {
+    $shop_id = 13403511;
+    $product = Product::find(8);
+
+    $data = array();
+    if($product->skus->count()>1) {
+        foreach($product->skus as $sku) {
+            $data[] = array(
+                'sku' => $sku->sku_code,
+                'new_stock' => $sku->stock($product)
+            );    
+        }
+    }else {
+        $sku = $product->firstsku();
+        $data[] = array(
+            'product_id' => (int) $product->platform('tokopedia')->platform_product_id,
+            'new_stock' => $sku->stock($product)
+        );    
+    }
+    
+    echo json_encode(Tokopedia::setStock($data, $shop_id));
 });
 
 Route::get('/', function () {

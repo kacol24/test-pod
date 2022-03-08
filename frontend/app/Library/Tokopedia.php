@@ -41,14 +41,140 @@ class Tokopedia {
       CURLOPT_POSTFIELDS => json_encode($input),
       CURLOPT_HTTPHEADER => array(
         'Content-Type: application/json',                                                                                
-        // 'Content-Length: ' . strlen(json_encode($input)),
         "Authorization: Bearer ".$token,
-        // "Accept: application/json",
       )
     ));
 
     $resp = curl_exec($curl);
     $resp = $this->handleResponse($log, $curl, $resp, 'create_product', $input , $shop_id);    
+
+    return $resp;
+  }
+
+  public function setPrice($input, $shop_id) {
+    $url = "https://fs.tokopedia.net/inventory/v1/fs/".$this->app_id."/price/update?shop_id=".$shop_id;
+
+    $log = TokopediaLog::create(array(
+      "type" => "price",
+      "request" => json_encode($input),
+      "response" => null
+    ));
+
+    $curl = curl_init();
+    $token = (session('tokopedia_token')) ? session('tokopedia_token') : $this->getToken();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_POST => true,
+      CURLOPT_HEADER => true,
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_POSTFIELDS => json_encode($input),
+      CURLOPT_HTTPHEADER => array(
+        'Content-Type: application/json',                                                                                
+        "Authorization: Bearer ".$token,
+      )
+    ));
+
+    $resp = curl_exec($curl);
+    $resp = $this->handleResponse($log, $curl, $resp, 'price', $input , $shop_id);    
+
+    return $resp;
+  }
+
+  public function setStock($input, $shop_id) {
+    $url = "https://fs.tokopedia.net/inventory/v1/fs/".$this->app_id."/stock/update?shop_id=".$shop_id;
+
+    $log = TokopediaLog::create(array(
+      "type" => "stock",
+      "request" => json_encode($input),
+      "response" => null
+    ));
+
+    $curl = curl_init();
+    $token = (session('tokopedia_token')) ? session('tokopedia_token') : $this->getToken();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_POST => true,
+      CURLOPT_HEADER => true,
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_POSTFIELDS => json_encode($input),
+      CURLOPT_HTTPHEADER => array(
+        'Content-Type: application/json',                                                                                
+        "Authorization: Bearer ".$token,
+      )
+    ));
+
+    $resp = curl_exec($curl);
+    $resp = $this->handleResponse($log, $curl, $resp, 'stock', $input , $shop_id);    
+
+    return $resp;
+  }
+
+  public function setActiveProduct($input, $shop_id) {
+    $url = "https://fs.tokopedia.net/v1/products/fs/".$this->app_id."/active?shop_id=".$shop_id;
+
+    $log = TokopediaLog::create(array(
+      "type" => "active_product",
+      "request" => json_encode($input),
+      "response" => null
+    ));
+
+    $curl = curl_init();
+    $token = (session('tokopedia_token')) ? session('tokopedia_token') : $this->getToken();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_POST => true,
+      CURLOPT_HEADER => true,
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_POSTFIELDS => json_encode($input),
+      CURLOPT_HTTPHEADER => array(
+        'Content-Type: application/json',                                                                                
+        "Authorization: Bearer ".$token,
+      )
+    ));
+
+    $resp = curl_exec($curl);
+    $resp = $this->handleResponse($log, $curl, $resp, 'active_product', $input , $shop_id);    
+
+    return $resp;
+  }
+
+  public function setInactiveProduct($input, $shop_id) {
+    $url = "https://fs.tokopedia.net/v1/products/fs/".$this->app_id."/inactive?shop_id=".$shop_id;
+
+    $log = TokopediaLog::create(array(
+      "type" => "inactive_product",
+      "request" => json_encode($input),
+      "response" => null
+    ));
+
+    $curl = curl_init();
+    $token = (session('tokopedia_token')) ? session('tokopedia_token') : $this->getToken();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_POST => true,
+      CURLOPT_HEADER => true,
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_POSTFIELDS => json_encode($input),
+      CURLOPT_HTTPHEADER => array(
+        'Content-Type: application/json',                                                                                
+        "Authorization: Bearer ".$token,
+      )
+    ));
+
+    $resp = curl_exec($curl);
+    $resp = $this->handleResponse($log, $curl, $resp, 'inactive_product', $input , $shop_id);    
 
     return $resp;
   }
@@ -153,6 +279,14 @@ class Tokopedia {
         return $this->createOrder($data, $shop_id);
       }else if($action == 'get_variant') {
         return $this->getVariant($data);
+      }else if($action == 'inactive_product') {
+        return $this->setInactiveProduct($data, $shop_id);
+      }else if($action == 'active_product') {
+        return $this->setActiveProduct($data, $shop_id);
+      }else if($action == 'price') {
+        return $this->setPrice($data, $shop_id);
+      }else if($action == 'stock') {
+        return $this->setStock($data, $shop_id);
       }
     }
     $headers=array();

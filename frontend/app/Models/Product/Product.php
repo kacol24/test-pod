@@ -35,4 +35,8 @@ class Product extends Model
     function options() {
         return $this->hasMany('App\Models\Product\ProductOption', 'product_id', 'id');
     }
+
+    function platform($platform) {
+        return $this->hasOne('App\Models\Product\ProductPlatform','product_id','id')->where('platform', $platform)->whereNull('product_platforms.deleted_at')->first();
+    }
 }
