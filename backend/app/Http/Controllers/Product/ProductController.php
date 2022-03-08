@@ -341,15 +341,7 @@ class ProductController extends Controller
         }
         \DB::commit();
 
-        foreach ($product->colors as $color) {
-            foreach ($product->designs as $design) {
-                MockupColor::create([
-                    'color_id'        => $color->id,
-                    'design_id'       => $design->id,
-                    'customer_canvas' => $this->uploadMockupColor($design, $color),
-                ]);
-            }
-        }
+        $this->generateMockupColor($product->colors, $product->designs);
 
         return redirect()->route('product.list');
     }
@@ -673,16 +665,7 @@ class ProductController extends Controller
         }
         DB::commit();
 
-        foreach ($product->colors as $color) {
-            foreach ($product->designs as $design) {
-                MockupColor::updateOrCreate([
-                    'color_id'  => $color->id,
-                    'design_id' => $design->id,
-                ], [
-                    'customer_canvas' => $this->uploadMockupColor($design, $color),
-                ]);
-            }
-        }
+        $this->generateMockupColor($product->colors, $product->designs);
 
         return redirect()->route('product.list')->with('status', 'Success edit product');
     }
@@ -763,5 +746,29 @@ class ProductController extends Controller
         curl_close($ch);
 
         return Str::of($result)->trim('"');
+    }
+
+    private function generateMockupColor($productColors, $productDesigns)
+    {
+        foreach ($productColors as $color) {
+            foreach ($productDesigns as $design) {
+                $mockupImageUrl = $this->uploadMockupColor($design, $color);
+                $mockupImage = file_get_contents($mockupImageUrl);
+                $mockupFilename = substr($mockupImageUrl, strrpos($mockupImageUrl, '=') + 1);
+
+                $path = storage_path('app/mockups');
+                if (! file_exists($path)) {
+                    mkdir($path, 0755, true);
+                }
+                Storage::put('mockups/'.$mockupFilename, $mockupImage);
+
+                MockupColor::updateOrCreate([
+                    'color_id'  => $color->id,
+                    'design_id' => $design->id,
+                ], [
+                    'customer_canvas' => $this->uploadCanvas(Storage::path('mockups/'.$mockupFilename), 'mockups'),
+                ]);
+            }
+        }
     }
 }
