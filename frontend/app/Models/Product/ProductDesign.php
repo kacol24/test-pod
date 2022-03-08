@@ -11,4 +11,9 @@ class ProductDesign extends Model
     protected $table = 'product_designs';
     protected $guarded = ['id'];
     // public $timestamps = false;
+
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'design_id');
+    }
 }

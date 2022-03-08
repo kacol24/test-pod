@@ -20,6 +20,11 @@ class MasterProduct extends Model
         'enable_resize'          => 'boolean',
     ];
 
+    protected $appends = [
+        'thumbnail_url',
+        'firstcategory_name',
+    ];
+
     function option1()
     {
         $lang = language($this);
@@ -86,7 +91,7 @@ class MasterProduct extends Model
                     });
     }
 
-    function thumbnail() {    
+    function thumbnail() {
         return $this->hasMany('App\Models\MasterProduct\MasterProductImage','product_id','id')->orderBy('order_weight','asc')->first(array('image'))->image;
     }
 
@@ -155,5 +160,15 @@ class MasterProduct extends Model
     function capacity()
     {
         return $this->hasOne('App\Models\MasterProduct\Capacity', 'id', 'capacity_id');
+    }
+
+    public function getThumbnailUrlAttribute()
+    {
+        return env('BACKEND_URL') . '/storage/masterproduct/' . $this->thumbnail();
+    }
+
+    public function getFirstcategoryNameAttribute()
+    {
+        return $this->firstcategory()->name;
     }
 }

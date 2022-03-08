@@ -136,55 +136,17 @@
                        data-side-pagination="server"
                        data-query-params="queryProduct"
                        data-page-list="[10,20, 50, 100, 200]"
-                       data-url="">
+                       data-url="{{ route('design.datatable') }}">
                     <thead>
                     <tr class="text-uppercase">
                         <th data-field="image"></th>
                         <th data-field="title" data-sortable="true" class="w-100">{{ __('Title') }}</th>
-                        <th data-field="products" class="text-center">{{ __('Products') }}</th>
-                        <th data-field="price" data-sortable="true" class="text-center">{{ __('Unit Sold') }}</th>
+                        <th data-field="products_count" class="text-center">{{ __('Products') }}</th>
+                        <th data-field="unit_sold" data-sortable="true" class="text-center">{{ __('Unit Sold') }}</th>
                         <th data-field="status" data-sortable="true" class="text-center">Status</th>
                         <th data-field="action" class="text-nowrap">&nbsp;</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    @foreach(range(1, 15) as $product)
-                        <tr>
-                            <td>
-                                <img src="{{ asset('images/product-thumbnail.png') }}" alt="" width="40">
-                            </td>
-                            <td>
-                                Rocket
-                            </td>
-                            <td>
-                                5
-                            </td>
-                            <td>
-                                0
-                            </td>
-                            <td>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch"
-                                           id="flexSwitchCheckDefault">
-                                    <label class="form-check-label" for="flexSwitchCheckDefault">
-                                        Active
-                                    </label>
-                                </div>
-                            </td>
-                            <td>
-                                <a href="" class="btn btn-default d-inline-flex me-3">
-                                    Create Order
-                                </a>
-                                <a class="text-color:icon no-underline me-3" href="javascript:void(0)">
-                                    <i class="fas fa-fw fa-trash"></i>
-                                </a>
-                                <a class="text-color:icon no-underline" href="{{ route('design.edit', 1) }}">
-                                    <i class="fas fa-fw fa-edit"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -193,5 +155,4 @@
 
 @push('scripts')
     <script src="{{asset('backend/js/list.js')}}"></script>
-
 @endpush

@@ -3,7 +3,7 @@
 @section('content')
     <div class="container container--app">
         @include('partials.product-nav')
-        <div class="text-start text-md-center">
+        <div class="text-start">
             <h1 class="page-title font-size:22">
                 Set the details
             </h1>
@@ -26,7 +26,7 @@
         <form method="post" action="{{route("design.store")}}">
             {{csrf_field()}}
             <div class="row mt-4">
-                <div class="col-md-4 sticky-top" style="top: 140px;">
+                <div class="col-md-5 sticky-top" style="top: 140px;z-index: 1">
                     <div class="card p-0 mt-3" style="background: #F6F7F9;">
                         <div class="card-header border-0 d-flex align-items-center justify-content-between"
                              style="background: #F6F7F9;">
@@ -37,17 +37,20 @@
                                 </h5>
                             </div>
                         </div>
-                        <div class="card-body pb-0" style="max-height: 400px;overflow-y: scroll;">
-                            <div class="list-group">
+                        <div class="card-body py-0" style="max-height: 400px;overflow-y: scroll;">
+                            <div class="list-group product-selection-list">
                                 @foreach(range(1, 5) as $list)
                                     <div
-                                        class="list-group-item p-3 mb-4 d-flex justify-content-between align-items-center">
-                                        <div class="d-flex align-items-center">
+                                        class="list-group-item p-3 mb-4 d-flex justify-content-between align-items-center active">
+                                        <label class="d-flex align-items-center" style="font-family: Poppins;font-style: normal;font-weight: normal;font-size: 14px;line-height: 22px;color: #000000;">
+                                            <span class="me-2 d-block">
+                                                <input class="form-check-input rounded-checkbox" type="checkbox" id="checkboxNoLabel">
+                                            </span>
                                             <img src="{{ asset('images/product-thumbnail.png') }}" alt=""
                                                  class="img-fluid me-3"
                                                  width="42">
                                             T-Shirt
-                                        </div>
+                                        </label>
                                         <div class="d-flex font-size:12">
                                             <a href="" class="text-color:blue text-decoration-none">
                                                 Remove
@@ -77,7 +80,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md">
                     <div class="card p-0 mt-3">
                         <div class="card-header d-flex align-items-center justify-content-between">
                             <div class="text-nowrap mr-3">

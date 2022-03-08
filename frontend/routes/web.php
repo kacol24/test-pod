@@ -120,7 +120,7 @@ Route::get('/create-product', function () {
         // ));
         $productdata['variant'] = $variant;
     }
-    
+
     $data['products'] = array($productdata);
     $response = Tokopedia::createProduct($data, $shop_id);
     if(isset($response['data']['success_rows_data'][0]['product_id'])) {
@@ -273,16 +273,16 @@ Route::get('/update-price', function () {
             $data[] = array(
                 'sku' => $sku->sku_code,
                 'new_price' => $sku->price
-            );    
+            );
         }
     }else {
         $sku = $product->firstsku();
         $data[] = array(
             'product_id' => (int) $product->platform('tokopedia')->platform_product_id,
             'new_price' => $sku->price
-        );    
+        );
     }
-    
+
     echo json_encode(Tokopedia::setPrice($data, $shop_id));
 });
 
@@ -296,16 +296,16 @@ Route::get('/update-stock', function () {
             $data[] = array(
                 'sku' => $sku->sku_code,
                 'new_stock' => $sku->stock($product)
-            );    
+            );
         }
     }else {
         $sku = $product->firstsku();
         $data[] = array(
             'product_id' => (int) $product->platform('tokopedia')->platform_product_id,
             'new_stock' => $sku->stock($product)
-        );    
+        );
     }
-    
+
     echo json_encode(Tokopedia::setStock($data, $shop_id));
 });
 
@@ -333,12 +333,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('xendit/cc', [XenditController::class, 'creditCard'])->name('xendit.cc');
     Route::post('xendit/e-wallet', [XenditController::class, 'ewallet'])->name('xendit.ewallet');
-    
+
     Route::get('design/add-more', [DesignController::class, 'additional'])->name('design.additional');
     Route::get('design/finish', [DesignController::class, 'finish'])->name('design.finish');
     Route::post('design/finish', [DesignController::class, 'store'])->name('design.finish.store');
     Route::get('design/saving', [DesignController::class, 'saving'])->name('design.saving');
     Route::get('design/success', [DesignController::class, 'success'])->name('design.saved');
+    Route::get('design/datatable', [DesignController::class, 'datatable'])->name('design.datatable');
     Route::resource('design', DesignController::class);
     Route::get('design/product/{id}', [DesignController::class, 'designer'])->name('design');
     Route::post('design/product/{id}', [DesignController::class, 'saveDesigner'])->name('design.post');
