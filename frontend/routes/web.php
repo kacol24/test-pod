@@ -33,6 +33,13 @@ Route::post('webhook/tokopedia/orders', function (Request $request) {
     ));
 });
 
+Route::post('webhook/tokopedia/status', function (Request $request) {
+    $log = TokopediaLog::create(array(
+        'type' => 'webhook_status',
+        'request' => json_encode($request->all())
+    ));
+});
+
 Route::get('/create-product', function () {
     $shop_id = 13403511;
     $product = Product::find(8);
