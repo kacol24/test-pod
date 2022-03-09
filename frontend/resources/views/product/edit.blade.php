@@ -26,7 +26,7 @@
                     </div>
                     <div class="col-6 col-md-auto">
                         <a class="btn btn-default btn-block"
-                           href="{{route('products.destroy', 1)}}">
+                           href="{{route('design.destroy', 1)}}">
                             <i class="fas fa-fw fa-trash"></i>
                             {{ __('Delete') }}
                         </a>

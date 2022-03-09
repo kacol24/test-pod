@@ -24,22 +24,7 @@ class DesignDatatableResource extends JsonResource
             'status'         => $active,
         ];
 
-        //$image = env('BACKEND_URL').'/storage/masterproduct/'.$this->thumbnail();
-
-        //$array['image'] = '<img width="40" src="'.image_url('masterproduct', $image).'"/>';
-
-        $array['action'] = '<a href="" class="btn btn-default d-inline-flex me-3">
-                                    Order A Sample
-                                </a>
-                                <a class="text-color:icon no-underline me-3" href="javascript:void(0)">
-                                    <i class="fas fa-fw fa-download"></i>
-                                </a>
-                                <a class="text-color:icon no-underline me-3" href="javascript:void(0)">
-                                    <i class="fas fa-fw fa-trash"></i>
-                                </a>
-                                <a class="text-color:icon no-underline" href="' . route('design.edit', 1) . '">
-                                    <i class="fas fa-fw fa-edit"></i>
-                                </a>';
+        $array['action'] = view('product.datatable-actions', ['entity' => $this])->render();
 
         return $array;
     }
