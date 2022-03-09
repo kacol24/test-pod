@@ -720,7 +720,7 @@ class ProductController extends Controller
         }
 
         $key = 'PrinterousCustomerCanvasDemo123!@#';
-        $url = 'https://canvas.printerous.com/production/DI/api/rendering/preview';
+        $url = 'https://canvas.printerous.com/production/DI/api/rendering/preview?disableCache=true';
         $post = [
             'template' => $design->mockup_customer_canvas,
             'format'   => 'png',
@@ -760,7 +760,7 @@ class ProductController extends Controller
                 if (! $mockupImageUrl) {
                     continue;
                 }
-
+                
                 $mockupImage = file_get_contents($mockupImageUrl);
                 $mockupFilename = substr($mockupImageUrl, strrpos($mockupImageUrl, '=') + 1);
 

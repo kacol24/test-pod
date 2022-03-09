@@ -40,7 +40,7 @@ Route::post('webhook/tokopedia/status', function (Request $request) {
     ));
 });
 
-Route::get('/create-product', function () {
+Route::get('tokopedia/create-product', function () {
     $shop_id = 13403511;
     $product = Product::find(8);
 
@@ -139,7 +139,7 @@ Route::get('/create-product', function () {
     }
 });
 
-Route::get('/update-product', function () {
+Route::get('tokopedia/update-product', function () {
     $shop_id = 13403511;
     $product = Product::find(8);
 
@@ -232,7 +232,7 @@ Route::get('/update-product', function () {
     $response = Tokopedia::updateProduct($data, $shop_id);
 });
 
-Route::get('/inactive', function () {
+Route::get('tokopedia/inactive', function () {
     $shop_id = 13403511;
     $data = array(
         'product_id' => array(3152520682)
@@ -240,7 +240,7 @@ Route::get('/inactive', function () {
     Tokopedia::setInactiveProduct($data, $shop_id);
 });
 
-Route::get('/active', function () {
+Route::get('tokopedia/active', function () {
     $shop_id = 13403511;
     $product = Product::find(8);
 
@@ -262,7 +262,7 @@ Route::get('/active', function () {
     echo json_encode(Tokopedia::setActiveProduct($data, $shop_id));
 });
 
-Route::get('/delete-product', function () {
+Route::get('tokopedia/delete-product', function () {
     $shop_id = 13403511;
     $data = array(
         'product_id' => array(3152419729)
@@ -270,7 +270,7 @@ Route::get('/delete-product', function () {
     echo json_encode(Tokopedia::deleteProduct($data, $shop_id));
 });
 
-Route::get('/update-price', function () {
+Route::get('tokopedia/update-price', function () {
     $shop_id = 13403511;
     $product = Product::find(8);
 
@@ -293,7 +293,7 @@ Route::get('/update-price', function () {
     echo json_encode(Tokopedia::setPrice($data, $shop_id));
 });
 
-Route::get('/update-stock', function () {
+Route::get('tokopedia/update-stock', function () {
     $shop_id = 13403511;
     $product = Product::find(8);
 
