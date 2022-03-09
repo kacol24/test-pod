@@ -763,11 +763,11 @@ class ProductController extends Controller
                 Storage::put('mockups/'.$mockupFilename, $mockupImage);
 
                 MockupColor::updateOrCreate([
-                    'product_id' => $product->id,
                     'color_id'  => $color->id,
                     'design_id' => $design->id,
                 ], [
                     'customer_canvas' => $this->uploadCanvas(Storage::path('mockups/'.$mockupFilename), 'mockups'),
+                    'product_id'      => $product->id,
                 ]);
             }
         }
