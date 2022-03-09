@@ -193,12 +193,12 @@ class ProductController extends Controller
                     $file = $request->file($fileKey);
                     $extension = $file->getClientOriginalExtension();
                     $filename = sha1(Str::random(32)).".".$extension;
-                    $path = storage_path('app/templates');
+                    $path = storage_path('app/b2b2c/templates');
                     if (! file_exists($path)) {
                         mkdir($path, 0755, true);
                     }
-                    $file->storeAs('/templates', $filename);
-                    $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
+                    $file->storeAs('/b2b2c/templates', $filename);
+                    $canvas = $this->uploadCanvas(Storage::url('b2b2c/templates/'.$filename), 'designs');
                     $createDesign['file'] = $filename;
                     $createDesign['customer_canvas'] = $canvas;
                 }
@@ -208,12 +208,12 @@ class ProductController extends Controller
                     $file = $request->file($mockupFileKey);
                     $extension = $file->getClientOriginalExtension();
                     $mockupFilename = sha1(Str::random(32)).".".$extension;
-                    $path = storage_path('app/templates');
+                    $path = storage_path('app/b2b2c/templates');
                     if (! file_exists($path)) {
                         mkdir($path, 0755, true);
                     }
-                    $file->storeAs('/templates', $mockupFilename);
-                    $mockupCanvas = $this->uploadCanvas(Storage::path('templates/'.$mockupFilename), 'mockups');
+                    $file->storeAs('/b2b2c/templates', $mockupFilename);
+                    $mockupCanvas = $this->uploadCanvas(Storage::url('b2b2c/templates/'.$mockupFilename), 'mockups');
                     $createDesign['mockup'] = $mockupFilename;
                     $createDesign['mockup_customer_canvas'] = $mockupCanvas;
                 }
@@ -233,12 +233,12 @@ class ProductController extends Controller
                     $file = $request->file($fileKey);
                     $extension = $file->getClientOriginalExtension();
                     $filename = sha1(Str::random(32)).".".$extension;
-                    $path = storage_path('app/previews');
+                    $path = storage_path('app/b2b2c/previews');
                     if (! file_exists($path)) {
                         mkdir($path, 0755, true);
                     }
-                    $file->storeAs('/previews', $filename);
-                    $canvas = $this->uploadCanvas(Storage::path('previews/'.$filename), 'mockups');
+                    $file->storeAs('/b2b2c/previews', $filename);
+                    $canvas = $this->uploadCanvas(Storage::url('b2b2c/previews/'.$filename), 'mockups');
                     $createPreview['file'] = $filename;
                     $createPreview['customer_canvas'] = $canvas;
                 }
@@ -444,12 +444,12 @@ class ProductController extends Controller
                     $file = $request->file($fileKey);
                     $extension = $file->getClientOriginalExtension();
                     $filename = sha1(Str::random(32)).".".$extension;
-                    $path = storage_path('app/templates');
+                    $path = storage_path('app/b2b2c/templates');
                     if (! file_exists($path)) {
                         mkdir($path, 0755, true);
                     }
-                    $file->storeAs('/templates', $filename);
-                    $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'designs');
+                    $file->storeAs('/b2b2c/templates', $filename);
+                    $canvas = $this->uploadCanvas(Storage::url('b2b2c/templates/'.$filename), 'designs');
                     $theDesign['file'] = $filename;
                     $theDesign['customer_canvas'] = $canvas;
                 }
@@ -459,12 +459,12 @@ class ProductController extends Controller
                     $file = $request->file($mockupFileKey);
                     $extension = $file->getClientOriginalExtension();
                     $filename = sha1(Str::random(32)).".".$extension;
-                    $path = storage_path('app/templates');
+                    $path = storage_path('app/b2b2c/templates');
                     if (! file_exists($path)) {
                         mkdir($path, 0755, true);
                     }
-                    $file->storeAs('/templates', $filename);
-                    $canvas = $this->uploadCanvas(Storage::path('templates/'.$filename), 'mockups');
+                    $file->storeAs('/b2b2c/templates', $filename);
+                    $canvas = $this->uploadCanvas(Storage::url('b2b2c/templates/'.$filename), 'mockups');
                     $theDesign['mockup'] = $filename;
                     $theDesign['mockup_customer_canvas'] = $canvas;
                 }
@@ -484,12 +484,12 @@ class ProductController extends Controller
                     $file = $request->file($fileKey);
                     $extension = $file->getClientOriginalExtension();
                     $filename = sha1(Str::random(32)).".".$extension;
-                    $path = storage_path('app/previews');
+                    $path = storage_path('app/b2b2c/previews');
                     if (! file_exists($path)) {
                         mkdir($path, 0755, true);
                     }
-                    $file->storeAs('/previews', $filename);
-                    $canvas = $this->uploadCanvas(Storage::path('previews/'.$filename), 'mockups');
+                    $file->storeAs('/b2b2c/previews', $filename);
+                    $canvas = $this->uploadCanvas(Storage::url('b2b2c/previews/'.$filename), 'mockups');
                     $thePreview['file'] = $filename;
                     $thePreview['customer_canvas'] = $canvas;
                 }
@@ -765,17 +765,17 @@ class ProductController extends Controller
                 $mockupImage = file_get_contents($mockupImageUrl);
                 $mockupFilename = substr($mockupImageUrl, strrpos($mockupImageUrl, '=') + 1);
 
-                $path = storage_path('app/mockups');
+                $path = storage_path('app/b2b2c/mockups');
                 if (! file_exists($path)) {
                     mkdir($path, 0755, true);
                 }
-                Storage::put('mockups/'.$mockupFilename, $mockupImage);
+                Storage::put('b2b2c/mockups/'.$mockupFilename, $mockupImage);
 
                 MockupColor::updateOrCreate([
                     'color_id'  => $color->id,
                     'design_id' => $design->id,
                 ], [
-                    'customer_canvas' => $this->uploadCanvas(Storage::path('mockups/'.$mockupFilename), 'mockups'),
+                    'customer_canvas' => $this->uploadCanvas(Storage::url('b2b2c/mockups/'.$mockupFilename), 'mockups'),
                     'product_id'      => $product->id,
                 ]);
             }

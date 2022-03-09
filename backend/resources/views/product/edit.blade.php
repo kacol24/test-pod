@@ -752,7 +752,7 @@
                                                                                    :name="'templates['+ index +'][design]['+designIndex+'][file]'">
                                                                         </div>
                                                                         <div class="form-group" x-show="design.file">
-                                                                            <a :href="'{{ asset('templates') }}/' + design.file"
+                                                                            <a :href="'{{ Storage::url('b2b2c/templates') }}/' + design.file"
                                                                                class="btn btn-default btn-sm"
                                                                                target="_blank">
                                                                                 <i class="fas fa-fw fa-eye"></i> View
@@ -768,7 +768,7 @@
                                                                                    :name="'templates['+ index +'][design]['+designIndex+'][mockup_file]'">
                                                                         </div>
                                                                         <div class="form-group" x-show="design.mockup">
-                                                                            <a :href="'{{ asset('templates') }}/' + design.mockup"
+                                                                            <a :href="'{{ Storage::url('b2b2c/templates') }}/' + design.mockup"
                                                                                class="btn btn-default btn-sm"
                                                                                target="_blank">
                                                                                 <i class="fas fa-fw fa-eye"></i> View
@@ -883,7 +883,7 @@
                                                                                    :name="'templates['+ index +'][preview]['+previewIndex+'][file]'">
                                                                         </div>
                                                                         <div class="form-group" x-show="preview.file">
-                                                                            <a :href="'{{ asset('previews') }}/' + preview.file"
+                                                                            <a :href="'{{ Storage::url('b2b2c/previews') }}/' + preview.file"
                                                                                class="btn btn-default btn-sm"
                                                                                target="_blank">
                                                                                 <i class="fas fa-fw fa-eye"></i> View
