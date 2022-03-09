@@ -341,7 +341,7 @@ class ProductController extends Controller
         }
         \DB::commit();
 
-        $this->generateMockupColor($product->colors, $product->designs);
+        $this->generateMockupColor($product);
 
         return redirect()->route('product.list');
     }
@@ -665,7 +665,7 @@ class ProductController extends Controller
         }
         DB::commit();
 
-        $this->generateMockupColor($product->colors, $product->designs);
+        $this->generateMockupColor($product);
 
         return redirect()->route('product.list')->with('status', 'Success edit product');
     }
@@ -748,10 +748,10 @@ class ProductController extends Controller
         return Str::of($result)->trim('"');
     }
 
-    private function generateMockupColor($productColors, $productDesigns)
+    private function generateMockupColor($product)
     {
-        foreach ($productColors as $color) {
-            foreach ($productDesigns as $design) {
+        foreach ($product->colors as $color) {
+            foreach ($product->designs as $design) {
                 $mockupImageUrl = $this->uploadMockupColor($design, $color);
                 $mockupImage = file_get_contents($mockupImageUrl);
                 $mockupFilename = substr($mockupImageUrl, strrpos($mockupImageUrl, '=') + 1);
@@ -763,6 +763,7 @@ class ProductController extends Controller
                 Storage::put('mockups/'.$mockupFilename, $mockupImage);
 
                 MockupColor::updateOrCreate([
+                    'product_id' => $product->id,
                     'color_id'  => $color->id,
                     'design_id' => $design->id,
                 ], [

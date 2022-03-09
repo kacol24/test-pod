@@ -22,6 +22,28 @@
                     <div class="p-3 p-md-4" style="background: #F6F7F9;">
                         <div class="card p-0">
                             <div class="card-header d-flex align-items-center justify-content-between">
+                                <div class="text-nowrap mr-3">
+                                    <i class="fas fa-fw fa-image"></i>
+                                    <h5 class="card-title d-inline-block">
+                                        Template
+                                    </h5>
+                                </div>
+                            </div>
+                            <div class="card-body pt-3">
+                                <div class="row">
+                                    <div class="col-md">
+                                        <select name="template" class="form-control">
+                                            @foreach($templates as $template)
+                                                <option value="{{$template->id}}">{{$template->design_name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card p-0 mt-3">
+                            <div class="card-header d-flex align-items-center justify-content-between">
                                 <div>
                                     <i class="fas fa-fw fa-cubes"></i>
                                     <h5 class="card-title d-inline-block">
@@ -54,28 +76,6 @@
                                     </div>
                                 </div>
                                     @endforeach
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card p-0 mt-3">
-                            <div class="card-header d-flex align-items-center justify-content-between">
-                                <div class="text-nowrap mr-3">
-                                    <i class="fas fa-fw fa-image"></i>
-                                    <h5 class="card-title d-inline-block">
-                                        Template
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="card-body pt-3">
-                                <div class="row">
-                                    <div class="col-md">
-                                        <select name="template" class="form-control">
-                                            @foreach($templates as $template)
-                                                <option value="{{$template->id}}">{{$template->design_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -151,6 +151,7 @@
                     </div>
                 </form>
             </div>
+            @if($masterproduct->colors->count()>0)
             <div class="col-md">
                 <div class="row">
                     <div class="col-md-4">
@@ -162,11 +163,11 @@
                             </div>
                             <div class="card-body p-3">
                                 <div class="row">
-                                    @foreach(range(1, 15) as $color)
+                                    @foreach($masterproduct->colors as $color)
                                         <div class="col-md-6 mb-4">
-                                            <a href="#" class="d-flex align-items-center color-option">
-                                                <span class="color-display" style="background-color:#0D62CA;"></span>
-                                                Blue
+                                            <a href="javascript:void(0);" class="d-flex align-items-center color-option">
+                                                <span class="color-display" style="background-color:{{$color->color}};"></span>
+                                                {{$color->name}}
                                             </a>
                                         </div>
                                     @endforeach
@@ -177,6 +178,7 @@
                     <div class="col-md-8">
                 <iframe class="content__iframe" id="editorFrame"></iframe>
             </div>
+            @endif
         </div>
     </div>
         </div>
@@ -224,11 +226,17 @@
         let config;
         let surfaces;
         let editor;
-        let mockup = "{{$templates->first()->previews->first()->customer_canvas}}";
+        let mockup;
+        let color_id;
         var templates = {!!json_encode($templates)!!};
+        // var mockup_colors = {!!json_encode()!!}
 
         @if(session('state_id'))
             state_id = "{{session('state_id')}}";
+        @endif
+
+        @if($masterproduct->colors->count()>0)
+            color_id = $masterproduct->colors->first()->id;
         @endif
 
         function mmToPoint(mm) {
@@ -258,13 +266,13 @@
 
         function setupEditor(template) {
             template.designs.map(function(el,idx){
+                var designLocation = JSON.parse(el.design_location);
                 surfaces.push({
                     name: el.page_name,
                     printAreas: [
                       {
                         designFile: el.customer_canvas,
-                        designLocation: { X: 687.68, Y: 572.32 }
-                        // designLocation: null
+                        designLocation: { X: designLocation.X, Y: designLocation.Y }
                       }
                     ],
                     mockup: {

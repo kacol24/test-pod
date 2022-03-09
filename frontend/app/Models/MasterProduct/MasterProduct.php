@@ -171,4 +171,9 @@ class MasterProduct extends Model
     {
         return $this->firstcategory()->name;
     }
+
+    function colors()
+    {
+        return $this->hasMany('App\Models\MasterProduct\Color', 'product_id', 'id');
+    }
 }
