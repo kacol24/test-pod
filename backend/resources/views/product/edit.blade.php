@@ -3,7 +3,7 @@
 @section('content')
     <main class="pb-3 pb-md-5" role="main"
           x-data="{language: '{{session('language')}}', status: {{ $entity->is_publish }}}">
-        <div class="container container--crud mb-3 mb-md-0">
+        <div class="container-fluid mb-3 mb-md-0">
             @if($errors->any())
                 <div class="alert alert-danger d-flex justify-content-between">
                     <div class="d-flex">
@@ -48,7 +48,7 @@
                 </div>
             </div>
         </div>
-        <div class="container container--crud mt-3">
+        <div class="container-fluid mt-3">
             <form class="form-validate" action="{{route('product.update', $entity->id)}}" method="post"
                   enctype="multipart/form-data">
                 {{ csrf_field() }}
@@ -253,11 +253,11 @@
                                             <input type="number" class="form-control default" name="default_weight"
                                                    id="default_weight" placeholder="{{Lang::get('product.weight')}}"
                                                    value="{{$entity->default_sku->weight}}" data-toggle="tooltip"
-                                                   required
+                                                   required step="0.01"
                                                    data-placement="top" title="{{Lang::get('product.youcanweight')}}">
                                         </div>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md">
                                         <div class="form-group">
                                             <label class="text-uppercase" for="sku">SKU Code</label>
                                             <input type="text" class="form-control default" name="default_sku" id="sku"
@@ -280,7 +280,7 @@
                                             <label class="text-uppercase" for="width">Width (cm)</label>
                                             <input type="number" class="form-control default" name="default_width"
                                                    id="width" placeholder="{{Lang::get('product.width')}}"
-                                                   value="{{$entity->default_sku->width}}"
+                                                   value="{{$entity->default_sku->width}}" step="0.01"
                                                    data-toggle="tooltip" min="0" data-placement="top" required
                                                    title="{{Lang::get('product.youcanwidth')}}">
                                         </div>
@@ -290,7 +290,7 @@
                                             <label class="text-uppercase" for="length">Length (CM)</label>
                                             <input type="number" class="form-control default" name="default_length"
                                                    id="length" placeholder="{{Lang::get('product.length')}}"
-                                                   value="{{$entity->default_sku->length}}"
+                                                   value="{{$entity->default_sku->length}}" step="0.01"
                                                    data-toggle="tooltip" min="0" data-placement="top" required
                                                    title="{{Lang::get('product.youcanlength')}}">
                                         </div>
@@ -300,7 +300,7 @@
                                             <label class="text-uppercase" for="height">Height (CM)</label>
                                             <input type="number" class="form-control default" name="default_height"
                                                    id="height" placeholder="{{Lang::get('product.height')}}"
-                                                   value="{{$entity->default_sku->height}}"
+                                                   value="{{$entity->default_sku->height}}" step="0.01"
                                                    data-toggle="tooltip" data-placement="top" min="0" required
                                                    title="{{Lang::get('product.youcanheight')}}">
                                         </div>
@@ -977,8 +977,8 @@
                                     <tr>
                                         <th data-field="variant">Variant</th>
                                         <th data-field="sku">SKU</th>
-                                        <th data-field="stock">Stock</th>
-                                        <th data-width="180" data-field="dimensi">Dimension (cm)</th>
+                                        <th data-width="100" data-field="stock">Stock</th>
+                                        <th data-width="250" data-field="dimensi">Dimension (cm)</th>
                                         <th data-width="10" data-field="weight">{{Lang::get('product.weight')}}(gr)</th>
                                         <th data-width="80" data-field="production_cost">
                                             Production Cost

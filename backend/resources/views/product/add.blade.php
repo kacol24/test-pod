@@ -3,7 +3,7 @@
 @section('content')
     <main class="pb-3 pb-md-5" role="main" style=""
           x-data="{language: '{{session('language')}}', status: {{(old('is_publish')) ? old('is_publish') : 0}}}">
-        <div class="container container--crud mb-3 mb-md-0">
+        <div class="container-fluid mb-3 mb-md-0">
             @if($errors->any())
                 <div class="alert alert-danger d-flex justify-content-between">
                     <div class="d-flex">
@@ -47,7 +47,7 @@
                 </div>
             </div>
         </div>
-        <div class="container container--crud mt-3">
+        <div class="container-fluid mt-3">
             <form class="form-validate" action="{{route('product.store')}}" method="post" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <div class="card p-0 sticky-top sticky-top--header border-0" style="background: transparent;">
@@ -916,8 +916,8 @@
                                     <tr>
                                         <th data-field="variant">Variant</th>
                                         <th data-field="sku">SKU</th>
-                                        <th data-field="stock">Stock</th>
-                                        <th data-width="180" data-field="dimensi">Dimension (cm)</th>
+                                        <th data-width="100" data-field="stock">Stock</th>
+                                        <th data-width="250" data-field="dimensi">Dimension (cm)</th>
                                         <th data-width="10" data-field="weight">{{Lang::get('product.weight')}}(gr)</th>
                                         <th data-width="80" data-field="production_cost">
                                             Production Cost
