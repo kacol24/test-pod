@@ -237,13 +237,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="text-uppercase" for="description">Product Description</label>
-                                    <textarea class="form-control editor" name="description"
-                                              id="description"
-                                              placeholder="Write Description Here">{{$entity->description}}</textarea>
+                                    <textarea class="form-control" name="description"
+                                              id="description">{{$entity->description}}</textarea>
                                 </div>
                                 <div class="form-group">
                                     <label class="text-uppercase" for="size_chart">Size Chart (optional)</label>
-                                    <textarea class="form-control editor" name="size_chart"
+                                    <textarea class="form-control" name="size_chart"
                                               id="size_chart">{{$entity->size_chart}}</textarea>
                                 </div>
                                 <div class="row">
