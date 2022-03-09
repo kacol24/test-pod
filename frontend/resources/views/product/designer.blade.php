@@ -165,7 +165,7 @@
                                 <div class="row">
                                     @foreach($masterproduct->colors as $color)
                                         <div class="col-md-6 mb-4">
-                                            <a href="javascript:void(0);" class="d-flex align-items-center color-option">
+                                            <a href="javascript:void(0);" class="d-flex align-items-center color-option" data-id="{{$color->id}}">
                                                 <span class="color-display" style="background-color:{{$color->color}};"></span>
                                                 {{$color->name}}
                                             </a>
@@ -228,15 +228,16 @@
         let editor;
         let mockup;
         let color_id;
+        let template_id = $("select[name='template']").val();
         var templates = {!!json_encode($templates)!!};
-        var mockup_colors = {!!json_encode($masterproduct->mockupcolors)!!}
+        var mockup_colors = {!!json_encode($masterproduct->mockupcolors)!!};
 
         @if(session('state_id'))
             state_id = "{{session('state_id')}}";
         @endif
 
         @if($masterproduct->colors->count()>0)
-            color_id = $masterproduct->colors->first()->id;
+            color_id = {{$masterproduct->colors->first()->id}};
         @endif
 
         function mmToPoint(mm) {
@@ -247,10 +248,16 @@
         }
 
         $(function(){
-            defineTemplate($("select[name='template']").val());
+            defineTemplate(template_id);
 
             $("select[name='template']").change(function(){
+                template_id = $(this).val();
                 defineTemplate($(this).val());
+            });
+
+            $(".color-option").click(function(){
+                color_id = $(this).attr("data-id");
+                defineTemplate(template_id);
             });
         });
 
@@ -267,11 +274,15 @@
         function setupEditor(template) {
             template.designs.map(function(el,idx){
                 var designLocation = JSON.parse(el.design_location);
-                // if(mockup_colors.length) {
-
-                // }else {
+                if(mockup_colors.length) {
+                    mockup_colors.map(function(color,idx) {
+                        if(color.color_id == color_id && color.design_id == el.id) {
+                            mockup = color.customer_canvas;
+                        }
+                    });
+                }else {
                     mockup = el.mockup_customer_canvas
-                // }
+                }
                 surfaces.push({
                     name: el.page_name,
                     printAreas: [
