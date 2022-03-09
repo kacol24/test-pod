@@ -53,6 +53,7 @@
                     <thead>
                     <tr>
                         <th data-field="title" data-sortable="true">{{Lang::get('option.optionname')}}</th>
+                        <th data-field="created_at" data-sortable="true">{{ __('Created At') }}</th>
                         <th data-field="action">&nbsp;</th>
                     </tr>
                     </thead>
