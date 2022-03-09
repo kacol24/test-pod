@@ -229,7 +229,7 @@
         let mockup;
         let color_id;
         var templates = {!!json_encode($templates)!!};
-        // var mockup_colors = {!!json_encode()!!}
+        var mockup_colors = {!!json_encode($masterproduct->mockupcolors)!!}
 
         @if(session('state_id'))
             state_id = "{{session('state_id')}}";
@@ -267,6 +267,11 @@
         function setupEditor(template) {
             template.designs.map(function(el,idx){
                 var designLocation = JSON.parse(el.design_location);
+                // if(mockup_colors.length) {
+
+                // }else {
+                    mockup = el.mockup_customer_canvas
+                // }
                 surfaces.push({
                     name: el.page_name,
                     printAreas: [

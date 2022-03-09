@@ -54,11 +54,11 @@ class ProductController extends Controller
             $extension = $file->getClientOriginalExtension();
             $filename = sha1(Str::random(32)).".".$extension;
 
-            $path = storage_path('app/public/masterproduct');
+            $path = storage_path('app/b2b2c/masterproduct');
             if (! file_exists($path)) {
                 mkdir($path, 0755, true);
             }
-            $file->storeAs('/public/masterproduct', $filename);
+            $file->storeAs('/b2b2c/masterproduct', $filename);
             $data[] = [
                 'filename' => $filename, 'images' => [
                     'masterproduct' => image_url('masterproduct', $filename),

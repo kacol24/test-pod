@@ -176,4 +176,9 @@ class MasterProduct extends Model
     {
         return $this->hasMany('App\Models\MasterProduct\Color', 'product_id', 'id');
     }
+
+    function mockupcolors()
+    {
+        return $this->hasMany('App\Models\MasterProduct\MockupColor', 'product_id', 'id');
+    }
 }

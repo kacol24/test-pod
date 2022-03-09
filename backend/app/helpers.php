@@ -129,17 +129,17 @@ function generate_image($sizes,$file)
 
   foreach($sizes as $key => $size)
   {
-    $path = storage_path('app/public/').$key;
+    $path = storage_path('app/b2b2c/').$key;
     if(!file_exists($path)){
       mkdir($path, 0755, true);
     }
     $filetarget = $path.'/'.$filename;
     if($size['w']==0 && $size['h']==0) {
-      $file->storeAs('/public/'.$key, $filename);
+      $file->storeAs('/b2b2c/'.$key, $filename);
     }else {
       $img = Image::make($file)->fit($size['w'],$size['h'])->save($filetarget);
       if(env('FILESYSTEM_DRIVER') == 's3') {
-        Storage::putFileAs('/public/'.$key, $filetarget, $filename);
+        Storage::putFileAs('/b2b2c/'.$key, $filetarget, $filename);
         unlink($filetarget);
       }
     }
@@ -170,13 +170,13 @@ function slugUniqify($slug_candidate, $slug_possible_conflicts = array()) {
 function image_url($size,$image)
 {
   if(env('FILESYSTEM_DRIVER') == 's3') {
-    if(!Storage::exists('public/'.$size.'/'.$image) || !$image) {
-      return asset('backend/public/default-img.png');
+    if(!Storage::exists('b2b2c/'.$size.'/'.$image) || !$image) {
+      return asset('backend/b2b2c/default-img.png');
     }else {
-      return str_replace(env('AWS_ENDPOINT'), env('CDN_URL'), str_replace(env('AWS_BUCKET').'.', "", Storage::url('public/'.$size.'/'.$image)));
+      return Storage::url('b2b2c/'.$size.'/'.$image);
     }
   }else {
-    $file = array('url' => asset('storage/'.$size.'/'.$image), 'path' => storage_path('app/public/').$size."/".$image);
+    $file = array('url' => asset('storage/'.$size.'/'.$image), 'path' => storage_path('app/b2b2c/').$size."/".$image);
     if(!file_exists($file['path']) || empty($image))
     {
       $file['url'] = asset('images/default-img.png');
