@@ -159,7 +159,7 @@ class ProductController extends Controller
             $product->colors()->createMany($request->colors);
         }
 
-        foreach ($request->templates as $index => $template) {
+        foreach ($request->templates ?? [] as $index => $template) {
             $productTemplate = $product->templates()->create([
                 'design_name'     => $template['design_name'],
                 'price'           => $template['price'],
@@ -409,7 +409,7 @@ class ProductController extends Controller
         }
 
         $templatesData = collect();
-        foreach ($request->templates as $index => $template) {
+        foreach ($request->templates ?? [] as $index => $template) {
             $rootTemplate = [
                 'id'              => $template['id'],
                 'design_name'     => $template['design_name'],
@@ -715,6 +715,10 @@ class ProductController extends Controller
 
     private function uploadMockupColor(Design $design, Color $color)
     {
+        if (! $design->mockup_customer_canvas) {
+            return false;
+        }
+
         $key = 'PrinterousCustomerCanvasDemo123!@#';
         $url = 'https://canvas.printerous.com/production/DI/api/rendering/preview';
 
@@ -753,6 +757,11 @@ class ProductController extends Controller
         foreach ($product->colors as $color) {
             foreach ($product->designs as $design) {
                 $mockupImageUrl = $this->uploadMockupColor($design, $color);
+
+                if (! $mockupImageUrl) {
+                    continue;
+                }
+
                 $mockupImage = file_get_contents($mockupImageUrl);
                 $mockupFilename = substr($mockupImageUrl, strrpos($mockupImageUrl, '=') + 1);
 

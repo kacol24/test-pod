@@ -521,8 +521,8 @@
                                         orientation: 'portrait',
                                         unit: 'mm',
                                         enable_resize: '0',
-                                        designs: [{}],
-                                        previews: [{}]
+                                        designs: [],
+                                        previews: []
                                        }); $nextTick(function() { $('.price').priceFormat({ prefix: '', centsLimit: 0 }) })">
                                         <i class="fas fa-plus fa-fw"></i>
                                         Add
@@ -546,7 +546,7 @@
                                                         Design Name
                                                     </label>
                                                 </div>
-                                                <template x-if="templates.length > 1">
+                                                <template x-if="templates.length > 0">
                                                     <a href="#" class="btn btn-danger btn-sm text-white ml-3"
                                                        @click.prevent="templates.splice(index, 1)">
                                                         <i class="fas fa-fw fa-trash m-0 text-white"></i>
@@ -723,7 +723,7 @@
                                                                       :key="designIndex">
                                                                 <div class="card p-0 mb-3">
                                                                     <div class="card-body p-3 position-relative">
-                                                                        <template x-if="template.designs.length > 1">
+                                                                        <template x-if="template.designs.length > 0">
                                                                             <div class="position-absolute"
                                                                                  style="right: 0;top: 0;">
                                                                                 <a href="#" class="text-color:red"
@@ -862,7 +862,7 @@
                                                                 :key="previewIndex">
                                                                 <div class="card p-0 mb-3">
                                                                     <div class="card-body p-3 position-relative">
-                                                                        <template x-if="template.previews.length > 1">
+                                                                        <template x-if="template.previews.length > 0">
                                                                             <div class="position-absolute"
                                                                                  style="right: 0;top: 0;">
                                                                                 <a href="#" class="text-color:red"

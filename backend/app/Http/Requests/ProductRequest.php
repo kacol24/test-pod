@@ -35,8 +35,8 @@ class ProductRequest extends FormRequest
             //'colors.*.color' => 'required',
             //'colors.*.name'  => 'required',
 
-            'templates.*.design_name' => 'required',
-            'templates.*.price'       => 'required',
+            //'templates.*.design_name' => 'required',
+            //'templates.*.price'       => 'required',
             //'templates.*.shape'         => 'required',
             //'templates.*.orientation'   => 'required',
             //'templates.*.unit'          => 'required',
@@ -47,15 +47,15 @@ class ProductRequest extends FormRequest
             //'templates.*.height'        => 'required',
             //'templates.*.ratio'         => 'required',
 
-            'templates.*.design.*.file'       => 'required',
-            'templates.*.design.*.page_name'  => 'required',
-            'templates.*.design.*.location_x' => 'required',
-            'templates.*.design.*.location_y' => 'required',
-
-            'templates.*.preview.*.file'           => 'required',
-            'templates.*.preview.*.preview_name'   => 'required',
-            'templates.*.preview.*.thumbnail_name' => 'required',
-            'templates.*.preview.*.file_config'    => 'required',
+            //'templates.*.design.*.file'       => 'required',
+            //'templates.*.design.*.page_name'  => 'required',
+            //'templates.*.design.*.location_x' => 'required',
+            //'templates.*.design.*.location_y' => 'required',
+            //
+            //'templates.*.preview.*.file'           => 'required',
+            //'templates.*.preview.*.preview_name'   => 'required',
+            //'templates.*.preview.*.thumbnail_name' => 'required',
+            //'templates.*.preview.*.file_config'    => 'required',
         ];
     }
 
