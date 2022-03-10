@@ -1,5 +1,5 @@
 <ul class="navbar-nav">
-    <li class="nav-item dropdown border-0 active">
+    <li class="nav-item dropdown border-0">
         <a class="nav-link dropdown-toggle" href="#" role="button"
            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Contents
@@ -17,7 +17,7 @@
             <a class="dropdown-item" href="#">Something else here</a>
         </div>
     </li>
-    <li class="nav-item {{ request()->routeIs(['products.*']) ? 'active' : '' }}">
+    <li class="nav-item {{ request()->routeIs(['design.*']) ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('design.index') }}">
             Products
         </a>
