@@ -50,4 +50,9 @@ class Store extends Model
     {
         return $this->hasMany(Topup::class);
     }
+
+    function platform($platform)
+    {
+        return $this->hasOne('App\Models\StorePlatform', 'store_id', 'id')->where('platform',$platform)->first();
+    }
 }

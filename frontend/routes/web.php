@@ -7,7 +7,7 @@ use App\Http\Controllers\TopupController;
 use App\Http\Controllers\Xendit\XenditController;
 use App\Http\Controllers\Xendit\XenditWebhookController;
 use Illuminate\Support\Facades\Route;
-use App\Models\MasterProduct\Template;
+use App\Http\Controllers\TokopediaController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,20 +25,10 @@ use App\Models\Product\ProductPlatform;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\TokopediaLog;
+use App\Models\Order\Order;
 
-Route::post('webhook/tokopedia/orders', function (Request $request) {
-    $log = TokopediaLog::create(array(
-        'type' => 'webhook_order',
-        'request' => json_encode($request->all())
-    ));
-});
-
-Route::post('webhook/tokopedia/status', function (Request $request) {
-    $log = TokopediaLog::create(array(
-        'type' => 'webhook_status',
-        'request' => json_encode($request->all())
-    ));
-});
+Route::post('webhook/tokopedia/orders', [TokopediaController::class, 'order']);
+Route::post('webhook/tokopedia/status', [TokopediaController::class, 'status']);
 
 Route::get('tokopedia/create-product', function () {
     $shop_id = 13403511;
@@ -238,6 +228,43 @@ Route::get('tokopedia/inactive', function () {
         'product_id' => array(3152520682)
     );
     Tokopedia::setInactiveProduct($data, $shop_id);
+});
+
+Route::get('tokopedia/accept-order', function () {
+    $order = Order::find(15);
+    Tokopedia::acceptOrder($order->platform('tokopedia')->platform_order_id);
+});
+
+Route::get('tokopedia/reject-order', function () {
+    $order = Order::find(2);
+    $data = array(
+        'reason_code' => 1,
+        'reason' => 'out of stock'
+    );
+    Tokopedia::rejectOrder($data, $order->platform('tokopedia')->platform_order_id);
+});
+
+Route::get('tokopedia/shipping-label', function () {
+    $order = Order::find(1);
+    return Tokopedia::shippingLabel($order->platform('tokopedia')->platform_order_id);
+});
+
+Route::get('tokopedia/request-pickup', function () {
+    $order = Order::find(15);
+    $data = array(
+        'order_id' => (int)$order->platform('tokopedia')->platform_order_id,
+        'shop_id' => (int)$order->store->platform('tokopedia')->platform_store_id
+    );
+    Tokopedia::requestPickup($data);
+});
+
+Route::get('tokopedia/confirm-shipping', function () {
+    $order = Order::find(14);
+    $data = array(
+        'order_status' => 500,
+        'shipping_ref_num' => "RESIM4NT413"
+    );
+    Tokopedia::confirmShipping($data, (int)$order->platform('tokopedia')->platform_order_id);
 });
 
 Route::get('tokopedia/active', function () {

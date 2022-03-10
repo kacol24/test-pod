@@ -384,22 +384,40 @@ class Tokopedia {
         return $this->updateProduct($data, $shop_id);
       }else if($action == 'get_product') {
         return $this->getProduct($data);
-      }
-    }
-    $headers=array();
-    $data=explode("\n",$resp);
-    $headers['status']=$data[0];
-    array_shift($data);
-    foreach($data as $part){
-      $middle=explode(":",$part);
-      if(isset($middle[1])) {
-        $headers[strtolower(trim($middle[0]))] = trim($middle[1]);
+      }else if($action == 'accept_order') {
+        return $this->acceptOrder($data);
+      }else if($action == 'reject_order') {
+        return $this->rejectOrder($data, $shop_id);
+      }else if($action == 'request_pickup') {
+        return $this->requestPickup($data);
+      }else if($action == 'confirm_shipping') {
+        return $this->confirmShipping($data, $shop_id);
+      }else if($action == 'get_order') {
+        return $this->getOrder($data);
+      }else if($action == 'shipping_label') {
+        return $this->shippingLabel($data);
       }
     }
 
-    $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-    curl_close($curl);
-    $response = json_decode(substr($resp, $header_size),true);
+    if($action == 'shipping_label') {
+      return $resp;
+    }else {
+      $headers=array();
+      $data=explode("\n",$resp);
+      $headers['status']=$data[0];
+      array_shift($data);
+      foreach($data as $part){
+        $middle=explode(":",$part);
+        if(isset($middle[1])) {
+          $headers[strtolower(trim($middle[0]))] = trim($middle[1]);
+        }
+      }
+
+      $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+      curl_close($curl);
+      $response = json_decode(substr($resp, $header_size),true);
+    }
+      
     
     if($httpcode == 200) {
       return $response;  
@@ -411,5 +429,188 @@ class Tokopedia {
       }
       
     }
+  }
+
+  public function acceptOrder($order_id) {
+    $url = "https://fs.tokopedia.net/v1/order/".$order_id."/fs/".$this->app_id."/ack";
+
+    $log = TokopediaLog::create(array(
+      "type" => "accept_order",
+      "request" => $order_id,
+      "response" => null
+    ));
+
+    $curl = curl_init();
+    $token = (session('tokopedia_token')) ? session('tokopedia_token') : $this->getToken();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_POST => true,
+      CURLOPT_HEADER => true,
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_HTTPHEADER => array(
+        'Content-Type: application/json',                                                                                
+        "Authorization: Bearer ".$token,
+      )
+    ));
+
+    $resp = curl_exec($curl);
+    $resp = $this->handleResponse($log, $curl, $resp, 'accept_order', $order_id);    
+
+    return $resp;
+  }
+
+  public function rejectOrder($input, $order_id) {
+    $url = "https://fs.tokopedia.net/v1/order/".$order_id."/fs/".$this->app_id."/nack";
+
+    $log = TokopediaLog::create(array(
+      "type" => "reject_order",
+      "request" => json_encode(array_merge($input,array("order_id" => $order_id))),
+      "response" => null
+    ));
+
+    $curl = curl_init();
+    $token = (session('tokopedia_token')) ? session('tokopedia_token') : $this->getToken();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_POST => true,
+      CURLOPT_POSTFIELDS => json_encode($input),
+      CURLOPT_HEADER => true,
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_HTTPHEADER => array(
+        'Content-Type: application/json',                                                                                
+        "Authorization: Bearer ".$token,
+      )
+    ));
+
+    $resp = curl_exec($curl);
+    $resp = $this->handleResponse($log, $curl, $resp, 'reject_order', $input, $order_id);    
+
+    return $resp;
+  }
+
+  public function requestPickup($input) {
+    $url = "https://fs.tokopedia.net/inventory/v1/fs/".$this->app_id."/pick-up";
+
+    $log = TokopediaLog::create(array(
+      "type" => "request_pickup",
+      "request" => json_encode($input),
+      "response" => null
+    ));
+
+    $curl = curl_init();
+    $token = (session('tokopedia_token')) ? session('tokopedia_token') : $this->getToken();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_POST => true,
+      CURLOPT_HEADER => true,
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_POSTFIELDS => json_encode($input),
+      CURLOPT_HTTPHEADER => array(
+        'Content-Type: application/json',                                                                                
+        "Authorization: Bearer ".$token,
+      )
+    ));
+
+    $resp = curl_exec($curl);
+    $resp = $this->handleResponse($log, $curl, $resp, 'request_pickup', $input);    
+
+    return $resp;
+  }
+
+  public function confirmShipping($input, $order_id) {
+    $url = "https://fs.tokopedia.net/v1/order/".$order_id."/fs/".$this->app_id."/status";
+
+    $log = TokopediaLog::create(array(
+      "type" => "confirm_shipping",
+      "request" => json_encode($input),
+      "response" => null
+    ));
+
+    $curl = curl_init();
+    $token = (session('tokopedia_token')) ? session('tokopedia_token') : $this->getToken();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_POST => true,
+      CURLOPT_HEADER => true,
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_POSTFIELDS => json_encode($input),
+      CURLOPT_HTTPHEADER => array(
+        'Content-Type: application/json',                                                                                
+        "Authorization: Bearer ".$token,
+      )
+    ));
+
+    $resp = curl_exec($curl);
+    $resp = $this->handleResponse($log, $curl, $resp, 'confirm_shipping', $input, $order_id);    
+
+    return $resp;
+  }
+
+  public function getOrder($order_id) {
+    $url = "https://fs.tokopedia.net/v2/fs/".$this->app_id."/order?order_id=".$order_id;
+
+    $log = TokopediaLog::create(array(
+      "type" => "get_order",
+      "request" => $order_id,
+      "response" => null
+    ));
+
+    $token = (session('tokopedia_token')) ? session('tokopedia_token') : $this->getToken();
+
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_HEADER => true,
+      CURLOPT_CUSTOMREQUEST => "GET",
+      CURLOPT_HTTPHEADER => array(
+        "Authorization: Bearer ".$token
+      )
+    ));
+
+    $resp = curl_exec($curl);
+    $resp = $this->handleResponse($log, $curl, $resp, 'get_order', $order_id);    
+    return $resp;
+  }
+
+  public function shippingLabel($order_id) {
+    $url = "https://fs.tokopedia.net/v1/order/".$order_id."/fs/".$this->app_id."/shipping-label?printed=0";
+
+    $log = TokopediaLog::create(array(
+      "type" => "shipping_label",
+      "request" => $order_id,
+      "response" => null
+    ));
+
+    $token = (session('tokopedia_token')) ? session('tokopedia_token') : $this->getToken();
+
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_HEADER => false,
+      CURLOPT_CUSTOMREQUEST => "GET",
+      CURLOPT_HTTPHEADER => array(
+        "Authorization: Bearer ".$token
+      )
+    ));
+
+    $resp = curl_exec($curl);
+    $resp = $this->handleResponse($log, $curl, $resp, 'shipping_label', $order_id);    
+    return $resp;
   }
 }
