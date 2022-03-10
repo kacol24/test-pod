@@ -12,6 +12,7 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        'webhook/tokopedia/orders'
+        'webhook/tokopedia/orders',
+        'webhook/tokopedia/status'
     ];
 }
