@@ -3,22 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DesignDatatableResource;
-use Illuminate\Http\Request;
-use App\Models\MasterProduct\Template;
 use App\Models\MasterProduct\Category;
 use App\Models\MasterProduct\MasterProduct;
-use App\Models\MasterProduct\MasterProductOption;
-use Validator, DB;
+use App\Models\MasterProduct\Template;
+use App\Models\Product\Product;
 use App\Models\Product\ProductDesign;
 use App\Models\Product\ProductEditor;
-use App\Models\Product\Product;
+use App\Models\Product\ProductImage;
 use App\Models\Product\ProductOption;
 use App\Models\Product\ProductOptionDetail;
 use App\Models\Product\ProductSku;
-use App\Models\Product\ProductImage;
-use Illuminate\Support\Str;
+use DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Validator;
 
 class DesignController extends Controller
 {
@@ -54,17 +54,19 @@ class DesignController extends Controller
     public function create(Request $request)
     {
         session(['state_id' => null]);
-        $products = MasterProduct::where('is_publish',1);
-        if($request->category_id) {
-            $products = $products->join('master_category_master_product','master_category_master_product.product_id','=','master_products.id')->where('category_id', $request->category_id);
+        $products = MasterProduct::where('is_publish', 1);
+        if ($request->category_id) {
+            $products = $products->join('master_category_master_product', 'master_category_master_product.product_id',
+                '=', 'master_products.id')->where('category_id', $request->category_id);
         }
         $products = $products->when(! empty($request->s), function ($query) use ($request) {
-          return $query->where('title', 'like', "%{$request->s}%");
+            return $query->where('title', 'like', "%{$request->s}%");
         })->get();
-        return view('product.create', array(
+
+        return view('product.create', [
             'categories' => Category::active()->get(),
-            'products' => $products,
-        ));
+            'products'   => $products,
+        ]);
     }
 
     public function designer($id)

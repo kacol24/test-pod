@@ -11,7 +11,7 @@
                 Tweak and finalize the design and price of this product
             </div>
         </div>
-        <div class="row mt-4">
+        <div class="row mt-5">
             <div class="col-md-3">
                 <input type="search" class="form-control" placeholder="Search product">
                 <ul class="list-group list-group-flush font-size:12 mt-3 d-none d-md-block">
@@ -19,7 +19,7 @@
                         Categories
                     </li>
                     @foreach($categories as $category)
-                        <li class="list-group-item ps-0">
+                        <li class="list-group-item ps-0 py-3">
                             <a href="?category_id={{$category->id}}"
                                class="text-decoration-none text-color:black fw-500">
                                 {{$category->name}}
@@ -109,7 +109,7 @@
                                         </h3>
                                         <div class="font-size:12 text-color:tertiary fw-500">
                                             Base cost
-                                            IDR {{number_format(($product->default_sku->production_cost+$product->default_sku->fulfillment_cost),0,",",".")}}
+                                            IDR {{number_format(($product->base_cost),0,",",".")}}
                                         </div>
                                     </div>
                                 </div>

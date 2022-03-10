@@ -7,6 +7,7 @@ use Cache;
 use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class MasterProduct extends Model
 {
@@ -164,7 +165,11 @@ class MasterProduct extends Model
 
     public function getThumbnailUrlAttribute()
     {
-        return env('BACKEND_URL') . '/storage/masterproduct/' . $this->thumbnail();
+        if (config('filesystems.default') == 's3') {
+            return Storage::url('b2b2c/masterproduct/' . $this->thumbnail());
+        }
+
+        return env('BACKEND_URL') . '/b2b2c/masterproduct/' . $this->thumbnail();
     }
 
     public function getFirstcategoryNameAttribute()
@@ -180,5 +185,10 @@ class MasterProduct extends Model
     function mockupcolors()
     {
         return $this->hasMany('App\Models\MasterProduct\MockupColor', 'product_id', 'id');
+    }
+
+    public function getBaseCostAttribute()
+    {
+        return $this->default_sku->production_cost + $this->default_sku->fulfillment_cost;
     }
 }

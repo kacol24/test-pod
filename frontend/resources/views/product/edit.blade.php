@@ -37,6 +37,57 @@
     </div>
     <div class="container mt-4">
         <div class="row">
+            <div class="col-md-4 sticky-top sticky-top--header">
+                <div class="card p-0 mt-3" style="background: #F6F7F9;">
+                    <div class="card-header border-0 d-flex align-items-center justify-content-between"
+                         style="background: #F6F7F9;">
+                        <div class="text-nowrap mr-3">
+                            <i class="fas fa-fw fa-image"></i>
+                            <h5 class="card-title d-inline-block">
+                                Product Detail
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="card-body pb-0" style="max-height: 400px;overflow-y: scroll;">
+                        <div class="list-group">
+                            @foreach(range(1, 5) as $list)
+                                <div
+                                    class="list-group-item p-3 mb-4 d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <img src="{{ asset('images/product-thumbnail.png') }}" alt=""
+                                             class="img-fluid me-3"
+                                             width="42">
+                                        T-Shirt
+                                    </div>
+                                    <div class="d-flex font-size:12">
+                                        <a href="" class="text-color:blue text-decoration-none">
+                                            Remove
+                                        </a>
+                                        <div class="mx-2 text-color:icon">|</div>
+                                        <a href="" class="text-color:blue text-decoration-none">
+                                            Edit
+                                        </a>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="card-footer border-0 pt-0" style="background: #F6F7F9;">
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <a href="" class="text-color:blue text-decoration-none">
+                                Back
+                            </a>
+                            <div>
+                                <strong>5 Products</strong> selected
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-8">
                 <div class="card p-0 mt-3">
                     <div class="card-header d-flex align-items-center justify-content-between">
@@ -138,57 +189,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 sticky-top sticky-top--header">
-                <div class="card p-0 mt-3" style="background: #F6F7F9;">
-                    <div class="card-header border-0 d-flex align-items-center justify-content-between"
-                         style="background: #F6F7F9;">
-                        <div class="text-nowrap mr-3">
-                            <i class="fas fa-fw fa-image"></i>
-                            <h5 class="card-title d-inline-block">
-                                Product Detail
-                            </h5>
-                        </div>
-                    </div>
-                    <div class="card-body pb-0" style="max-height: 400px;overflow-y: scroll;">
-                        <div class="list-group">
-                            @foreach(range(1, 5) as $list)
-                                <div
-                                    class="list-group-item p-3 mb-4 d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <img src="{{ asset('images/product-thumbnail.png') }}" alt=""
-                                             class="img-fluid me-3"
-                                             width="42">
-                                        T-Shirt
-                                    </div>
-                                    <div class="d-flex font-size:12">
-                                        <a href="" class="text-color:blue text-decoration-none">
-                                            Remove
-                                        </a>
-                                        <div class="mx-2 text-color:icon">|</div>
-                                        <a href="" class="text-color:blue text-decoration-none">
-                                            Edit
-                                        </a>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                    <div class="card-footer border-0 pt-0" style="background: #F6F7F9;">
-                        <hr>
-                        <div class="d-flex justify-content-between mb-3">
-                            <a href="" class="text-color:blue text-decoration-none">
-                                Back
-                            </a>
-                            <div>
-                                <strong>5 Products</strong> selected
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">
-                            Save Changes
-                        </button>
                     </div>
                 </div>
             </div>

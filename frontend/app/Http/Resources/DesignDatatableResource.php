@@ -24,6 +24,9 @@ class DesignDatatableResource extends JsonResource
             'status'         => $active,
         ];
 
+        $image = $this->products->first()->masterproduct->thumbnail_url;
+        $array['image'] = '<img width="40" src="'.$image.'"/>';
+
         $array['action'] = view('product.datatable-actions', ['entity' => $this])->render();
 
         return $array;

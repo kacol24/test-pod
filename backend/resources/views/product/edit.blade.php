@@ -237,12 +237,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="text-uppercase" for="description">Product Description</label>
-                                    <textarea class="form-control" name="description"
+                                    <textarea class="form-control" name="description" rows="10"
                                               id="description">{{$entity->description}}</textarea>
                                 </div>
                                 <div class="form-group">
                                     <label class="text-uppercase" for="size_chart">Size Chart (optional)</label>
-                                    <textarea class="form-control" name="size_chart"
+                                    <textarea class="form-control" name="size_chart" rows="10"
                                               id="size_chart">{{$entity->size_chart}}</textarea>
                                 </div>
                                 <div class="row">
