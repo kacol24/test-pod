@@ -176,7 +176,7 @@ function image_url($size,$image)
       return Storage::url('b2b2c/'.$size.'/'.$image);
     }
   }else {
-    $file = array('url' => asset('storage/'.$size.'/'.$image), 'path' => storage_path('app/b2b2c/').$size."/".$image);
+    $file = array('url' => asset('b2b2c/'.$size.'/'.$image), 'path' => storage_path('app/b2b2c/').$size."/".$image);
     if(!file_exists($file['path']) || empty($image))
     {
       $file['url'] = asset('images/default-img.png');

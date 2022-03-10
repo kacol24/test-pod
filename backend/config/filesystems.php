@@ -71,6 +71,7 @@ return [
         public_path('storage') => storage_path('app/public'),
         public_path('templates') => storage_path('app/templates'),
         public_path('previews') => storage_path('app/previews'),
+        public_path('b2b2c') => storage_path('app/b2b2c'),
     ],
 
 ];
