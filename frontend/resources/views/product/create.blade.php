@@ -109,7 +109,7 @@
                                         </h3>
                                         <div class="font-size:12 text-color:tertiary fw-500">
                                             Base cost
-                                            IDR {{number_format(($product->default_sku->production_cost+$product->default_sku->fulfillment_cost),0,",",".")}}
+                                            IDR {{number_format(($product->base_cost),0,",",".")}}
                                         </div>
                                     </div>
                                 </div>
