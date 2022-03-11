@@ -261,11 +261,20 @@ class DesignController extends Controller
                     'length' => $sku->length,
                     'height' => $sku->height
                 ));
+            }
 
-                $response = $this->generateImage($product, $masterproduct, $editor);
-                if($response['status']=='error') {
-                    return redirect()->back()->with('error', $response['message']);
-                }
+            #Replicate editor lama jadi
+            $editor = ProductEditor::create(array( 
+                'product_id' => $product->id,
+                'template_id' => $design_data->template, #ganti template id
+                'state_id' => $design_data->state_id, 
+                'print_file' => $design_data->print_file,
+                'proof_file' => $design_data->proof_file
+            ));
+
+            $response = $this->generateImage($product, $masterproduct, $editor);
+            if($response['status']=='error') {
+                return redirect()->back()->with('error', $response['message']);
             }
         }
             
