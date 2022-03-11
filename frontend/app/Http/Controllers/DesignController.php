@@ -204,6 +204,8 @@ class DesignController extends Controller
             if($response['status']=='error') {
                 return redirect()->back()->with('error', $response['message']);
             }
+
+            $this->applyAllProduct($request->apply_products, $design, $editor, $request);
             DB::commit();
 
             return redirect()->route('design.saved');
@@ -211,6 +213,62 @@ class DesignController extends Controller
           DB::rollback();
           throw new \Exception($e->getMessage());
         }
+    }
+
+    public function applyAllProduct($masterproduct_ids, $design, $editor, $request) {
+        foreach($masterproduct_ids as $master_id) {
+            $masterproduct = MasterProduct::find($master_id);
+            $mastertemplate = Template::find($design_data->template); #ambil pertama template master productnya
+
+            $product = Product::create(array(
+                'store_id' => session('current_store')->id,
+                'master_product_id' => $master_id,
+                'design_id' => $design->id,
+                'title' => $masterproduct->title." ".$design->title,
+                'description' => $design->description."\n".$masterproduct->description."\n".$masterproduct->size_chart,
+                'is_publish' => $request->is_publish
+            ));
+
+            foreach($masterproduct->options as $i => $option) {
+                $productoption = ProductOption::create(array(
+                    'product_id' => $product->id,
+                    'title' => $option->title
+                ));
+
+                if($masterproduct->options->count() == 2) {
+                    foreach($option->details as $detail) {
+                        if($i==0 || ($i==1 && in_array($detail->key, $design_data->variants))) {
+                            ProductOptionDetail::create(array(
+                                'option_id' => $productoption->id,
+                                'title' => $detail->title,
+                                'key' => $detail->key
+                            ));
+                        }
+                    }
+                }
+            }
+
+            foreach($masterproduct->skuvariants($design_data->variants) as $sku) {
+                ProductSku::create(array(
+                    'product_id' => $product->id,
+                    'option_detail_key1' => $sku->option_detail_key1,
+                    'option_detail_key2' => $sku->option_detail_key2,
+                    'sku_code' => $sku->sku_code."-".$design->sku_code,
+                    'stock' => 0,
+                    'price' => $sku->selling_price, #perlu di adjust dari master
+                    'weight' => $sku->weight,
+                    'width' => $sku->width,
+                    'length' => $sku->length,
+                    'height' => $sku->height
+                ));
+
+                $response = $this->generateImage($product, $masterproduct, $editor);
+                if($response['status']=='error') {
+                    return redirect()->back()->with('error', $response['message']);
+                }
+            }
+        }
+            
     }
 
     public function generateImage($product, $masterproduct, $editor) {
