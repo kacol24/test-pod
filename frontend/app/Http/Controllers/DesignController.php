@@ -48,7 +48,7 @@ class DesignController extends Controller
 
     public function index()
     {
-        return view('product.index');
+        return view('design.index');
     }
 
     public function create(Request $request)
@@ -63,7 +63,7 @@ class DesignController extends Controller
             return $query->where('title', 'like', "%{$request->s}%");
         })->get();
 
-        return view('product.create', [
+        return view('design.create', [
             'categories' => Category::active()->get(),
             'products'   => $products,
         ]);
@@ -73,7 +73,7 @@ class DesignController extends Controller
     {
         $masterproduct = MasterProduct::find($id);
         $templates = $masterproduct->templates;
-        return view('product.designer', array(
+        return view('design.designer', array(
             'masterproduct' => $masterproduct,
             'templates' => $templates,
         ));
@@ -98,7 +98,7 @@ class DesignController extends Controller
 
     public function additional()
     {
-        return view('product.additional');
+        return view('design.additional');
     }
 
     public function finish()
@@ -106,17 +106,17 @@ class DesignController extends Controller
         if(!session('design')) {
             return redirect()->route('design.create');
         }
-        return view('product.finish');
+        return view('design.finish');
     }
 
     public function saving()
     {
-        return view('product.saving');
+        return view('design.saving');
     }
 
     public function success()
     {
-        return view('product.saved');
+        return view('design.saved');
     }
 
     public function store(Request $request)
@@ -264,10 +264,10 @@ class DesignController extends Controller
             }
 
             #Replicate editor lama jadi
-            $editor = ProductEditor::create(array( 
+            $editor = ProductEditor::create(array(
                 'product_id' => $product->id,
                 'template_id' => $design_data->template, #ganti template id
-                'state_id' => $design_data->state_id, 
+                'state_id' => $design_data->state_id,
                 'print_file' => $design_data->print_file,
                 'proof_file' => $design_data->proof_file
             ));
@@ -277,7 +277,7 @@ class DesignController extends Controller
                 return redirect()->back()->with('error', $response['message']);
             }
         }
-            
+
     }
 
     public function generateImage($product, $masterproduct, $editor) {
@@ -361,7 +361,7 @@ class DesignController extends Controller
      */
     public function edit($id)
     {
-        return view('product.edit');
+        return view('design.edit');
     }
 
     /**

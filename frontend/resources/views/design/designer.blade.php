@@ -3,17 +3,17 @@
 @section('content')
     <div class="container container--app">
         @include('partials.product-nav')
-            <h1 class="page-title font-size:22">
-                Design Your Product
-            </h1>
-            <div class="font-size:14">
-                Tweak and finalize the design and price of this product
-            </div>
-        @foreach ($errors->all() as $error)
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          {{$error}}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <h1 class="page-title font-size:22">
+            Design Your Product
+        </h1>
+        <div class="font-size:14">
+            Tweak and finalize the design and price of this product
         </div>
+        @foreach ($errors->all() as $error)
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{$error}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         @endforeach
         <div class="row mt-4">
             <div class="col-md-4">
@@ -56,7 +56,7 @@
                                     <label class="form-check-label" for="inlineCheckbox1">
                                         All Variants
                                     </label>
-                            </div>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="row">
@@ -73,8 +73,8 @@
                                                         {{$detail->title}}
                                                     </label>
                                                 </div>
-                                    </div>
-                                </div>
+                                            </div>
+                                        </div>
                                     @endforeach
                                 </div>
                             </div>
@@ -152,45 +152,48 @@
                 </form>
             </div>
             @if($masterproduct->colors->count()>0)
-            <div class="col-md">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card p-0 h-100">
-                            <div class="card-header d-flex align-items-center justify-content-between">
-                                <h5 class="card-title d-inline-block">
-                                    Product Colors
-                                </h5>
-                            </div>
-                            <div class="card-body p-3">
-                                <div class="row">
-                                    @foreach($masterproduct->colors as $color)
-                                        <div class="col-md-6 mb-4">
-                                            <a href="javascript:void(0);" class="d-flex align-items-center color-option" data-id="{{$color->id}}">
-                                                <span class="color-display" style="background-color:{{$color->color}};"></span>
-                                                {{$color->name}}
-                                            </a>
-                                        </div>
-                                    @endforeach
+                <div class="col-md">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card p-0 h-100">
+                                <div class="card-header d-flex align-items-center justify-content-between">
+                                    <h5 class="card-title d-inline-block">
+                                        Product Colors
+                                    </h5>
+                                </div>
+                                <div class="card-body p-3">
+                                    <div class="row">
+                                        @foreach($masterproduct->colors as $color)
+                                            <div class="col-md-6 mb-4">
+                                                <a href="javascript:void(0);"
+                                                   class="d-flex align-items-center color-option"
+                                                   data-id="{{$color->id}}">
+                                                    <span class="color-display"
+                                                          style="background-color:{{$color->color}};"></span>
+                                                    {{$color->name}}
+                                                </a>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-8">
+                            <iframe class="content__iframe" id="editorFrame"></iframe>
+                        </div>
+                        @endif
                     </div>
-                    <div class="col-md-8">
-                <iframe class="content__iframe" id="editorFrame"></iframe>
-            </div>
-            @endif
-        </div>
-    </div>
+                </div>
         </div>
     </div>
 @endsection
 @push('scripts')
     <style type="text/css">
         .content__iframe {
-          height: 100%;
-          width: 100%;
-          min-height: calc(100vh - 76px);
-          min-height: calc(100vh - 76px);
+            height: 100%;
+            width: 100%;
+            min-height: calc(100vh - 76px);
+            min-height: calc(100vh - 76px);
         }
 
         .color-option {
@@ -212,12 +215,14 @@
             margin-right: 10px;
         }
     </style>
-    <link href="https://canvas.printerous.com/production/Canvas/Edge/Configuration/customCss/loader.css" rel="stylesheet" />
-    <script id="CcIframeApiScript" type="text/javascript" src="https://canvas.printerous.com/production/Canvas/Edge/Resources/Generated/IframeApi.js"></script>
+    <link href="https://canvas.printerous.com/production/Canvas/Edge/Configuration/customCss/loader.css"
+          rel="stylesheet"/>
+    <script id="CcIframeApiScript" type="text/javascript"
+            src="https://canvas.printerous.com/production/Canvas/Edge/Resources/Generated/IframeApi.js"></script>
 
     <script type="text/javascript">
         let user_id = "{{session('current_store')->id}}";
-        let redirect_type = "editor";
+        let redirect_type = 'editor';
         let state_id;
         let final_product;
         let shape;
@@ -228,7 +233,7 @@
         let editor;
         let mockup;
         let color_id;
-        let template_id = $("select[name='template']").val();
+        let template_id = $('select[name=\'template\']').val();
         var templates = {!!json_encode($templates)!!};
         var mockup_colors = {!!json_encode($masterproduct->mockupcolors)!!};
 
@@ -236,34 +241,34 @@
             state_id = "{{session('state_id')}}";
         @endif
 
-        @if($masterproduct->colors->count()>0)
+            @if($masterproduct->colors->count()>0)
             color_id = {{$masterproduct->colors->first()->id}};
         @endif
 
         function mmToPoint(mm) {
-          var inch = mm / 25.4;
-          var point = 72 * inch;
-          console.log(point);
-          return point;
+            var inch = mm / 25.4;
+            var point = 72 * inch;
+            console.log(point);
+            return point;
         }
 
-        $(function(){
+        $(function() {
             defineTemplate(template_id);
 
-            $("select[name='template']").change(function(){
+            $('select[name=\'template\']').change(function() {
                 template_id = $(this).val();
                 defineTemplate($(this).val());
             });
 
-            $(".color-option").click(function(){
-                color_id = $(this).attr("data-id");
+            $('.color-option').click(function() {
+                color_id = $(this).attr('data-id');
                 defineTemplate(template_id);
             });
         });
 
         function defineTemplate(id) {
-            templates.map(function(el,idx) {
-                if(el.id == id) {
+            templates.map(function(el, idx) {
+                if (el.id == id) {
                     surfaces = [];
                     mockups = [];
                     return setupEditor(el);
@@ -272,36 +277,35 @@
         }
 
         function setupEditor(template) {
-            template.designs.map(function(el,idx){
+            template.designs.map(function(el, idx) {
                 var designLocation = JSON.parse(el.design_location);
-                if(mockup_colors.length) {
-                    mockup_colors.map(function(color,idx) {
-                        if(color.color_id == color_id && color.design_id == el.id) {
+                if (mockup_colors.length) {
+                    mockup_colors.map(function(color, idx) {
+                        if (color.color_id == color_id && color.design_id == el.id) {
                             mockup = color.customer_canvas;
                         }
                     });
-                }else {
-                    mockup = el.mockup_customer_canvas
+                } else {
+                    mockup = el.mockup_customer_canvas;
                 }
                 surfaces.push({
                     name: el.page_name,
                     printAreas: [
-                      {
-                        designFile: el.customer_canvas,
-                        designLocation: { X: designLocation.X, Y: designLocation.Y }
-                      }
+                        {
+                            designFile: el.customer_canvas,
+                            designLocation: {X: designLocation.X, Y: designLocation.Y}
+                        }
                     ],
                     mockup: {
                         down: mockup
                     },
                     proofImage: {
-                      fileFormat: "PNG",
-                      rgbColorProfileName: "Adobe RGB (1998)",
-                      mockupEnabled: false
-                    },
+                        fileFormat: 'PNG',
+                        rgbColorProfileName: 'Adobe RGB (1998)',
+                        mockupEnabled: false
+                    }
                 });
             });
-
 
             let product_definition = {
                 surfaces: surfaces
@@ -312,108 +316,108 @@
             bleed = parseFloat(template.bleed);
 
             config = {
-                initialMode: "Advanced",
+                initialMode: 'Advanced',
                 userId: user_id,
-                customStyle: "toolbox-icon",
+                customStyle: 'toolbox-icon',
                 canvas: {
-                  containerColor: "#E5E5E5",
-                  canvasItemHoverEnabled: true,
-                  violationWarningButtonsEnabled: true,
-                  qualityChangeContainersEnabled: true
+                    containerColor: '#E5E5E5',
+                    canvasItemHoverEnabled: true,
+                    violationWarningButtonsEnabled: true,
+                    qualityChangeContainersEnabled: true
                 },
                 widgets: {
-                  ObjectInspector: {
-                    variableItemsEnabled: true,
-                    showItemName: true
-                  },
-                  ItemMenu: {
-                    renameEnabled: true
-                  },
-                  Toolbox: {
-                    buttons: [
-                      {
-                        translationKey: "Toolbox.TEXT",
-                        translationKeyTitle: "Toolbox.TITLE_ADD_TEXT",
-                        iconClass: "prs-icon prs-icon--caption prs-icon-add-text",
+                    ObjectInspector: {
+                        variableItemsEnabled: true,
+                        showItemName: true
+                    },
+                    ItemMenu: {
+                        renameEnabled: true
+                    },
+                    Toolbox: {
                         buttons: [
-                          {
-                            translationKey: "Toolbox.TEXT",
-                            translationKeyTitle: "Toolbox.TITLE_ADD_TEXT",
-                            iconClass: "prs-icon prs-icon-add-text",
-                            action: "Text"
-                          },
-                          "RichText"
+                            {
+                                translationKey: 'Toolbox.TEXT',
+                                translationKeyTitle: 'Toolbox.TITLE_ADD_TEXT',
+                                iconClass: 'prs-icon prs-icon--caption prs-icon-add-text',
+                                buttons: [
+                                    {
+                                        translationKey: 'Toolbox.TEXT',
+                                        translationKeyTitle: 'Toolbox.TITLE_ADD_TEXT',
+                                        iconClass: 'prs-icon prs-icon-add-text',
+                                        action: 'Text'
+                                    },
+                                    'RichText'
+                                ]
+                            },
+                            {
+                                translationKey: 'Toolbox.IMAGE',
+                                translationKeyTitle: 'Toolbox.TITLE_ADD_IMAGE',
+                                iconClass: 'prs-icon prs-icon--caption prs-icon-add-image',
+                                action: 'Image'
+                            },
+                            {
+                                translationKey: 'Toolbox.SHAPE',
+                                translationKeyTitle: 'Toolbox.TITLE_ADD_SHAPE',
+                                iconClass: 'prs-icon prs-icon--caption prs-icon-add-shape',
+                                buttons: ['Line', 'Rectangle', 'Ellipse']
+                            },
+                            {
+                                translationKey: 'Toolbox.LINEAR_BARCODE',
+                                translationKeyTitle: 'Toolbox.TITLE_ADD_LINEAR_BARCODE',
+                                iconClass: 'prs-icon prs-icon--caption prs-icon-add-qr',
+                                buttons: ['LinearBarcode', 'QrCode']
+                            }
                         ]
-                      },
-                      {
-                        translationKey: "Toolbox.IMAGE",
-                        translationKeyTitle: "Toolbox.TITLE_ADD_IMAGE",
-                        iconClass: "prs-icon prs-icon--caption prs-icon-add-image",
-                        action: "Image"
-                      },
-                      {
-                        translationKey: "Toolbox.SHAPE",
-                        translationKeyTitle: "Toolbox.TITLE_ADD_SHAPE",
-                        iconClass: "prs-icon prs-icon--caption prs-icon-add-shape",
-                        buttons: ["Line", "Rectangle", "Ellipse"]
-                      },
-                      {
-                        translationKey: "Toolbox.LINEAR_BARCODE",
-                        translationKeyTitle: "Toolbox.TITLE_ADD_LINEAR_BARCODE",
-                        iconClass: "prs-icon prs-icon--caption prs-icon-add-qr",
-                        buttons: ["LinearBarcode", "QrCode"]
-                      }
-                    ]
-                  }
+                    }
                 },
 
                 rendering: {
-                  hiResOutputDpi: 300
+                    hiResOutputDpi: 300
                 },
                 violationWarningsSettings: {
-                  qualityMeter: {
-                    enabled: true,
-                    qualityLevels: {
-                      warning: "99",
-                      bad: "50"
+                    qualityMeter: {
+                        enabled: true,
+                        qualityLevels: {
+                            warning: '99',
+                            bad: '50'
+                        }
                     }
-                  }
                 }
             };
 
             let cc_default_product_config = {};
             if (safety_line > 0) {
-                if (shape == "square") {
-                  cc_default_product_config = {
-                    defaultSafetyLines: [
-                      {
-                        margin: {
-                          horizontal: mmToPoint(bleed),
-                          vertical: mmToPoint(bleed)
-                        },
-                        color: "rgba(255,0,0,255)",
-                        altColor: "rgba(255,0,0,255)",
-                        stepPx: 5,
-                        widthPx: 1
-                      }
-                    ]
-                  };
-                } else if (shape == "circle") {
-                  cc_default_product_config = {
-                    defaultSafetyLines: [
-                      {
-                        margin: {
-                          horizontal: mmToPoint(bleed),
-                          vertical: mmToPoint(bleed)
-                        },
-                        borderRadius: "100%",
-                        color: "rgba(255,0,0,255)",
-                        altColor: "rgba(255,0,0,255)",
-                        stepPx: 5,
-                        widthPx: 1
-                      }
-                    ]
-                  };
+                if (shape == 'square') {
+                    cc_default_product_config = {
+                        defaultSafetyLines: [
+                            {
+                                margin: {
+                                    horizontal: mmToPoint(bleed),
+                                    vertical: mmToPoint(bleed)
+                                },
+                                color: 'rgba(255,0,0,255)',
+                                altColor: 'rgba(255,0,0,255)',
+                                stepPx: 5,
+                                widthPx: 1
+                            }
+                        ]
+                    };
+                } else if (shape == 'circle') {
+                    cc_default_product_config = {
+                        defaultSafetyLines: [
+                            {
+                                margin: {
+                                    horizontal: mmToPoint(bleed),
+                                    vertical: mmToPoint(bleed)
+                                },
+                                borderRadius: '100%',
+                                color: 'rgba(255,0,0,255)',
+                                altColor: 'rgba(255,0,0,255)',
+                                stepPx: 5,
+                                widthPx: 1
+                            }
+                        ]
+                    };
                 }
             }
 
@@ -435,115 +439,115 @@
             };
 
             editor = CustomersCanvas.IframeApi.loadEditor(
-                document.getElementById("editorFrame"),
+                document.getElementById('editorFrame'),
                 final_product,
                 config
-            ).then(function (editor) {
-                $("#continue").click(function(){
-                    editor.finishProductDesign().then(function (result) {
+            ).then(function(editor) {
+                $('#continue').click(function() {
+                    editor.finishProductDesign().then(function(result) {
                         // Verify a state ID and a user ID.
                         stateId = result.stateId;
                         userId = result.userId;
                         // Get links to hi-res outputs.
                         hiResOutputUrls = result.hiResOutputUrls;
-                        $("input[name='state_id']").val(stateId);
-                        $("input[name='print_file']").val(hiResOutputUrls[0]);
-                        $("input[name='proof_file']").val(result.proofImageUrls);
-                        $("#form-design").submit();
-                    })
+                        $('input[name=\'state_id\']').val(stateId);
+                        $('input[name=\'print_file\']').val(hiResOutputUrls[0]);
+                        $('input[name=\'proof_file\']').val(result.proofImageUrls);
+                        $('#form-design').submit();
+                    });
                 });
             });
 
-          var idxSurface = 0;
-          var selectItem = function (editor, product) {
-            product.switchTo(product.surfaces[idxSurface]).then(function (resp) {
-              let args = {
-                targetType: "surfaces",
-                targetIds: [product.surfaces[idxSurface].id],
-                width: "255",
-                height: "156",
-                defaultOptions: {
-                  resize: 2,
-                  resetPlaceholderContent: false
-                }
-              };
+            var idxSurface = 0;
+            var selectItem = function(editor, product) {
+                product.switchTo(product.surfaces[idxSurface]).then(function(resp) {
+                    let args = {
+                        targetType: 'surfaces',
+                        targetIds: [product.surfaces[idxSurface].id],
+                        width: '255',
+                        height: '156',
+                        defaultOptions: {
+                            resize: 2,
+                            resetPlaceholderContent: false
+                        }
+                    };
 
-              let args_with_safety = {
-                targetType: "surfaces",
-                targetIds: [product.surfaces[idxSurface].id],
-                width: "272",
-                height: "173",
-                defaultOptions: {
-                  resize: 3,
-                  resetPlaceholderContent: false
-                },
-                containerOptions: {
-                  Background: {
-                    resize: 2
-                  }
-                }
-              };
+                    let args_with_safety = {
+                        targetType: 'surfaces',
+                        targetIds: [product.surfaces[idxSurface].id],
+                        width: '272',
+                        height: '173',
+                        defaultOptions: {
+                            resize: 3,
+                            resetPlaceholderContent: false
+                        },
+                        containerOptions: {
+                            Background: {
+                                resize: 2
+                            }
+                        }
+                    };
 
-              var need_resize = false;
-              if (need_resize) {
-                if (!state_id) {
-                  editor.commandManager.execute("resize", args);
-                }
-              }
-              if (safety_line > 0) {
-                if (!state_id) {
-                  editor.commandManager.execute("resize", args_with_safety);
-                }
-              }
-
-              editor.selectItems([
-                {
-                  name: "BG"
-                }
-              ]);
-
-              editor.getSelectedItems().then(function (items) {
-                if (items.length) {
-                  var itemIds = [];
-                  items.forEach(function (item) {
-                    itemIds.push(item.id);
-                  });
-
-                  //resize
-                  let resize_p = {
-                    targetType: "items",
-                    targetIds: itemIds,
-                    width: "272",
-                    height: "173",
-                    defaultOptions: {
-                      resize: 2,
-                      resetPlaceholderContent: false
-                    },
-                    containerOptions: {
-                      Background: {
-                        resize: 2
-                      }
+                    var need_resize = false;
+                    if (need_resize) {
+                        if (!state_id) {
+                            editor.commandManager.execute('resize', args);
+                        }
                     }
-                  };
-                  if (!state_id) {
-                    editor.commandManager.execute("resize", resize_p);
-                  }
-                } else {
-                  console.log("There are no selected items.");
-                }
+                    if (safety_line > 0) {
+                        if (!state_id) {
+                            editor.commandManager.execute('resize', args_with_safety);
+                        }
+                    }
 
-                idxSurface++;
-                setTimeout(function () {
-                  if (idxSurface < product.surfaces.length) {
-                    selectItem(editor, product);
-                  } else {
-                    product.switchTo(product.surfaces[0]);
-                    $(".overlay-element").remove();
-                  }
-                }, 1000);
-              });
-            });
-          };
+                    editor.selectItems([
+                        {
+                            name: 'BG'
+                        }
+                    ]);
+
+                    editor.getSelectedItems().then(function(items) {
+                        if (items.length) {
+                            var itemIds = [];
+                            items.forEach(function(item) {
+                                itemIds.push(item.id);
+                            });
+
+                            //resize
+                            let resize_p = {
+                                targetType: 'items',
+                                targetIds: itemIds,
+                                width: '272',
+                                height: '173',
+                                defaultOptions: {
+                                    resize: 2,
+                                    resetPlaceholderContent: false
+                                },
+                                containerOptions: {
+                                    Background: {
+                                        resize: 2
+                                    }
+                                }
+                            };
+                            if (!state_id) {
+                                editor.commandManager.execute('resize', resize_p);
+                            }
+                        } else {
+                            console.log('There are no selected items.');
+                        }
+
+                        idxSurface++;
+                        setTimeout(function() {
+                            if (idxSurface < product.surfaces.length) {
+                                selectItem(editor, product);
+                            } else {
+                                product.switchTo(product.surfaces[0]);
+                                $('.overlay-element').remove();
+                            }
+                        }, 1000);
+                    });
+                });
+            };
         }
     </script>
 @endpush
