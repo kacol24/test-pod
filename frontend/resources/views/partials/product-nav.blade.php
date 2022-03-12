@@ -4,7 +4,7 @@
     </h3>
     <div class="stepper__steps">
         <a href="{{ route('design.create') }}"
-           class="stepper__step {{ request()->routeIs(['design.*']) ? 'stepper__step--stepped' : '' }}">
+           class="stepper__step {{ request()->routeIs(['design.*', 'design']) ? 'stepper__step--stepped' : '' }}">
             <div class="stepper__numbering">1</div>
             <div class="stepper__step-content">
                 <div class="d-none d-md-block">
@@ -13,7 +13,7 @@
             </div>
         </a>
         <a href="javascript:void(0);"
-           class="stepper__step {{ request()->routeIs(['design.designer', 'design.additional']) ? 'stepper__step--stepped' : '' }}">
+           class="stepper__step {{ request()->routeIs(['design', 'design.additional']) ? 'stepper__step--stepped' : '' }}">
             <div class="stepper__numbering">2</div>
             <div class="stepper__step-content">
                 <div class="d-none d-md-block">
