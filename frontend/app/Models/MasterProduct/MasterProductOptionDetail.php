@@ -17,4 +17,9 @@ class MasterProductOptionDetail extends Model
     {
         return $this->hasOne('App\Models\MasterProduct\MasterProductOption', 'id', 'option_id');
     }
+
+    public function firstSku()
+    {
+        return $this->hasOne(MasterProductSku::class, 'option_detail_key1', 'key');
+    }
 }

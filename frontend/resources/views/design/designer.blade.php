@@ -42,7 +42,19 @@
                             </div>
                         </div>
 
-                        <div class="card p-0 mt-3">
+                        @php($option = $masterproduct->options->reverse()->first())
+                        <div class="card p-0 mt-3"
+                             x-data='{
+                                variants: @json($option->details->pluck('key')),
+                                selectAll: true,
+                                toggleSelectAll: function() {
+                                    if (this.selectAll) {
+                                        this.variants = [];
+                                    } else {
+                                        this.variants = @json($option->details->pluck('key'));
+                                    }
+                                }
+                             }'>
                             <div class="card-header d-flex align-items-center justify-content-between">
                                 <div>
                                     <i class="fas fa-fw fa-cubes"></i>
@@ -52,7 +64,8 @@
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" id="inlineCheckbox1"
-                                           value="option1">
+                                           @click="toggleSelectAll()"
+                                           x-model="selectAll">
                                     <label class="form-check-label" for="inlineCheckbox1">
                                         All Variants
                                     </label>
@@ -60,14 +73,13 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    @php($option = $masterproduct->options->reverse()->first())
                                     @foreach($option->details as $detail)
                                         <div class="col-md-6">
                                             <div
                                                 class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
                                                 <div class="form-check">
                                                     <input class="form-check-input" name="variants[]" checked="checked"
-                                                           type="checkbox" value="{{$detail->key}}"
+                                                           type="checkbox" value="{{$detail->key}}" x-model="variants"
                                                            id="{{$detail->key}}">
                                                     <label class="form-check-label" for="{{$detail->key}}">
                                                         {{$detail->title}}
@@ -109,23 +121,37 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr class="text-nowrap">
-                                            <th class="text-color:black font-size:12 fw-600">
-                                                Small
-                                            </th>
-                                            <td class="text-end">
-                                                80,000
-                                            </td>
-                                            <td>
-                                                <input type="tel" class="form-control price text-end" value="150,000"
-                                                       aria-label="you sell at">
-                                            </td>
-                                            <td class="text-end">
-                                            <span class="text-color:green">
-                                                70,000
-                                            </span>
-                                            </td>
-                                        </tr>
+                                        @php($option = $masterproduct->options->first())
+                                        @foreach($option->details as $detail)
+                                            <tr class="text-nowrap"
+                                                x-data='{
+                                                    detail: @json($detail),
+                                                    sku: @json($detail->firstSku),
+                                                    sellingPrice: "{{ number_format(json_decode(session('design'))->selling_price->{$detail->id}, 0, ',', '.') }}",
+                                                    originalSellingPrice: {{ json_decode(session('design'))->selling_price->{$detail->id} }},
+                                                    formattedSellingPrice: "{{ number_format(json_decode(session('design'))->selling_price->{$detail->id}, 0, ',', '.') }}"
+                                                }'>
+                                                <th class="text-color:black font-size:12 fw-600">
+                                                    {{ $detail->title }}
+                                                </th>
+                                                <td class="text-end">
+                                                    {{ number_format($detail->firstSku->base_cost, 0, ',', '.') }}
+                                                </td>
+                                                <td>
+                                                    <input type="tel" class="form-control text-end"
+                                                           aria-label="you sell at"
+                                                           x-model="sellingPrice" x-ref="priceInput"
+                                                           @focus="sellingPrice = originalSellingPrice; $nextTick(function() { $refs.priceInput.select() })"
+                                                           @input.lazy="formattedSellingPrice = number_format(sellingPrice, 0, ',', '.'); originalSellingPrice = sellingPrice"
+                                                           @blur="originalSellingPrice = sellingPrice; sellingPrice = formattedSellingPrice">
+                                                    <input type="hidden" name="selling_price[{{ $detail->id }}]" x-model="originalSellingPrice">
+                                                </td>
+                                                <td class="text-end text-color:green"
+                                                    x-text="number_format(originalSellingPrice - sku.base_cost, 0, ',', '.')">
+                                                    100,000
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -188,6 +214,8 @@
     </div>
 @endsection
 @push('scripts')
+    <script src="{{asset('backend/js/jquery.priceformat.min.js')}}"></script>
+    <script src="{{asset('backend/js/number_format.js')}}"></script>
     <style type="text/css">
         .content__iframe {
             height: 100%;
