@@ -17,7 +17,7 @@
         @endforeach
         <div class="row mt-4">
             <div class="col-md-4">
-                <form id="form-design" method="post" action="{{route('design.post', $masterproduct->id)}}">
+                <form id="form-design" method="post" action="{{route('design.post', [$masterproduct->id, 'edit' => request()->has('edit')])}}">
                     {{ csrf_field() }}
                     <div class="p-3 p-md-4" style="background: #F6F7F9;">
                         <div class="card p-0">
@@ -123,19 +123,20 @@
                                         <tbody>
                                         @php($option = $masterproduct->options->first())
                                         @foreach($option->details as $detail)
+                                            @php($sellingPrice = session('design')->firstWhere('master_product_id', $masterproduct->id)['selling_price'][$detail->id] ?? $detail->relatedSkus($masterproduct->id)->selling_price)
                                             <tr class="text-nowrap"
                                                 x-data='{
                                                     detail: @json($detail),
-                                                    sku: @json($detail->firstSku),
-                                                    sellingPrice: "{{ number_format(json_decode(session('design'))->selling_price->{$detail->id}, 0, ',', '.') }}",
-                                                    originalSellingPrice: {{ json_decode(session('design'))->selling_price->{$detail->id} }},
-                                                    formattedSellingPrice: "{{ number_format(json_decode(session('design'))->selling_price->{$detail->id}, 0, ',', '.') }}"
+                                                    sku: @json($detail->relatedSkus($masterproduct->id)),
+                                                    sellingPrice: "{{ number_format($sellingPrice, 0, ',', '.') }}",
+                                                    originalSellingPrice: "{{ $sellingPrice }}",
+                                                    formattedSellingPrice: "{{ number_format($sellingPrice, 0, ',', '.') }}"
                                                 }'>
                                                 <th class="text-color:black font-size:12 fw-600">
                                                     {{ $detail->title }}
                                                 </th>
                                                 <td class="text-end">
-                                                    {{ number_format($detail->firstSku->base_cost, 0, ',', '.') }}
+                                                    {{ number_format($detail->relatedSkus($masterproduct->id)->base_cost, 0, ',', '.') }}
                                                 </td>
                                                 <td>
                                                     <input type="tel" class="form-control text-end"
