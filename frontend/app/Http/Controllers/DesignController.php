@@ -132,16 +132,6 @@ class DesignController extends Controller
 
     public function additional(Request $request)
     {
-        if ($request->has('remove')) {
-            session([
-                'design_products' => session('design_products')->filter(function ($design) use ($request) {
-                    return $design->id != $request->remove;
-                }),
-            ]);
-
-            return back();
-        }
-
         if ($request->has('add')) {
             $add = MasterProduct::findOrFail($request->add);
 
@@ -463,5 +453,19 @@ class DesignController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function removeProduct($id)
+    {
+        session([
+            'design'          => session('design')->filter(function ($design) use ($id) {
+                return $design['master_product_id'] != $id;
+            }),
+            'design_products' => session('design_products')->filter(function ($design) use ($id) {
+                return $design->id != $id;
+            }),
+        ]);
+
+        return back();
     }
 }

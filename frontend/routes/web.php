@@ -217,7 +217,7 @@ Route::get('tokopedia/update-product', function () {
         // ));
         $productdata['variant'] = $variant;
     }
-    
+
     $data['products'] = array($productdata);
     $response = Tokopedia::updateProduct($data, $shop_id);
 });
@@ -301,7 +301,7 @@ Route::get('tokopedia/active', function () {
             'product_id' => array((int)$product->platform('tokopedia')->platform_product_id)
         );
     }
-    
+
     echo json_encode(Tokopedia::setActiveProduct($data, $shop_id));
 });
 
@@ -393,6 +393,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('design', DesignController::class);
     Route::get('design/product/{id}', [DesignController::class, 'designer'])->name('design');
     Route::post('design/product/{id}', [DesignController::class, 'saveDesigner'])->name('design.post');
+    Route::get('design/product/{id}/remove', [DesignController::class, 'removeProduct'])->name('design.remove-product');
 });
 
 Route::prefix('xendit')->group(function () {
