@@ -16,6 +16,10 @@ class MasterProductSku extends Model
 
     protected $guarded = ['id'];
 
+    protected $appends = [
+        'base_cost'
+    ];
+
     #Relation
     function product()
     {
@@ -30,5 +34,10 @@ class MasterProductSku extends Model
     function option_detail2()
     {
         return $this->hasOne('App\Models\MasterProduct\MasterProductOptionDetail', 'key', 'option_detail_key2');
+    }
+
+    public function getBaseCostAttribute()
+    {
+        return $this->production_cost + $this->fulfillment_cost;
     }
 }

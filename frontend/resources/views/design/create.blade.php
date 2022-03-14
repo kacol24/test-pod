@@ -39,7 +39,7 @@
             <div class="col-md">
                 <div class="row"
                      x-data="{
-                        selectedProduct: {}
+                        modalProduct: {}
                      }">
                     <div class="modal fade" id="productViewModal" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
@@ -47,8 +47,8 @@
                                 <div class="modal-body p-0">
                                     <div class="row g-0 m-0">
                                         <div class="col-md-6">
-                                            <img :src="selectedProduct.thumbnail_url"
-                                                 :alt="selectedProduct.title"
+                                            <img :src="modalProduct.thumbnail_url"
+                                                 :alt="modalProduct.title"
                                                  class="img-fluid w-100">
                                         </div>
                                         <div class="col-md-6 position-relative">
@@ -58,16 +58,16 @@
                                             </button>
                                             <div class="p-5 h-100 w-100">
                                                 <h6 class="text-uppercase font-size:12"
-                                                    x-text="selectedProduct.firstcategory_name">
+                                                    x-text="modalProduct.firstcategory_name">
                                                     Category
                                                 </h6>
                                                 <h5 class="modal-title mb-4"
-                                                    x-text="selectedProduct.title">
+                                                    x-text="modalProduct.title">
                                                     Product Title
                                                 </h5>
                                                 <div style="font-weight: 500;line-height: 22px;color: #707A83;"
                                                      class="font-size:14"
-                                                     x-html="selectedProduct.description">
+                                                     x-html="modalProduct.description">
                                                     Description
                                                 </div>
                                                 <a href="" class="btn btn-primary d-inline-flex px-5 mt-4">
@@ -85,7 +85,7 @@
                             <a href="{{ route('design', $product->id) }}" class="product-item">
                                 <div class="card p-0 rounded-0 shadow-sm position-relative">
                                     <div class="position-absolute pe-auto" style="z-index: 1; top: 13px;left: 13px;"
-                                         @click.prevent='selectedProduct = @json($product); $nextTick(function() { productViewModal.show() })'>
+                                         @click.prevent='modalProduct = @json($product); $nextTick(function() { productViewModal.show() })'>
                                         <span
                                             class="badge bg-dark text-white rounded-circle p-0 m-0 d-flex align-items-center justify-content-center"
                                             style="width: 20px;height: 20px;">
