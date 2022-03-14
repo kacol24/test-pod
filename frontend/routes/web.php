@@ -244,6 +244,22 @@ Route::get('tokopedia/reject-order', function () {
     Tokopedia::rejectOrder($data, $order->platform('tokopedia')->platform_order_id);
 });
 
+// Route::get('tokopedia/process-stock', function () {
+//     $order = Order::find(1);
+
+
+//     $checkStock = true;
+//     foreach($order->details as $detail) {
+//         if($detail->product->template_id) {
+
+//         }else {
+//             if($)
+//         }
+//     }
+//     return $checkStock;
+// });
+
+
 Route::get('tokopedia/shipping-label', function () {
     $order = Order::find(1);
     return Tokopedia::shippingLabel($order->platform('tokopedia')->platform_order_id);

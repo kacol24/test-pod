@@ -93,8 +93,15 @@ class TokopediaController extends Controller
                         ));
                     }
                     DB::commit();
-
                     $log->response = 'Success create order: '.$order->id;
+
+                    // if(!$this->processStock($order)) {
+                    //     Tokopedia::rejectOrder(array(
+                    //         'reason_code' => 1,
+                    //         'reason' => 'out of stock'
+                    //     ), $order->platform('tokopedia')->platform_order_id);
+                    // }
+
                 }catch(\Exception $e){
                     DB::rollback();
                     $log->response = 'Error created order';
@@ -108,6 +115,14 @@ class TokopediaController extends Controller
         $log->save();    
         echo $log->response;
     }
+
+    // public function processStock($order) {
+    //     $checkStock = true;
+    //     foreach($order->details as $detail) {
+    //         if($detail->product->)
+    //     }
+    //     return $checkStock;
+    // }
 
     public function status(Request $request) {
         $log = TokopediaLog::create(array(
