@@ -145,7 +145,7 @@
                                                            @focus="sellingPrice = originalSellingPrice; $nextTick(function() { $refs.priceInput.select() })"
                                                            @input.lazy="formattedSellingPrice = number_format(sellingPrice, 0, ',', '.'); originalSellingPrice = sellingPrice"
                                                            @blur="originalSellingPrice = sellingPrice; sellingPrice = formattedSellingPrice">
-                                                    <input type="hidden" name="selling_price[{{ $detail->id }}]" x-model="originalSellingPrice">
+                                                    <input type="hidden" name="selling_price[{{ $detail->key }}]" x-model="originalSellingPrice">
                                                 </td>
                                                 <td class="text-end text-color:green"
                                                     x-text="number_format(originalSellingPrice - sku.base_cost, 0, ',', '.')">
