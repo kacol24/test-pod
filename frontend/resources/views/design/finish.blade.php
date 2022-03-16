@@ -56,6 +56,7 @@
                                         </label>
                                         <div class="d-flex font-size:12">
                                             <a href="{{ route('design.remove-product', $product->id) }}"
+                                               data-confirm="Are you sure you want to remove this product from your list?"
                                                class="text-color:blue text-decoration-none">
                                                 Remove
                                             </a>
