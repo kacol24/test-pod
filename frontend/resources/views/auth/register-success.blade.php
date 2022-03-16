@@ -19,12 +19,6 @@
                 <a href="{{ route('dashboard') }}" class="btn btn-primary">
                     Go to dashboard
                 </a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <a href="#" class="mt-3 text-decoration-none d-inline-block" onclick="this.closest('form').submit()">
-                        {{ __('Log Out') }}
-                    </a>
-                </form>
             </div>
         </div>
     </div>
