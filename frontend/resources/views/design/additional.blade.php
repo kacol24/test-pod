@@ -25,7 +25,8 @@
                     <div class="card-body pb-0" style="max-height: 400px; overflow-y: auto;">
                         <div class="list-group">
                             @foreach($designProducts as $product)
-                                <div class="list-group-item p-3 mb-4 d-flex justify-content-between align-items-center">
+                                <div
+                                    class="list-group-item p-3 mb-4 d-flex justify-content-between align-items-center {{ $designs->pluck('master_product_id')->contains($product->id) ? 'border border-color:black' : '' }}">
                                     <label
                                         class="d-flex align-items-center font-size:14 text-color:black font-weight-normal"
                                         style="font-family: Poppins;font-style: normal">
@@ -40,7 +41,8 @@
                                         {{ $product->title }}
                                     </label>
                                     <div class="d-flex font-size:12">
-                                        <a href="{{ route('design.additional', ['remove' => $product->id]) }}"
+                                        <a href="{{ route('design.remove-product', $product->id) }}"
+                                           data-confirm="Are you sure you want to remove this product from your list?"
                                            class="text-color:blue text-decoration-none">
                                             Remove
                                         </a>
@@ -67,9 +69,10 @@
                                 selected
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100" {{ $designProducts->pluck('id')->diff($designs->pluck('master_product_id'))->count() ? 'disabled' : '' }}>
-                            Save Changes
-                        </button>
+                        <a href="{{ route('design.finish') }}"
+                           class="btn btn-primary w-100 text-white" {{ $designProducts->pluck('id')->diff($designs->pluck('master_product_id'))->count() ? 'disabled' : '' }}>
+                            Continue
+                        </a>
                     </div>
                 </div>
             </div>

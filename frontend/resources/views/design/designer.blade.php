@@ -123,7 +123,7 @@
                                         <tbody>
                                         @php($option = $masterproduct->options->first())
                                         @foreach($option->details as $detail)
-                                            @php($sellingPrice = session('design')->firstWhere('master_product_id', $masterproduct->id)['selling_price'][$detail->id] ?? $detail->relatedSkus($masterproduct->id)->selling_price)
+                                            @php($sellingPrice = session('design')->firstWhere('master_product_id', $masterproduct->id)['selling_price'][$detail->key] ?? $detail->relatedSkus($masterproduct->id)->selling_price)
                                             <tr class="text-nowrap"
                                                 x-data='{
                                                     detail: @json($detail),
@@ -145,7 +145,7 @@
                                                            @focus="sellingPrice = originalSellingPrice; $nextTick(function() { $refs.priceInput.select() })"
                                                            @input.lazy="formattedSellingPrice = number_format(sellingPrice, 0, ',', '.'); originalSellingPrice = sellingPrice"
                                                            @blur="originalSellingPrice = sellingPrice; sellingPrice = formattedSellingPrice">
-                                                    <input type="hidden" name="selling_price[{{ $detail->id }}]" x-model="originalSellingPrice">
+                                                    <input type="hidden" name="selling_price[{{ $detail->key }}]" x-model="originalSellingPrice">
                                                 </td>
                                                 <td class="text-end text-color:green"
                                                     x-text="number_format(originalSellingPrice - sku.base_cost, 0, ',', '.')">
@@ -168,9 +168,9 @@
                                 </a>
                             </div>
                             <input type="hidden" name="master_product_id" value="{{$masterproduct->id}}"/>
-                            <input type="hidden" name="state_id" value=""/>
-                            <input type="hidden" name="print_file" value=""/>
-                            <input type="hidden" name="proof_file" value=""/>
+                            <input type="hidden" name="state_id" value="{{ $existingDesign['state_id'] }}"/>
+                            <input type="hidden" name="print_file" value="{{ $existingDesign['print_file'] }}"/>
+                            <input type="hidden" name="proof_file" value="{{ $existingDesign['proof_file'] }}"/>
                             <button type="button" id="continue" class="btn btn-primary w-100">
                                 Continue
                             </button>
@@ -266,8 +266,8 @@
         var templates = {!!json_encode($templates)!!};
         var mockup_colors = {!!json_encode($masterproduct->mockupcolors)!!};
 
-        @if(session('state_id'))
-            state_id = "{{session('state_id')}}";
+        @if($existingDesign['state_id'])
+            state_id = "{{ $existingDesign['state_id'] }}";
         @endif
 
             @if($masterproduct->colors->count()>0)

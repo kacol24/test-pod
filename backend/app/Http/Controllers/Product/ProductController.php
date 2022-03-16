@@ -174,7 +174,7 @@ class ProductController extends Controller
                 'ratio'           => $template['ratio'],
             ]);
 
-            foreach ($template['design'] as $designIndex => $design) {
+            foreach ($template['design'] ?? [] as $designIndex => $design) {
                 $createDesign = [
                     'page_name'       => $design['page_name'],
                     //'file'                   => $filename,
@@ -220,7 +220,7 @@ class ProductController extends Controller
                 $productTemplate->designs()->create($createDesign);
             }
 
-            foreach ($template['preview'] as $previewIndex => $preview) {
+            foreach ($template['preview'] ?? [] as $previewIndex => $preview) {
                 $createPreview = [
                     //'file'            => $filename,
                     'preview_name'   => $preview['preview_name'],
@@ -523,7 +523,7 @@ class ProductController extends Controller
                 $template = $product->templates()->create($updateTemplate);
             }
 
-            foreach ($templateData['design'] as $designData) {
+            foreach ($templateData['design'] ?? [] as $designData) {
                 $updateDesign = [
                     'file'                   => $designData['file'],
                     'mockup'                 => $designData['mockup'],
@@ -543,7 +543,7 @@ class ProductController extends Controller
                 }
             }
 
-            foreach ($templateData['preview'] as $previewData) {
+            foreach ($templateData['preview'] ?? [] as $previewData) {
                 $updatePreview = [
                     'file'            => $previewData['file'],
                     'preview_name'    => $previewData['preview_name'],
@@ -760,7 +760,7 @@ class ProductController extends Controller
                 if (! $mockupImageUrl) {
                     continue;
                 }
-                
+
                 $mockupImage = file_get_contents($mockupImageUrl);
                 $mockupFilename = substr($mockupImageUrl, strrpos($mockupImageUrl, '=') + 1);
 

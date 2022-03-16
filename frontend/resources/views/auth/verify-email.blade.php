@@ -30,12 +30,6 @@
                         {{ __('Resend Verification Email') }}
                     </button>
                 </form>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <a href="#" class="mt-3 text-decoration-none d-inline-block" onclick="this.closest('form').submit()">
-                        {{ __('Log Out') }}
-                    </a>
-                </form>
             </div>
         </div>
     </div>

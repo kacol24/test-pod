@@ -13,7 +13,7 @@
             </div>
         </a>
         <a href="javascript:void(0);"
-           class="stepper__step {{ request()->routeIs(['design', 'design.additional']) ? 'stepper__step--stepped' : '' }}">
+           class="stepper__step {{ request()->routeIs(['design', 'design.additional', 'design.finish']) ? 'stepper__step--stepped' : '' }}">
             <div class="stepper__numbering">2</div>
             <div class="stepper__step-content">
                 <div class="d-none d-md-block">

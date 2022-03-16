@@ -85,6 +85,7 @@ class DesignController extends Controller
         return view('design.designer', [
             'masterproduct' => $masterproduct,
             'templates'     => $templates,
+            'existingDesign' => optional(session('design')->firstWhere('master_product_id', $masterproduct->id))
         ]);
     }
 
@@ -92,15 +93,11 @@ class DesignController extends Controller
     {
         $request->flash();
 
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'state_id'   => 'required',
             'print_file' => 'required',
             'proof_file' => 'required',
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
 
         $product = MasterProduct::find($id);
 
@@ -132,16 +129,6 @@ class DesignController extends Controller
 
     public function additional(Request $request)
     {
-        if ($request->has('remove')) {
-            session([
-                'design_products' => session('design_products')->filter(function ($design) use ($request) {
-                    return $design->id != $request->remove;
-                }),
-            ]);
-
-            return back();
-        }
-
         if ($request->has('add')) {
             $add = MasterProduct::findOrFail($request->add);
 
@@ -176,11 +163,16 @@ class DesignController extends Controller
 
     public function finish()
     {
-        if (! session('design')) {
+        if (! session('design_products') || !session('design_products')->count()) {
             return redirect()->route('design.create');
         }
 
-        return view('design.finish');
+        $data = [
+            'designs'        => session('design'),
+            'designProducts' => session('design_products'),
+        ];
+
+        return view('design.finish', $data);
     }
 
     public function saving()
@@ -221,67 +213,70 @@ class DesignController extends Controller
                 'is_publish'  => $request->is_publish,
             ]);
 
-            $design_data = json_decode(session('design'));
-            $masterproduct = MasterProduct::find($design_data->master_product_id);
-            $mastertemplate = Template::find($design_data->template);
+            foreach(session('design') as $design_data) {
+                $design_data = json_decode(json_encode($design_data));
+                $masterproduct = MasterProduct::find($design_data->master_product_id);
+                $mastertemplate = Template::find($design_data->template);
 
-            $product = Product::create([
-                'store_id'          => session('current_store')->id,
-                'master_product_id' => $design_data->master_product_id,
-                'design_id'         => $design->id,
-                'title'             => $masterproduct->title." ".$design->title,
-                'description'       => $design->description."\n".$masterproduct->description."\n".$masterproduct->size_chart,
-                'is_publish'        => $request->is_publish,
-            ]);
-
-            foreach ($masterproduct->options as $i => $option) {
-                $productoption = ProductOption::create([
-                    'product_id' => $product->id,
-                    'title'      => $option->title,
+                $product = Product::create([
+                    'store_id'          => session('current_store')->id,
+                    'master_product_id' => $design_data->master_product_id,
+                    'design_id'         => $design->id,
+                    'title'             => $masterproduct->title." ".$design->title,
+                    'description'       => $design->description."\n".$masterproduct->description."\n".$masterproduct->size_chart,
+                    'is_publish'        => $request->is_publish,
                 ]);
 
-                if ($masterproduct->options->count() == 2) {
-                    foreach ($option->details as $detail) {
-                        if ($i == 0 || ($i == 1 && in_array($detail->key, $design_data->variants))) {
-                            ProductOptionDetail::create([
-                                'option_id' => $productoption->id,
-                                'title'     => $detail->title,
-                                'key'       => $detail->key,
-                            ]);
+                foreach ($masterproduct->options as $i => $option) {
+                    $productoption = ProductOption::create([
+                        'product_id' => $product->id,
+                        'title'      => $option->title,
+                    ]);
+
+                    if ($masterproduct->options->count() == 2) {
+                        foreach ($option->details as $detail) {
+                            if ($i == 0 || ($i == 1 && in_array($detail->key, $design_data->variants))) {
+                                ProductOptionDetail::create([
+                                    'option_id' => $productoption->id,
+                                    'title'     => $detail->title,
+                                    'key'       => $detail->key,
+                                ]);
+                            }
                         }
                     }
                 }
-            }
 
-            foreach ($masterproduct->skuvariants($design_data->variants) as $sku) {
-                ProductSku::create([
-                    'product_id'         => $product->id,
-                    'option_detail_key1' => $sku->option_detail_key1,
-                    'option_detail_key2' => $sku->option_detail_key2,
-                    'sku_code'           => $sku->sku_code."-".$design->sku_code,
-                    'stock'              => 0,
-                    'price'              => 50000 + $mastertemplate->price, #perlu di adjust dari harga designer
-                    'weight'             => $sku->weight,
-                    'width'              => $sku->width,
-                    'length'             => $sku->length,
-                    'height'             => $sku->height,
+                foreach ($masterproduct->skuvariants($design_data->variants) as $sku) {
+                    ProductSku::create([
+                        'product_id'         => $product->id,
+                        'option_detail_key1' => $sku->option_detail_key1,
+                        'option_detail_key2' => $sku->option_detail_key2,
+                        'sku_code'           => $sku->sku_code."-".$design->sku_code,
+                        'stock'              => 0,
+                        'price'              => $design_data->selling_price->{$sku->option_detail_key1} + $mastertemplate->price, #perlu di adjust dari harga designer
+                        'weight'             => $sku->weight,
+                        'width'              => $sku->width,
+                        'length'             => $sku->length,
+                        'height'             => $sku->height,
+                    ]);
+                }
+
+                $editor = ProductEditor::create([
+                    'product_id'  => $product->id,
+                    'template_id' => $design_data->template,
+                    'state_id'    => $design_data->state_id,
+                    'print_file'  => $design_data->print_file,
+                    'proof_file'  => $design_data->proof_file,
                 ]);
+
+                $response = $this->generateImage($product, $masterproduct, $editor);
+                if ($response['status'] == 'error') {
+                    return redirect()->back()->with('error', $response['message']);
+                }
+
+                //$this->applyAllProduct($request->apply_products, $design, $editor, $request);
             }
 
-            $editor = ProductEditor::create([
-                'product_id'  => $product->id,
-                'template_id' => $design_data->template,
-                'state_id'    => $design_data->state_id,
-                'print_file'  => $design_data->print_file,
-                'proof_file'  => $design_data->proof_file,
-            ]);
-
-            $response = $this->generateImage($product, $masterproduct, $editor);
-            if ($response['status'] == 'error') {
-                return redirect()->back()->with('error', $response['message']);
-            }
-
-            $this->applyAllProduct($request->apply_products, $design, $editor, $request);
             DB::commit();
 
             return redirect()->route('design.saved');
@@ -463,5 +458,19 @@ class DesignController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function removeProduct($id)
+    {
+        session([
+            'design'          => session('design')->filter(function ($design) use ($id) {
+                return $design['master_product_id'] != $id;
+            }),
+            'design_products' => session('design_products')->filter(function ($design) use ($id) {
+                return $design->id != $id;
+            }),
+        ]);
+
+        return back();
     }
 }
