@@ -85,6 +85,7 @@ class DesignController extends Controller
         return view('design.designer', [
             'masterproduct' => $masterproduct,
             'templates'     => $templates,
+            'existingDesign' => optional(session('design')->firstWhere('master_product_id', $masterproduct->id))
         ]);
     }
 

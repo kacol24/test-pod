@@ -168,9 +168,9 @@
                                 </a>
                             </div>
                             <input type="hidden" name="master_product_id" value="{{$masterproduct->id}}"/>
-                            <input type="hidden" name="state_id" value=""/>
-                            <input type="hidden" name="print_file" value=""/>
-                            <input type="hidden" name="proof_file" value=""/>
+                            <input type="hidden" name="state_id" value="{{ $existingDesign['state_id'] }}"/>
+                            <input type="hidden" name="print_file" value="{{ $existingDesign['print_file'] }}"/>
+                            <input type="hidden" name="proof_file" value="{{ $existingDesign['proof_file'] }}"/>
                             <button type="button" id="continue" class="btn btn-primary w-100">
                                 Continue
                             </button>
@@ -266,8 +266,8 @@
         var templates = {!!json_encode($templates)!!};
         var mockup_colors = {!!json_encode($masterproduct->mockupcolors)!!};
 
-        @if(session('state_id'))
-            state_id = "{{session('state_id')}}";
+        @if($existingDesign['state_id'])
+            state_id = "{{ $existingDesign['state_id'] }}";
         @endif
 
             @if($masterproduct->colors->count()>0)
