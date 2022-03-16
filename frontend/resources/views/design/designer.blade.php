@@ -123,7 +123,7 @@
                                         <tbody>
                                         @php($option = $masterproduct->options->first())
                                         @foreach($option->details as $detail)
-                                            @php($sellingPrice = session('design')->firstWhere('master_product_id', $masterproduct->id)['selling_price'][$detail->id] ?? $detail->relatedSkus($masterproduct->id)->selling_price)
+                                            @php($sellingPrice = session('design')->firstWhere('master_product_id', $masterproduct->id)['selling_price'][$detail->key] ?? $detail->relatedSkus($masterproduct->id)->selling_price)
                                             <tr class="text-nowrap"
                                                 x-data='{
                                                     detail: @json($detail),
