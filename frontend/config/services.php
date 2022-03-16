@@ -43,5 +43,13 @@ return [
         'live_app_id' => '',
         'live_client_id' => '',
         'live_client_secret' => ''
+    ],
+
+    'shopee' => [
+        'staging_partner_id' => 1006410,
+        'staging_key' => '0f35d2cd57f7554d5a1f6cd5115081314b4cbfc9c530853d7aa0e20438c84c23',
+        'live_auth_url' => '',
+        'live_partner_id' => 1006410,
+        'live_key' => '0f35d2cd57f7554d5a1f6cd5115081314b4cbfc9c530853d7aa0e20438c84c23',
     ]
 ];

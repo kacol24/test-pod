@@ -20,12 +20,47 @@ use App\Http\Controllers\TokopediaController;
 */
 
 use App\Library\Facades\Tokopedia;
+use App\Library\Facades\Shopee;
 use App\Models\Product\Product;
 use App\Models\Product\ProductPlatform;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\TokopediaLog;
 use App\Models\Order\Order;
+use App\Models\StorePlatform;
+
+
+Route::get('shopee/auth', function () {
+    if(!session('current_store')) {
+        return redirect()->route('login');
+    }
+    return redirect()->to(Shopee::authUrl());
+});
+
+Route::get('shopee/create-product', function () {
+    echo Shopee::refreshToken(44235);
+});
+
+Route::get('shopee/callback', function (Request $request) {
+    if(!session('current_store')) {
+        return redirect()->route('login');
+    }
+    $resp = Shopee::getToken($request->code, $request->shop_id);
+    if($resp['message']) {
+        echo $resp['message'];
+        // return redirect()->to('store')->with('error', $resp['message']);
+    }else if(isset($resp['access_token'])) {
+        StorePlatform::create(array(
+            'store_id' => session('current_store')->id,
+            'platform' => 'shopee',
+            'platform_store_id' => $request->shop_id,
+            'access_token' => $resp['access_token'],
+            'refresh_token' => $resp['refresh_token']
+        ));
+        // return redirect()->to('store');
+    }
+})->name('shopee.callback');
+
 
 Route::post('webhook/tokopedia/orders', [TokopediaController::class, 'order']);
 Route::post('webhook/tokopedia/status', [TokopediaController::class, 'status']);
@@ -311,52 +346,6 @@ Route::get('tokopedia/delete-product', function () {
         'product_id' => array(3152419729)
     );
     echo json_encode(Tokopedia::deleteProduct($data, $shop_id));
-});
-
-Route::get('tokopedia/update-price', function () {
-    $shop_id = 13403511;
-    $product = Product::find(8);
-
-    $data = array();
-    if($product->skus->count()>1) {
-        foreach($product->skus as $sku) {
-            $data[] = array(
-                'sku' => $sku->sku_code,
-                'new_price' => $sku->price
-            );
-        }
-    }else {
-        $sku = $product->firstsku();
-        $data[] = array(
-            'product_id' => (int) $product->platform('tokopedia')->platform_product_id,
-            'new_price' => $sku->price
-        );
-    }
-
-    echo json_encode(Tokopedia::setPrice($data, $shop_id));
-});
-
-Route::get('tokopedia/update-stock', function () {
-    $shop_id = 13403511;
-    $product = Product::find(8);
-
-    $data = array();
-    if($product->skus->count()>1) {
-        foreach($product->skus as $sku) {
-            $data[] = array(
-                'sku' => $sku->sku_code,
-                'new_stock' => $sku->stock($product)
-            );
-        }
-    }else {
-        $sku = $product->firstsku();
-        $data[] = array(
-            'product_id' => (int) $product->platform('tokopedia')->platform_product_id,
-            'new_stock' => $sku->stock($product)
-        );
-    }
-
-    echo json_encode(Tokopedia::setStock($data, $shop_id));
 });
 
 Route::get('/', function () {
