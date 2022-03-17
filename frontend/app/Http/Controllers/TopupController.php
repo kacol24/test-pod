@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class TopupController extends Controller
 {
-    const REF_PREFIX = 'arterous_';
+    const REF_PREFIX = 'arterous_'; // max 20 characters
 
     public function index(Request $request)
     {
