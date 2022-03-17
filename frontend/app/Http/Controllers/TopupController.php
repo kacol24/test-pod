@@ -52,12 +52,14 @@ class TopupController extends Controller
 
         \DB::beginTransaction();
         try {
-            $topup = Topup::create([
+            $create = [
                 'store_id' => $storeId,
                 'ref_id'   => self::REF_PREFIX.Str::random(40),
                 'total'    => $request->amount,
                 'payment'  => $request->payment_method,
-            ]);
+            ];
+
+            $topup = Topup::create($create);
 
             $paymentChannel = Arr::first(config('payment.xendit.channels'), function ($item) use ($topup) {
                 return $item['display_name'] == $topup->payment;
