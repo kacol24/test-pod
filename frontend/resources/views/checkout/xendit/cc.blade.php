@@ -22,9 +22,11 @@
             </dd>
         </dl>
         <hr>
-        <x-alert icon class="font-size:12">
+        <x-alert icon class="font-size:12"
+                 x-data="countdown(new Date('{{ $order->created_at->addDays(1)->toDateTimeString() }}'))"
+                 x-init="init();">
             Please make payment before: {{ $order->created_at->addDays(1)->format('l, j F Y H:i') }}<br>
-            23 hours : 10 minutes : 8 seconds
+            <span x-text="time().hours">00</span> hours : <span x-text="time().minutes">00</span> minutes : <span x-text="time().seconds">00</span> seconds
         </x-alert>
         <form action="{{ route('xendit.cc', ['order_id' => $order->id]) }}" id="paymentForm" method="post"
               @submit.prevent="submitForm($event)">
@@ -263,5 +265,57 @@
                 }
             }));
         });
+    </script>
+    <script>
+        function countdown(expiry) {
+            return {
+                expiry: expiry,
+                remaining: null,
+                init() {
+                    this.setRemaining()
+                    setInterval(() => {
+                        this.setRemaining();
+                    }, 1000);
+                },
+                setRemaining() {
+                    const diff = this.expiry - new Date().getTime();
+                    this.remaining = parseInt(diff / 1000);
+                },
+                days() {
+                    return {
+                        value: this.remaining / 86400,
+                        remaining: this.remaining % 86400
+                    };
+                },
+                hours() {
+                    return {
+                        value: this.days().remaining / 3600,
+                        remaining: this.days().remaining % 3600
+                    };
+                },
+                minutes() {
+                    return {
+                        value: this.hours().remaining / 60,
+                        remaining: this.hours().remaining % 60
+                    };
+                },
+                seconds() {
+                    return {
+                        value: this.minutes().remaining,
+                    };
+                },
+                format(value) {
+                    return ("0" + parseInt(value)).slice(-2)
+                },
+                time() {
+                    return {
+                        days: this.format(this.days().value),
+                        hours: this.format(this.hours().value),
+                        minutes: this.format(this.minutes().value),
+                        seconds: this.format(this.seconds().value),
+                    }
+                },
+            }
+        }
     </script>
 @endpush
