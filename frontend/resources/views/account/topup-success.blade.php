@@ -16,7 +16,7 @@
                     IDR {{ $orderable->formatted_total }}
                 </strong>
             </div>
-            <a href="" class="btn btn-primary w-100 mt-3">
+            <a href="{{ route('mywallet') }}" class="btn btn-primary w-100 mt-3">
                 Back to dashboard
             </a>
         </div>
