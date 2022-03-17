@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 
 class TopupController extends Controller
 {
+    const REF_PREFIX = 'arterous_';
+
     public function index(Request $request)
     {
         abort_if(! $request->has('order_id'), 404, 'Order not found.');
@@ -49,7 +51,7 @@ class TopupController extends Controller
 
         $topup = Topup::create([
             'store_id' => $storeId,
-            'ref_id'   => Str::random(60),
+            'ref_id'   => self::REF_PREFIX . Str::random(40),
             'total'    => $request->amount,
             'payment'  => $request->payment_method,
         ]);
