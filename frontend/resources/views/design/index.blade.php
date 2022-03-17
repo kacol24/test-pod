@@ -155,4 +155,20 @@
 
 @push('scripts')
     <script src="{{asset('backend/js/list.js')}}"></script>
+    <script src="//embed.typeform.com/next/embed.js"></script>
+    <div class="modal fade" id="orderSampleModal" tabindex="-1" aria-labelledby="orderSampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div data-tf-widget="SSrMYJMX" data-tf-hide-headers
+                         data-tf-iframe-props="title=ARTEROUS - Product Sample Order Form"
+                         data-tf-medium="snippet" data-tf-hidden="user_email={{ auth()->user()->email }},user_name={{ auth()->user()->name }}"
+                         style="width:100%;height:400px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endpush
