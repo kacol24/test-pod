@@ -391,9 +391,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::prefix('xendit')->group(function () {
     Route::post('notify-ewallet', [XenditWebhookController::class, 'notifyEwallet'])
          ->name('xendit.notifyewallet');
-    Route::post('xendit/notify-va-created', [XenditWebhookController::class, 'notifyVACreated'])
+    Route::post('notify-va-created', [XenditWebhookController::class, 'notifyVACreated'])
          ->name('xendit.notifyvacreated');
-    Route::post('xendit/notify-va-paid', [XenditWebhookController::class, 'notifyVAPaid'])
+    Route::post('notify-va-paid', [XenditWebhookController::class, 'notifyVAPaid'])
          ->name('xendit.notifyvapaid');
 });
 
