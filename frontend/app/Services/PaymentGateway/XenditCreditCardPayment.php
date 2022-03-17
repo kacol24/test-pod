@@ -27,7 +27,11 @@ class XenditCreditCardPayment extends XenditPaymentGateway
             $chargeLog->response = json_encode($charge);
             $chargeLog->save();
         } catch (ApiException $e) {
-            $chargeLog->response = 'There is already a credit card charge with that external id';
+            $chargeLog->response = json_encode([
+                'errorCode' => $e->getErrorCode(),
+                'message'   => $e->getMessage(),
+                'code'      => $e->getCode(),
+            ]);
             $chargeLog->save();
 
             return false;
