@@ -434,7 +434,15 @@ class DesignController extends Controller
      */
     public function edit($id)
     {
-        return view('design.edit');
+        $design = ProductDesign::findOrFail($id);
+
+        $data = [
+            'design'         => $design,
+            'designProducts' => $design->products,
+            'masterproduct' => $design->products
+        ];
+
+        return view('design.edit', $data);
     }
 
     /**

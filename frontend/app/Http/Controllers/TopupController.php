@@ -8,9 +8,12 @@ use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Xendit\Exceptions\ApiException;
 
 class TopupController extends Controller
 {
+    const REF_PREFIX = 'arterous_'; // max 20 characters
+
     public function index(Request $request)
     {
         abort_if(! $request->has('order_id'), 404, 'Order not found.');
@@ -47,21 +50,39 @@ class TopupController extends Controller
     {
         $storeId = session(Store::SESSION_KEY)->id;
 
-        $topup = Topup::create([
-            'store_id' => $storeId,
-            'ref_id'   => Str::random(60),
-            'total'    => $request->amount,
-            'payment'  => $request->payment_method,
-        ]);
+        \DB::beginTransaction();
+        try {
+            $create = [
+                'store_id' => $storeId,
+                'ref_id'   => self::REF_PREFIX.Str::random(40),
+                'total'    => $request->amount,
+                'payment'  => $request->payment_method,
+            ];
 
-        $paymentChannel = Arr::first(config('payment.xendit.channels'), function ($item) use ($topup) {
-            return $item['display_name'] == $topup->payment;
-        });
+            $topup = Topup::create($create);
 
-        if ($paymentChannel['type'] == PaymentService::TYPE_VA) {
-            $paymentService = new PaymentService($paymentChannel['type'], $topup, $request->all());
-            $paymentService->charge($topup->total);
+            $paymentChannel = Arr::first(config('payment.xendit.channels'), function ($item) use ($topup) {
+                return $item['display_name'] == $topup->payment;
+            });
+
+            if ($paymentChannel['type'] == PaymentService::TYPE_VA) {
+                $paymentService = new PaymentService($paymentChannel['type'], $topup, $request->all());
+                $paymentService->charge($topup->total);
+            }
+        } catch (ApiException $e) {
+            \DB::rollback();
+
+            switch ($e->getErrorCode()) {
+                case 'BANK_NOT_SUPPORTED_ERROR':
+                    $errorMessage = 'Selected virtual account bank ('. $paymentChannel['display_name'] .') is not supported, please choose another bank.';
+                    break;
+                default:
+                    $errorMessage = 'Whoops! Something went wrong. Topup failed.';
+            }
+
+            return back()->withError($errorMessage);
         }
+        \DB::commit();
 
         return redirect()->route('topup', ['order_id' => $topup->serial_number]);
     }

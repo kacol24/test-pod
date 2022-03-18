@@ -13,6 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'webhook/tokopedia/orders',
-        'webhook/tokopedia/status'
+        'webhook/tokopedia/status',
+        'xendit/notify-*',
     ];
 }

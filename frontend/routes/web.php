@@ -3,6 +3,7 @@
 use App\Http\Controllers\Account\SwitchStoreController;
 use App\Http\Controllers\Account\WalletController;
 use App\Http\Controllers\DesignController;
+use App\Http\Controllers\DesignProductController;
 use App\Http\Controllers\TopupController;
 use App\Http\Controllers\Xendit\XenditController;
 use App\Http\Controllers\Xendit\XenditWebhookController;
@@ -494,14 +495,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('design/product/{id}', [DesignController::class, 'designer'])->name('design');
     Route::post('design/product/{id}', [DesignController::class, 'saveDesigner'])->name('design.post');
     Route::get('design/product/{id}/remove', [DesignController::class, 'removeProduct'])->name('design.remove-product');
+    Route::get('design/{design}/product/{product}/edit', [DesignProductController::class, 'edit'])->name('design.product.edit');
+    Route::post('design/{design}/product/{product}/edit', [DesignProductController::class, 'update']);
 });
 
 Route::prefix('xendit')->group(function () {
     Route::post('notify-ewallet', [XenditWebhookController::class, 'notifyEwallet'])
          ->name('xendit.notifyewallet');
-    Route::post('xendit/notify-va-created', [XenditWebhookController::class, 'notifyVACreated'])
+    Route::post('notify-va-created', [XenditWebhookController::class, 'notifyVACreated'])
          ->name('xendit.notifyvacreated');
-    Route::post('xendit/notify-va-paid', [XenditWebhookController::class, 'notifyVAPaid'])
+    Route::post('notify-va-paid', [XenditWebhookController::class, 'notifyVAPaid'])
          ->name('xendit.notifyvapaid');
 });
 

@@ -2,6 +2,11 @@
 
 @section('content')
     <div class="container">
+        @if (session('error'))
+            <x-alert type="danger" dismissible icon>
+                {{ session('error') }}
+            </x-alert>
+        @endif
         <div class="row">
             <div class="col-md-4">
                 <div class="card p-0 sticky-top mb-4 account-sidebar" style="top: 85px;">

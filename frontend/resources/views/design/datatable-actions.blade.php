@@ -1,6 +1,6 @@
-{{--<a href="" class="btn btn-default d-inline-flex me-3">--}}
-{{--    Order A Sample--}}
-{{--</a>--}}
+<a href="#" class="btn btn-default d-inline-flex me-3" data-bs-toggle="modal" data-bs-target="#orderSampleModal">
+    Order A Sample
+</a>
 {{--<a class="text-color:icon no-underline me-3" href="javascript:void(0)">--}}
 {{--    <i class="fas fa-fw fa-download"></i>--}}
 {{--</a>--}}

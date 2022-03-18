@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Xendit;
 
 use App\Http\Controllers\Controller;
 use App\Models\Topup;
+use App\Scopes\CurrentStoreScope;
 use Illuminate\Http\Request;
 use Xendit\EWallets;
 use Xendit\Exceptions\ApiException;
@@ -71,8 +72,10 @@ class XenditWebhookController extends Controller
 
     function notifyVAPaid(Request $request)
     {
-        $topup = Topup::where('ref_if', $request->input('external_id'))->first();
-        $paymentRef = $topup->ref_id;
+        $topup = Topup::withoutGlobalScope(CurrentStoreScope::class)
+                      ->where('ref_id', $request->input('external_id'))
+                      ->first();
+        $paymentRef = $topup;
         if ($paymentRef) {
             try {
                 $va = VirtualAccounts::getFVAPayment($request->input('payment_id'));
@@ -95,14 +98,15 @@ class XenditWebhookController extends Controller
             } catch (ApiException $e) {
                 $response = '1,Invalid Callback,,,';
             }
-            $topup->paymentLogs()->create([
-                'type'     => 'vapaid',
-                'request'  => json_encode($request->all()),
-                'response' => $response,
-            ]);
         } else {
             $response = '1,Invalid Payment Ref,,,';
         }
+
+        $topup->paymentLogs()->create([
+            'type'     => 'vapaid',
+            'request'  => json_encode($request->all()),
+            'response' => $response,
+        ]);
 
         echo $response;
     }

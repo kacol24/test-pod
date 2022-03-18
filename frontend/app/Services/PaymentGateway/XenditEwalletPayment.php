@@ -26,7 +26,7 @@ class XenditEwalletPayment extends XenditPaymentGateway
             'channel_code'    => $ewalletChannel['bank_code'],
         ];
 
-        if ($this->orderable->payment == self::CHANNEL_CODE_OVO) {
+        if ($this->orderable->payment == 'OVO') {
             $properties = [
                 'mobile_number' => $this->hp($this->request['phone']),
             ];
