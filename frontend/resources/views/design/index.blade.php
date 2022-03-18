@@ -25,7 +25,7 @@
 
             <div class="row justify-content-between">
                 <div class="col-5 col-md-auto d-none d-md-flex align-items-center">
-                    <h1 class="page-title m-0">{{ __('My Products') }} </h1>
+                    <h1 class="page-title m-0">{{ __('My Designs') }} </h1>
                 </div>
                 <div class="col col-md-auto">
                     <div class="row align-items-center justify-content-end">

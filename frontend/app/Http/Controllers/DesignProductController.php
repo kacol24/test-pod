@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product\Product;
 use App\Models\Product\ProductDesign;
+use App\Models\Product\ProductSku;
 use Illuminate\Http\Request;
 
 class DesignProductController extends Controller
@@ -27,6 +28,30 @@ class DesignProductController extends Controller
 
     public function update(Request $request, $designId, $productId)
     {
-        dd($request->all());
+        $product = Product::findOrFail($productId);
+
+        \DB::beginTransaction();
+        $product->editor()->update([
+            'template_id' => $request->template,
+            'state_id'    => $request->state_id,
+            'print_file'  => $request->print_file,
+            'proof_file'  => $request->proof_file,
+        ]);
+        ProductSku::ofProduct($product->id)->delete();
+        ProductSku::ofProduct($product->id)->whereIn('option_detail_key2', $request->variants)->restore();
+
+        foreach ($request->selling_price as $key => $price) {
+            ProductSku::ofProduct($product->id)
+                      ->where('option_detail_key1', $key)
+                      ->restore();
+            ProductSku::ofProduct($product->id)
+                      ->where('option_detail_key1', $key)
+                      ->update([
+                          'price' => $price,
+                      ]);
+        }
+        \DB::commit();
+
+        return redirect()->route('design.edit', $designId);
     }
 }

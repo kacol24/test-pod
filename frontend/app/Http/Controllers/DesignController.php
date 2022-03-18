@@ -454,7 +454,13 @@ class DesignController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $design = ProductDesign::findOrFail($id);
+        $design->update([
+            'title'       => $request->title,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('design.index')->withStatus('Success edit design');
     }
 
     /**

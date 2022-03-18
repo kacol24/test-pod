@@ -16,7 +16,7 @@ class ProductSku extends Model
     #Relation
     function product()
     {
-        return $this->hasOne('App\Models\Product\Product', 'id', 'product_id')->withTrashed();
+        return $this->hasOne('App\Models\Product\Product', 'id', 'product_id');
     }
 
     function option_detail1()
@@ -27,6 +27,11 @@ class ProductSku extends Model
     function option_detail2()
     {
         return $this->hasOne('App\Models\Product\ProductOptionDetail', 'key', 'option_detail_key2');
+    }
+
+    public function scopeOfProduct($query, $productId)
+    {
+        return $query->where('product_id', $productId);
     }
 
     function getCombinationVariant($selections) {
