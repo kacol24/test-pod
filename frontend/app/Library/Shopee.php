@@ -221,6 +221,45 @@ class Shopee {
     }
   }
 
+  public function updateStock($shop_id, $input) {
+    $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
+    $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/update_stock" : "https://partner.test-stable.shopeemobile.com/api/v2/product/update_stock";
+
+    if($platform) {
+      $time = time();
+      $sign = hash_hmac('sha256', $this->partner_id."/api/v2/product/update_stock".$time.$platform->access_token.$shop_id , $this->key);
+      $url = $url."?timestamp=".$time."&partner_id=".$this->partner_id."&sign=".$sign."&shop_id=".$shop_id."&access_token=".$platform->access_token;
+
+      $log = ShopeeLog::create(array(
+        "type" => "update_stock",
+        "request" => json_encode(array_merge($input, array("url" => $url))),
+        "response" => null
+      ));
+
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HEADER => true,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => json_encode($input),
+        CURLOPT_HTTPHEADER => array(
+          "Content-Type: application/json",
+        )
+      ));
+
+      $resp = curl_exec($curl);
+      return $this->handleResponse($log, $curl, $resp, 'update_stock', $shop_id , $input);
+    }else {
+      $log = ShopeeLog::create(array(
+        "type" => "update_stock",
+        "request" => json_encode($input),
+        "response" => json_encode(array("status" => "error", "message" => "Aunthorized access"))
+      ));
+    }
+  }
+
   public function getModel($shop_id, $input) {
     $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
     $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/get_model_list" : "https://partner.test-stable.shopeemobile.com/api/v2/product/get_model_list";
@@ -499,6 +538,8 @@ class Shopee {
         return $this->getModel($shop_id, $input);
       }else if($action == 'update_price') {
         return $this->updatePrice($shop_id, $input);
+      }else if($action == 'update_stock') {
+        return $this->updateStock($shop_id, $input);
       }
     }
       

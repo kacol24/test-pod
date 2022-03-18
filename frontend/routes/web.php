@@ -75,7 +75,7 @@ Route::get('shopee/update-product', function () {
     }
 
     if(session('current_store')->platform('shopee')) {
-        $product = Product::where('store_id', session('current_store')->id)->where('id',8)->first();
+        $product = Product::where('store_id', session('current_store')->id)->where('id',11)->first();
         $sku = $product->firstsku();
         $shop_id = (int)session('current_store')->platform('shopee')->platform_store_id;
         $images = array();
@@ -92,7 +92,7 @@ Route::get('shopee/update-product', function () {
             "description" => $product->description,
             'category_id' => (int)$product->masterproduct->shopee_category_id,
             'original_price' => $sku->price,
-            'normal_stock' => $sku->stock,
+            'normal_stock' => $sku->stock($product),
             "image" => array(
                 "image_id_list" => $images
             ),
@@ -123,7 +123,7 @@ Route::get('shopee/update-product', function () {
             ),
         );
 
-        // Shopee::updateProduct($shop_id, $data);
+        Shopee::updateProduct($shop_id, $data);
         
         $variant = array("item_id" => (int) $product->platform('shopee')->platform_product_id);
         if($product->skus->count()>1) {
@@ -153,46 +153,53 @@ Route::get('shopee/update-product', function () {
             }
 
             $variant['tier_variation'] = $tier_variation;
-            // Shopee::updateVariant($shop_id, $variant);
+            Shopee::updateVariant($shop_id, $variant);
 
             $models = Shopee::getModel((int)session('current_store')->platform('shopee')->platform_store_id, (int) $product->platform('shopee')->platform_product_id);
 
             if($models['error']== "") {
-                $updateModel = array();
                 $priceList = array();
+                $stockList = array();
                 foreach($models['response']['model'] as $model) {
                     $sku = $product->skus->where('sku_code', $model['model_sku'])->first();
-                    $updateModel[] = array(
-                        "model_id" => $model['model_id'],
-                        "model_sku" => $sku->sku_code,
-                        "original_price" => $sku->price+9999
-                    );
 
                     $priceList[] = array(
                         "model_id" => $model['model_id'],
-                        "original_price" => $sku->price+5000
+                        "original_price" => $sku->price
+                    );
+
+                    $stockList[] = array(
+                        "model_id" => $model['model_id'],
+                        "normal_stock" => $sku->stock($product)
                     );
                 }
 
-                // Shopee::updatePrice($shop_id, array(
-                //     "item_id" => (int) $product->platform('shopee')->platform_product_id,
-                //     "price_list" => $priceList
-                // ));
-
-                Shopee::updateModel($shop_id, array(
+                Shopee::updatePrice($shop_id, array(
                     "item_id" => (int) $product->platform('shopee')->platform_product_id,
-                    "model" => $updateModel
+                    "price_list" => $priceList
+                ));
+
+                Shopee::updatestock($shop_id, array(
+                    "item_id" => (int) $product->platform('shopee')->platform_product_id,
+                    "stock_list" => $stockList
                 ));
             }
-            // $model = array();
-            // foreach($product->skus as $i => $sku) {
-            //     $model[] = array(
-            //         "original_price" => $sku->price,
-            //         "model_sku" => $sku->sku_code,
-            //         "normal_stock" => $sku->stock($product),
-            //         "tier_index" => $sku->getCombinationVariant($selection)
-            //     );
-            // }
+        }else {
+            Shopee::updatePrice($shop_id, array(
+                "item_id" => (int) $product->platform('shopee')->platform_product_id,
+                "price_list" => array(array(
+                    "model_id" => 0,
+                    "original_price" => $sku->price
+                ))
+            ));
+
+            Shopee::updatestock($shop_id, array(
+                "item_id" => (int) $product->platform('shopee')->platform_product_id,
+                "stock_list" => array(array(
+                    "model_id" => 0,
+                    "normal_stock" => $sku->stock($product)
+                ))
+            ));
         }
     }
 });
@@ -219,7 +226,7 @@ Route::get('shopee/create-product', function () {
             "description" => $product->description,
             'category_id' => (int)$product->masterproduct->shopee_category_id,
             'original_price' => $sku->price,
-            'normal_stock' => $sku->stock,
+            'normal_stock' => $sku->stock($product),
             "image" => array(
                 "image_id_list" => $images
             ),
