@@ -62,6 +62,42 @@ class Shopee {
     }
   }
 
+  public function updateProduct($shop_id, $input) {
+    $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
+    $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/update_item" : "https://partner.test-stable.shopeemobile.com/api/v2/product/update_item";
+
+    $time = time();
+    $sign = hash_hmac('sha256', $this->partner_id."/api/v2/product/update_item".$time.$platform->access_token.$shop_id , $this->key);
+
+    $log = ShopeeLog::create(array(
+      "type" => "update_product",
+      "request" => json_encode(array_merge($input, array('sign' => $sign, "shop_id" => $shop_id, "time" => $time))),
+      "response" => null
+    ));
+
+    if($platform) {
+      $url = $url."?timestamp=".$time."&partner_id=".$this->partner_id."&sign=".$sign."&shop_id=".$shop_id."&access_token=".$platform->access_token;
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HEADER => true,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => json_encode($input),
+        CURLOPT_HTTPHEADER => array(
+          "Content-Type: application/json",
+        )
+      ));
+
+      $resp = curl_exec($curl);
+      return $this->handleResponse($log, $curl, $resp, 'update_product', $shop_id , $input);
+    }else {
+      $log->response = json_encode(array("status" => "error", "message" => "Aunthorized access"));
+      $log->save();
+    }
+  }
+
   public function createVariant($shop_id, $input) {
     $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
     if($platform) {
@@ -249,6 +285,8 @@ class Shopee {
         return $this->createProduct($shop_id, $data);
       }else if($action == 'create_variant') {
         return $this->createVariant($shop_id, $data);
+      }else if($action == 'update_product') {
+        return $this->updateProduct($shop_id, $data);
       }
     }
       

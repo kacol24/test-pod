@@ -42,6 +42,7 @@ class Product extends Model
 
     function store() {
         return $this->hasOne('App\Models\Store','id','store_id');
+    }
 
     public function editor()
     {
