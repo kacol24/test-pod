@@ -28,17 +28,16 @@ class Shopee {
 
   public function createProduct($shop_id, $input) {
     $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
-    if($platform) {
-      $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/add_item" : "https://partner.test-stable.shopeemobile.com/api/v2/product/add_item";
+    $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/add_item" : "https://partner.test-stable.shopeemobile.com/api/v2/product/add_item";
 
+    if($platform) {
       $time = time();
       $sign = hash_hmac('sha256', $this->partner_id."/api/v2/product/add_item".$time.$platform->access_token.$shop_id , $this->key);
-
       $url = $url."?timestamp=".$time."&partner_id=".$this->partner_id."&sign=".$sign."&shop_id=".$shop_id."&access_token=".$platform->access_token;
 
       $log = ShopeeLog::create(array(
         "type" => "create_product",
-        "request" => json_encode(array_merge($input, array('url' => $url))),
+        "request" => json_encode(array_merge($input, array("url" => $url))),
         "response" => null
       ));
 
@@ -58,7 +57,11 @@ class Shopee {
       $resp = curl_exec($curl);
       return $this->handleResponse($log, $curl, $resp, 'create_product', $shop_id , $input);
     }else {
-      return array("status" => "error", "message" => "Aunthorized access");  
+      $log = ShopeeLog::create(array(
+        "type" => "create_product",
+        "request" => json_encode($input),
+        "response" => json_encode(array("status" => "error", "message" => "Aunthorized access"))
+      ));
     }
   }
 
@@ -66,17 +69,17 @@ class Shopee {
     $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
     $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/update_item" : "https://partner.test-stable.shopeemobile.com/api/v2/product/update_item";
 
-    $time = time();
-    $sign = hash_hmac('sha256', $this->partner_id."/api/v2/product/update_item".$time.$platform->access_token.$shop_id , $this->key);
-
-    $log = ShopeeLog::create(array(
-      "type" => "update_product",
-      "request" => json_encode(array_merge($input, array('sign' => $sign, "shop_id" => $shop_id, "time" => $time))),
-      "response" => null
-    ));
-
     if($platform) {
+      $time = time();
+      $sign = hash_hmac('sha256', $this->partner_id."/api/v2/product/update_item".$time.$platform->access_token.$shop_id , $this->key);
       $url = $url."?timestamp=".$time."&partner_id=".$this->partner_id."&sign=".$sign."&shop_id=".$shop_id."&access_token=".$platform->access_token;
+
+      $log = ShopeeLog::create(array(
+        "type" => "update_product",
+        "request" => json_encode(array_merge($input, array("url" => $url))),
+        "response" => null
+      ));
+
       $curl = curl_init();
       curl_setopt_array($curl, array(
         CURLOPT_URL => $url,
@@ -93,16 +96,95 @@ class Shopee {
       $resp = curl_exec($curl);
       return $this->handleResponse($log, $curl, $resp, 'update_product', $shop_id , $input);
     }else {
-      $log->response = json_encode(array("status" => "error", "message" => "Aunthorized access"));
-      $log->save();
+      $log = ShopeeLog::create(array(
+        "type" => "update_product",
+        "request" => json_encode($input),
+        "response" => json_encode(array("status" => "error", "message" => "Aunthorized access"))
+      ));
+    }
+  }
+
+  public function updateVariant($shop_id, $input) {
+    $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
+    $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/update_tier_variation" : "https://partner.test-stable.shopeemobile.com/api/v2/product/update_tier_variation";
+
+    if($platform) {
+      $time = time();
+      $sign = hash_hmac('sha256', $this->partner_id."/api/v2/product/update_tier_variation".$time.$platform->access_token.$shop_id , $this->key);
+      $url = $url."?timestamp=".$time."&partner_id=".$this->partner_id."&sign=".$sign."&shop_id=".$shop_id."&access_token=".$platform->access_token;
+
+      $log = ShopeeLog::create(array(
+        "type" => "update_variant",
+        "request" => json_encode(array_merge($input, array("url" => $url))),
+        "response" => null
+      ));
+
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HEADER => true,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => json_encode($input),
+        CURLOPT_HTTPHEADER => array(
+          "Content-Type: application/json",
+        )
+      ));
+
+      $resp = curl_exec($curl);
+      return $this->handleResponse($log, $curl, $resp, 'update_variant', $shop_id , $input);
+    }else {
+      $log = ShopeeLog::create(array(
+        "type" => "update_variant",
+        "request" => json_encode($input),
+        "response" => json_encode(array("status" => "error", "message" => "Aunthorized access"))
+      ));
+    }
+  }
+
+  public function listItem($shop_id, $input) {
+    $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
+    $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/unlist_item" : "https://partner.test-stable.shopeemobile.com/api/v2/product/unlist_item";
+    if($platform) {
+      $time = time();
+      $sign = hash_hmac('sha256', $this->partner_id."/api/v2/product/unlist_item".$time.$platform->access_token.$shop_id , $this->key);
+      $url = $url."?timestamp=".$time."&partner_id=".$this->partner_id."&sign=".$sign."&shop_id=".$shop_id."&access_token=".$platform->access_token;
+
+      $log = ShopeeLog::create(array(
+        "type" => "list_item",
+        "request" => json_encode(array_merge($input, array("url" => $url))),
+        "response" => null
+      ));
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HEADER => true,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => json_encode($input),
+        CURLOPT_HTTPHEADER => array(
+          "Content-Type: application/json",
+        )
+      ));
+
+      $resp = curl_exec($curl);
+      return $this->handleResponse($log, $curl, $resp, 'list_item', $shop_id , $input);
+    }else {
+      $log = ShopeeLog::create(array(
+        "type" => "list_item",
+        "request" => json_encode($input),
+        "response" => json_encode(array("status" => "error", "message" => "Aunthorized access"))
+      ));
     }
   }
 
   public function createVariant($shop_id, $input) {
     $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
-    if($platform) {
-      $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/init_tier_variation" : "https://partner.test-stable.shopeemobile.com/api/v2/product/init_tier_variation";
+    $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/init_tier_variation" : "https://partner.test-stable.shopeemobile.com/api/v2/product/init_tier_variation";
 
+    if($platform) {
       $time = time();
       $sign = hash_hmac('sha256', $this->partner_id."/api/v2/product/init_tier_variation".$time.$platform->access_token.$shop_id , $this->key);
 
@@ -110,7 +192,7 @@ class Shopee {
 
       $log = ShopeeLog::create(array(
         "type" => "create_variant",
-        "request" => json_encode(array_merge($input, array('url' => $url))),
+        "request" => json_encode(array_merge($input, array("url" => $url))),
         "response" => null
       ));
 
@@ -130,7 +212,11 @@ class Shopee {
       $resp = curl_exec($curl);
       return $this->handleResponse($log, $curl, $resp, 'create_variant', $shop_id , $input);
     }else {
-      return array("status" => "error", "message" => "Aunthorized access");  
+      $log = ShopeeLog::create(array(
+        "type" => "create_variant",
+        "request" => json_encode($input),
+        "response" => json_encode(array("status" => "error", "message" => "Aunthorized access"))
+      ));
     }
   }
 
@@ -255,7 +341,7 @@ class Shopee {
       
   }
 
-  function handleResponse($log, $curl, $resp, $action, $shop_id, $data = array()) {
+  function handleResponse($log, $curl, $resp, $action, $shop_id, $input = array()) {
     $err = curl_error($curl);
     $log->response = $resp;
     $log->save();
@@ -282,11 +368,15 @@ class Shopee {
         $this->refreshToken($shop_id);
       }
       if($action == 'create_product') {
-        return $this->createProduct($shop_id, $data);
+        return $this->createProduct($shop_id, $input);
       }else if($action == 'create_variant') {
-        return $this->createVariant($shop_id, $data);
+        return $this->createVariant($shop_id, $input);
       }else if($action == 'update_product') {
-        return $this->updateProduct($shop_id, $data);
+        return $this->updateProduct($shop_id, $input);
+      }else if($action == 'list_item') {
+        return $this->listItem($shop_id, $input);
+      }else if($action == 'update_variant') {
+        return $this->updateVariant($shop_id, $input);
       }
     }
       

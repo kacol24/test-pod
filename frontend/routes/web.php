@@ -31,6 +31,43 @@ use App\Models\Order\Order;
 use App\Models\StorePlatform;
 use App\Models\Store;
 
+Route::get('shopee/unpublish-product', function () {
+    if(!session('current_store')) {
+        return redirect()->route('login');
+    }
+
+    if(session('current_store')->platform('shopee')) {
+        $product = Product::find(8);
+
+        Shopee::listItem((int)session('current_store')->platform('shopee')->platform_store_id, array(
+            "item_list" => array(
+                array(
+                    "item_id" => (int) $product->platform('shopee')->platform_product_id,
+                    "unlist" => true
+                )
+            )
+        ));
+    } 
+});
+
+Route::get('shopee/publish-product', function () {
+    if(!session('current_store')) {
+        return redirect()->route('login');
+    }
+
+    if(session('current_store')->platform('shopee')) {
+        $product = Product::find(8);
+
+        Shopee::listItem((int)session('current_store')->platform('shopee')->platform_store_id, array(
+            "item_list" => array(
+                array(
+                    "item_id" => (int) $product->platform('shopee')->platform_product_id,
+                    "unlist" => false
+                )
+            )
+        ));
+    } 
+});
 
 Route::get('shopee/update-product', function () {
     if(!session('current_store')) {
@@ -201,7 +238,7 @@ Route::get('shopee/create-product', function () {
         $response = Shopee::createProduct((int)session('current_store')->platform('shopee')->platform_store_id, $data);
         echo json_encode($response);
         if(isset($response['response']['item_id'])) {
-            ProductPlatform::firstOrCreate(array(
+            ProductPlatform::create(array(
                 'product_id' => $product->id,
                 'platform' => 'shopee',
                 'platform_product_id' => $response['response']['item_id']
