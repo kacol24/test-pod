@@ -11,11 +11,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endforeach
-        <div class="row mt-4">
-            <div class="col-md-4">
-                <form id="form-design" method="post"
-                      action="{{route('design.product.edit', [$design->id, $product->id])}}">
-                    {{ csrf_field() }}
+        <form id="form-design" method="post" action="{{route('design.product.edit', [$design->id, $product->id])}}">
+            {{ csrf_field() }}
+            <div class="row mt-4">
+                <div class="col-md-4">
                     <div class="p-3 p-md-4" style="background: #F6F7F9;">
                         <div class="card p-0">
                             <div class="card-header d-flex align-items-center justify-content-between">
@@ -30,7 +29,7 @@
                                 <div class="row">
                                     <div class="col-md">
                                         <select name="template" class="form-control">
-                                            @foreach($masterproduct->templates as $template)
+                                            @foreach($templates as $template)
                                                 <option value="{{$template->id}}">{{$template->design_name}}</option>
                                             @endforeach
                                         </select>
@@ -39,10 +38,11 @@
                             </div>
                         </div>
 
-                        @php($option = $masterproduct->options->reverse()->first())
+                        @php($option = $product->options->reverse()->first())
                         <div class="card p-0 mt-3"
                              x-data='{
                                 variants: @json($option->details->pluck('key')),
+                                variantsCount: {{ $option->details->count() }},
                                 selectAll: true,
                                 toggleSelectAll: function() {
                                     if (this.selectAll) {
@@ -75,8 +75,9 @@
                                             <div
                                                 class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" name="variants[]" checked="checked"
-                                                           type="checkbox" value="{{$detail->key}}" x-model="variants"
+                                                    <input class="form-check-input" name="variants[]" type="checkbox"
+                                                           @change="variants.length < variantsCount ? selectAll = false : selectAll = true"
+                                                           value="{{$detail->key}}" x-model="variants"
                                                            id="{{$detail->key}}">
                                                     <label class="form-check-label" for="{{$detail->key}}">
                                                         {{$detail->title}}
@@ -118,14 +119,14 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @php($option = $masterproduct->options->first())
+                                        @php($option = $product->options->first())
                                         @foreach($option->details as $detail)
                                             @foreach($skus->where('option_detail_key1', $detail->key)->unique('option_detail_key1') as $sku)
                                                 @php($sellingPrice = $sku->price)
                                                 <tr class="text-nowrap"
                                                     x-data='{
                                                     detail: @json($detail),
-                                                    sku: @json($detail->relatedSkus($masterproduct->id)),
+                                                    sku: @json($detail->relatedSkus($product->id)),
                                                     sellingPrice: "{{ number_format($sellingPrice, 0, ',', '.') }}",
                                                     originalSellingPrice: "{{ $sellingPrice }}",
                                                     formattedSellingPrice: "{{ number_format($sellingPrice, 0, ',', '.') }}"
@@ -134,7 +135,7 @@
                                                         {{ $detail->title }}
                                                     </th>
                                                     <td class="text-end">
-                                                        {{ number_format($detail->relatedSkus($masterproduct->id)->base_cost, 0, ',', '.') }}
+                                                        {{ number_format($detail->relatedSkus($product->id)->product->masterproduct->base_cost, 0, ',', '.') }}
                                                     </td>
                                                     <td>
                                                         <input type="tel" class="form-control text-end"
@@ -147,7 +148,7 @@
                                                                x-model="originalSellingPrice">
                                                     </td>
                                                     <td class="text-end text-color:green"
-                                                        x-text="number_format(originalSellingPrice - sku.base_cost, 0, ',', '.')">
+                                                        x-text="number_format(originalSellingPrice - {{ $detail->relatedSkus($product->id)->product->masterproduct->base_cost }}, 0, ',', '.')">
                                                         100,000
                                                     </td>
                                                 </tr>
@@ -167,7 +168,7 @@
                                     Back
                                 </a>
                             </div>
-                            <input type="hidden" name="master_product_id" value="{{$masterproduct->id}}"/>
+                            <input type="hidden" name="master_product_id" value="{{$product->id}}"/>
                             <input type="hidden" name="state_id" value="{{ $existingDesign['state_id'] }}"/>
                             <input type="hidden" name="print_file" value="{{ $existingDesign['print_file'] }}"/>
                             <input type="hidden" name="proof_file" value="{{ $existingDesign['proof_file'] }}"/>
@@ -176,42 +177,42 @@
                             </button>
                         </div>
                     </div>
-                </form>
-            </div>
-            @if($masterproduct->colors->count()>0)
-                <div class="col-md">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card p-0 h-100">
-                                <div class="card-header d-flex align-items-center justify-content-between">
-                                    <h5 class="card-title d-inline-block">
-                                        Product Colors
-                                    </h5>
-                                </div>
-                                <div class="card-body p-3">
-                                    <div class="row">
-                                        @foreach($masterproduct->colors as $color)
-                                            <div class="col-md-6 mb-4">
-                                                <a href="javascript:void(0);"
-                                                   class="d-flex align-items-center color-option"
-                                                   data-id="{{$color->id}}">
+                </div>
+                @if($masterproduct->colors->count() > 0)
+                    <div class="col-md">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card p-0 h-100">
+                                    <div class="card-header d-flex align-items-center justify-content-between">
+                                        <h5 class="card-title d-inline-block">
+                                            Product Colors
+                                        </h5>
+                                    </div>
+                                    <div class="card-body p-3">
+                                        <div class="row">
+                                            @foreach($masterproduct->colors as $color)
+                                                <div class="col-md-6 mb-4">
+                                                    <a href="javascript:void(0);"
+                                                       class="d-flex align-items-center color-option"
+                                                       data-id="{{$color->id}}">
                                                     <span class="color-display"
                                                           style="background-color:{{$color->color}};"></span>
-                                                    {{$color->name}}
-                                                </a>
-                                            </div>
-                                        @endforeach
+                                                        {{$color->name}}
+                                                    </a>
+                                                </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-8">
+                                <iframe class="content__iframe" id="editorFrame"></iframe>
+                            </div>
+                            @endif
                         </div>
-                        <div class="col-md-8">
-                            <iframe class="content__iframe" id="editorFrame"></iframe>
-                        </div>
-                        @endif
                     </div>
-                </div>
-        </div>
+            </div>
+        </form>
     </div>
 @endsection
 @push('scripts')
@@ -270,7 +271,7 @@
             state_id = "{{ $existingDesign['state_id'] }}";
         @endif
 
-            @if($masterproduct->colors->count()>0)
+        @if($masterproduct->colors->count() > 0)
             color_id = {{$masterproduct->colors->first()->id}};
         @endif
 
