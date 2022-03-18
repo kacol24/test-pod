@@ -143,6 +143,122 @@ class Shopee {
     }
   }
 
+  public function updateModel($shop_id, $input) {
+    $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
+    $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/update_model" : "https://partner.test-stable.shopeemobile.com/api/v2/product/update_model";
+
+    if($platform) {
+      $time = time();
+      $sign = hash_hmac('sha256', $this->partner_id."/api/v2/product/update_model".$time.$platform->access_token.$shop_id , $this->key);
+      $url = $url."?timestamp=".$time."&partner_id=".$this->partner_id."&sign=".$sign."&shop_id=".$shop_id."&access_token=".$platform->access_token;
+
+      $log = ShopeeLog::create(array(
+        "type" => "update_model",
+        "request" => json_encode(array_merge($input, array("url" => $url))),
+        "response" => null
+      ));
+
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HEADER => true,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => json_encode($input),
+        CURLOPT_HTTPHEADER => array(
+          "Content-Type: application/json",
+        )
+      ));
+
+      $resp = curl_exec($curl);
+      return $this->handleResponse($log, $curl, $resp, 'update_model', $shop_id , $input);
+    }else {
+      $log = ShopeeLog::create(array(
+        "type" => "update_model",
+        "request" => json_encode($input),
+        "response" => json_encode(array("status" => "error", "message" => "Aunthorized access"))
+      ));
+    }
+  }
+
+  public function updatePrice($shop_id, $input) {
+    $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
+    $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/update_price" : "https://partner.test-stable.shopeemobile.com/api/v2/product/update_price";
+
+    if($platform) {
+      $time = time();
+      $sign = hash_hmac('sha256', $this->partner_id."/api/v2/product/update_price".$time.$platform->access_token.$shop_id , $this->key);
+      $url = $url."?timestamp=".$time."&partner_id=".$this->partner_id."&sign=".$sign."&shop_id=".$shop_id."&access_token=".$platform->access_token;
+
+      $log = ShopeeLog::create(array(
+        "type" => "update_price",
+        "request" => json_encode(array_merge($input, array("url" => $url))),
+        "response" => null
+      ));
+
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HEADER => true,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => json_encode($input),
+        CURLOPT_HTTPHEADER => array(
+          "Content-Type: application/json",
+        )
+      ));
+
+      $resp = curl_exec($curl);
+      return $this->handleResponse($log, $curl, $resp, 'update_price', $shop_id , $input);
+    }else {
+      $log = ShopeeLog::create(array(
+        "type" => "update_price",
+        "request" => json_encode($input),
+        "response" => json_encode(array("status" => "error", "message" => "Aunthorized access"))
+      ));
+    }
+  }
+
+  public function getModel($shop_id, $input) {
+    $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
+    $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/get_model_list" : "https://partner.test-stable.shopeemobile.com/api/v2/product/get_model_list";
+
+    if($platform) {
+      $time = time();
+      $sign = hash_hmac('sha256', $this->partner_id."/api/v2/product/get_model_list".$time.$platform->access_token.$shop_id , $this->key);
+      $url = $url."?timestamp=".$time."&partner_id=".$this->partner_id."&sign=".$sign."&shop_id=".$shop_id."&access_token=".$platform->access_token."&item_id=".$input;
+
+      $log = ShopeeLog::create(array(
+        "type" => "get_model_list",
+        "request" => json_encode(array("url" => $url)),
+        "response" => null
+      ));
+
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HEADER => true,
+        CURLOPT_CUSTOMREQUEST => "GET",
+        CURLOPT_HTTPHEADER => array(
+          "Content-Type: application/json",
+        )
+      ));
+
+      $resp = curl_exec($curl);
+      return $this->handleResponse($log, $curl, $resp, 'get_model_list', $shop_id , $input);
+    }else {
+      $log = ShopeeLog::create(array(
+        "type" => "get_model_list",
+        "request" => $input,
+        "response" => json_encode(array("status" => "error", "message" => "Aunthorized access"))
+      ));
+    }
+  }
+
   public function listItem($shop_id, $input) {
     $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
     $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/unlist_item" : "https://partner.test-stable.shopeemobile.com/api/v2/product/unlist_item";
@@ -377,6 +493,12 @@ class Shopee {
         return $this->listItem($shop_id, $input);
       }else if($action == 'update_variant') {
         return $this->updateVariant($shop_id, $input);
+      }else if($action == 'update_model') {
+        return $this->updateModel($shop_id, $input);
+      }else if($action == 'get_model_list') {
+        return $this->getModel($shop_id, $input);
+      }else if($action == 'update_price') {
+        return $this->updatePrice($shop_id, $input);
       }
     }
       
