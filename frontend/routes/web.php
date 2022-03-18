@@ -50,6 +50,20 @@ Route::get('shopee/unpublish-product', function () {
     } 
 });
 
+Route::get('shopee/delete-product', function () {
+    if(!session('current_store')) {
+        return redirect()->route('login');
+    }
+
+    if(session('current_store')->platform('shopee')) {
+        $product = Product::where('store_id', session('current_store')->id)->where('id',11)->first();
+        Shopee::deleteProduct((int)session('current_store')->platform('shopee')->platform_store_id, array(
+            "item_id" => (int) $product->platform('shopee')->platform_product_id
+        ));
+        ProductPlatform::where('platform_product_id', (int) $product->platform('shopee')->platform_product_id)->delete();
+    } 
+});
+
 Route::get('shopee/publish-product', function () {
     if(!session('current_store')) {
         return redirect()->route('login');
@@ -621,11 +635,11 @@ Route::get('tokopedia/active', function () {
 });
 
 Route::get('tokopedia/delete-product', function () {
-    $shop_id = 13403511;
-    $data = array(
-        'product_id' => array(3152419729)
-    );
-    echo json_encode(Tokopedia::deleteProduct($data, $shop_id));
+    $product = Product::where('store_id', session('current_store')->id)->where('id',8)->first();
+    echo json_encode(Tokopedia::deleteProduct(array(
+        'product_id' => array((int) $product->platform('tokopedia')->platform_product_id)
+    ), (int)session('current_store')->platform('tokopedia')->platform_store_id));
+    ProductPlatform::where('platform_product_id', (int) $product->platform('tokopedia')->platform_product_id)->delete();
 });
 
 Route::get('/', function () {
