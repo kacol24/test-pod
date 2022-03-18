@@ -46,9 +46,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'create_product', $input , $shop_id);    
-
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'create_product', $input , $shop_id);    
   }
 
   public function updateProduct($input, $shop_id) {
@@ -78,9 +76,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'update_product', $input , $shop_id);    
-
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'update_product', $input , $shop_id);    
   }
 
   public function setPrice($input, $shop_id) {
@@ -110,9 +106,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'price', $input , $shop_id);    
-
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'price', $input , $shop_id);    
   }
 
   public function setStock($input, $shop_id) {
@@ -142,9 +136,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'stock', $input , $shop_id);    
-
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'stock', $input , $shop_id);    
   }
 
   public function setActiveProduct($input, $shop_id) {
@@ -174,9 +166,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'active_product', $input , $shop_id);    
-
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'active_product', $input , $shop_id);    
   }
 
   public function deleteProduct($input, $shop_id) {
@@ -206,9 +196,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'delete_product', $input , $shop_id);    
-
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'delete_product', $input , $shop_id);    
   }
 
   public function setInactiveProduct($input, $shop_id) {
@@ -238,9 +226,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'inactive_product', $input , $shop_id);    
-
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'inactive_product', $input , $shop_id);    
   }
 
   public function getCategories() {
@@ -267,8 +253,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'category');    
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'category');    
   }
 
   public function getProduct($product_id) {
@@ -295,8 +280,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'get_product', $product_id);    
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'get_product', $product_id);    
   }
 
   public function getVariant($category_id) {
@@ -323,8 +307,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'get_variant', $category_id);    
-    return $resp['data'];
+    return $this->handleResponse($log, $curl, $resp, 'get_variant', $category_id);    
   }
 
   public function getToken() {
@@ -457,9 +440,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'accept_order', $order_id);    
-
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'accept_order', $order_id);    
   }
 
   public function rejectOrder($input, $order_id) {
@@ -489,9 +470,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'reject_order', $input, $order_id);    
-
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'reject_order', $input, $order_id);    
   }
 
   public function requestPickup($input) {
@@ -521,9 +500,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'request_pickup', $input);    
-
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'request_pickup', $input);    
   }
 
   public function confirmShipping($input, $order_id) {
@@ -553,9 +530,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'confirm_shipping', $input, $order_id);    
-
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'confirm_shipping', $input, $order_id);    
   }
 
   public function getOrder($order_id) {
@@ -582,8 +557,7 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'get_order', $order_id);    
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'get_order', $order_id);    
   }
 
   public function shippingLabel($order_id) {
@@ -610,7 +584,6 @@ class Tokopedia {
     ));
 
     $resp = curl_exec($curl);
-    $resp = $this->handleResponse($log, $curl, $resp, 'shipping_label', $order_id);    
-    return $resp;
+    return $this->handleResponse($log, $curl, $resp, 'shipping_label', $order_id);    
   }
 }

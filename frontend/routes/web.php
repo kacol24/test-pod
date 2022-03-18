@@ -28,6 +28,7 @@ use Illuminate\Http\Request;
 use App\Models\TokopediaLog;
 use App\Models\Order\Order;
 use App\Models\StorePlatform;
+use App\Models\Store;
 
 
 Route::get('shopee/auth', function () {
@@ -38,7 +39,115 @@ Route::get('shopee/auth', function () {
 });
 
 Route::get('shopee/create-product', function () {
-    echo Shopee::refreshToken(44235);
+    if(!session('current_store')) {
+        return redirect()->route('login');
+    }
+
+    if(session('current_store')->platform('shopee')) {
+        $product = Product::find(8);
+        $sku = $product->firstsku();
+
+        $images = array();
+        foreach($product->images as $image) {
+            // Storage::url('public/products/'.$image->image) #pake image ini
+            $resp = Shopee::uploadImage("https://ecs7.tokopedia.net/img/cache/700/product-1/2017/9/27/5510391/5510391_9968635e-a6f4-446a-84d0-ff3a98a5d4a2.jpg"); #perlu di ganti image product
+            if($resp['message'] == "success") {
+                $images[] = $resp['response']['image_info']['image_id'];
+            }
+        }
+        $data = array(
+            "item_name" => $product->title,
+            "description" => $product->description,
+            'category_id' => (int)$product->masterproduct->shopee_category_id,
+            'original_price' => $sku->price,
+            'normal_stock' => $sku->stock,
+            "image" => array(
+                "image_id_list" => $images
+            ),
+            "item_sku" => $sku->sku_code,
+            "dimension" => array(
+                "package_height" => $sku->height,
+                "package_length" => $sku->length,
+                "package_width" => $sku->width,
+            ),
+            "logistic_info" => array(
+                array(
+                    "logistic_id" => 80014,
+                    "enabled" => true
+                ),
+                array(
+                    "logistic_id" => 80005,
+                    "enabled" => true
+                )
+            ),
+            "weight" => round($sku->weight/1000,2),
+            'brand' => array(
+                "brand_id" => 0,
+                "original_brand_name" => $product->store->storename
+            ),
+            "pre_order" => array(
+                "is_pre_order" => true,
+                "days_to_ship" => $product->masterproduct->production_time + $product->masterproduct->fulfillment_time
+            ),
+        );
+
+        $response = Shopee::createProduct((int)session('current_store')->platform('shopee')->platform_store_id, $data);
+        echo json_encode($response);
+        if(isset($response['response']['item_id'])) {
+            ProductPlatform::firstOrCreate(array(
+                'product_id' => $product->id,
+                'platform' => 'shopee',
+                'platform_product_id' => $response['response']['item_id']
+            ));
+
+            $variant = array("item_id" => $response['response']['item_id']);
+            if($product->skus->count()>1) {
+                $selection = array();
+                $tier_variation = array();
+                foreach($product->options as $option) {
+                    $options = array();
+                    $option_list = array();
+                    foreach($option->details as $detail) {
+                        $options[] = array(
+                            'value' => $detail->title,
+                        );
+                        $option_list[] = array(
+                            'option' => $detail->title
+                        );
+                        
+                    }
+                    $selection[] = array(
+                        'name' => $option->title,
+                        'options' => $options
+                    );
+
+                    $tier_variation[] = array(
+                        "name" => $option->title,
+                        "option_list" => $option_list
+                    );
+                }
+
+                $model = array();
+                foreach($product->skus as $i => $sku) {
+                    $model[] = array(
+                        "original_price" => $sku->price,
+                        "model_sku" => $sku->sku_code,
+                        "normal_stock" => $sku->stock($product),
+                        "tier_index" => $sku->getCombinationVariant($selection)
+                    );
+                }
+
+                foreach($selection as $i => $select) {
+                    unset($select['name']);
+                    $selection[$i] = $select;
+                }
+                $variant['tier_variation'] = $tier_variation;
+                $variant['model'] = $model;
+
+                echo json_encode(Shopee::createVariant((int)session('current_store')->platform('shopee')->platform_store_id, $variant));        
+            }
+        }
+    }
 });
 
 Route::get('shopee/callback', function (Request $request) {
@@ -50,13 +159,15 @@ Route::get('shopee/callback', function (Request $request) {
         echo $resp['message'];
         // return redirect()->to('store')->with('error', $resp['message']);
     }else if(isset($resp['access_token'])) {
-        StorePlatform::create(array(
+        $platform = StorePlatform::firstOrcreate(array(
             'store_id' => session('current_store')->id,
             'platform' => 'shopee',
             'platform_store_id' => $request->shop_id,
-            'access_token' => $resp['access_token'],
-            'refresh_token' => $resp['refresh_token']
         ));
+
+        $platform->access_token = $resp['access_token'];
+        $platform->refresh_token = $resp['refresh_token'];
+        $platform->save();
         // return redirect()->to('store');
     }
 })->name('shopee.callback');
@@ -84,7 +195,7 @@ Route::get('tokopedia/create-product', function () {
         "status" => "LIMITED",
         "stock" => $sku->stock($product),
         "min_order" => 1,
-        "category_id" => 562, #need update
+        "category_id" => $product->masterproduct->tokopedia_category_id, #need update
         "dimension" => array(
             "height" => $sku->height,
             "width" => $sku->width,
@@ -170,7 +281,7 @@ Route::get('tokopedia/update-product', function () {
 
     $images = array();
     foreach($product->images as $image) {
-        // $images[] = array('file_path' => asset(Storage::url('public/products/'.$image->image)));
+        // $images[] = array('file_path' => Storage::url('public/products/'.$image->image));
         $images[] = array('file_path' => "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/9/27/5510391/5510391_9968635e-a6f4-446a-84d0-ff3a98a5d4a2.jpg");
     }
     $sku = $product->firstsku();
@@ -181,10 +292,10 @@ Route::get('tokopedia/update-product', function () {
         "description" => $product->description,
         "sku" => $sku->sku_code,
         "price" => $sku->price,
-        "status" => "LIMITED",
+        "status" => ($product->is_publish) ? "LIMITED" : "EMPTY",
         "stock" => $sku->stock($product),
         "min_order" => 1,
-        "category_id" => 562, #need update
+        "category_id" => $product->masterproduct->tokopedia_category_id, #need update
         "dimension" => array(
             "height" => $sku->height,
             "width" => $sku->width,

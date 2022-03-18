@@ -26,6 +26,78 @@ class Shopee {
     return $url."?timestamp=".$time."&partner_id=".$this->partner_id."&sign=".$sign."&redirect=".route('shopee.callback');
   }
 
+  public function createProduct($shop_id, $input) {
+    $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
+    if($platform) {
+      $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/add_item" : "https://partner.test-stable.shopeemobile.com/api/v2/product/add_item";
+
+      $time = time();
+      $sign = hash_hmac('sha256', $this->partner_id."/api/v2/product/add_item".$time.$platform->access_token.$shop_id , $this->key);
+
+      $url = $url."?timestamp=".$time."&partner_id=".$this->partner_id."&sign=".$sign."&shop_id=".$shop_id."&access_token=".$platform->access_token;
+
+      $log = ShopeeLog::create(array(
+        "type" => "create_product",
+        "request" => json_encode(array_merge($input, array('url' => $url))),
+        "response" => null
+      ));
+
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HEADER => true,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => json_encode($input),
+        CURLOPT_HTTPHEADER => array(
+          "Content-Type: application/json",
+        )
+      ));
+
+      $resp = curl_exec($curl);
+      return $this->handleResponse($log, $curl, $resp, 'create_product', $shop_id , $input);
+    }else {
+      return array("status" => "error", "message" => "Aunthorized access");  
+    }
+  }
+
+  public function createVariant($shop_id, $input) {
+    $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
+    if($platform) {
+      $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/product/init_tier_variation" : "https://partner.test-stable.shopeemobile.com/api/v2/product/init_tier_variation";
+
+      $time = time();
+      $sign = hash_hmac('sha256', $this->partner_id."/api/v2/product/init_tier_variation".$time.$platform->access_token.$shop_id , $this->key);
+
+      $url = $url."?timestamp=".$time."&partner_id=".$this->partner_id."&sign=".$sign."&shop_id=".$shop_id."&access_token=".$platform->access_token;
+
+      $log = ShopeeLog::create(array(
+        "type" => "create_variant",
+        "request" => json_encode(array_merge($input, array('url' => $url))),
+        "response" => null
+      ));
+
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HEADER => true,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => json_encode($input),
+        CURLOPT_HTTPHEADER => array(
+          "Content-Type: application/json",
+        )
+      ));
+
+      $resp = curl_exec($curl);
+      return $this->handleResponse($log, $curl, $resp, 'create_variant', $shop_id , $input);
+    }else {
+      return array("status" => "error", "message" => "Aunthorized access");  
+    }
+  }
+
   public function getToken($code, $shop_id) {
     $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/auth/token/get" : "https://partner.test-stable.shopeemobile.com/api/v2/auth/token/get";
 
@@ -83,22 +155,129 @@ class Shopee {
 
   public function refreshToken($shop_id) {
     $platform = StorePlatform::where('platform','shopee')->where('platform_store_id', $shop_id)->first();
-    $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/auth/access_token/get" : "https://partner.test-stable.shopeemobile.com/api/v2/auth/access_token/get";
+    if($platform) {
+      $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/auth/access_token/get" : "https://partner.test-stable.shopeemobile.com/api/v2/auth/access_token/get";
+
+      $time = time();
+      $sign = hash_hmac('sha256', $this->partner_id."/api/v2/auth/access_token/get".$time , $this->key);
+
+      $input = array(
+        'refresh_token' => $platform->refresh_token,
+        'shop_id' => (int) $shop_id,
+        'partner_id' => $this->partner_id
+      );
+
+      $url = $url."?timestamp=".$time."&partner_id=".$this->partner_id."&sign=".$sign;
+
+      $log = ShopeeLog::create(array(
+        "type" => "refresh_token",
+        "request" => json_encode(array_merge($input, array('url' => $url))),
+        "response" => null
+      ));
+
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HEADER => true,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => json_encode($input),
+        CURLOPT_HTTPHEADER => array(
+          "Content-Type: application/json",
+        )
+      ));
+
+      $resp = curl_exec($curl);
+      $log->response = $resp;
+      $log->save();
+
+      $headers=array();
+      $data=explode("\n",$resp);
+      $headers['status']=$data[0];
+      array_shift($data);
+      foreach($data as $part){
+        $middle=explode(":",$part);
+        if(isset($middle[1])) {
+          $headers[strtolower(trim($middle[0]))] = trim($middle[1]);
+        }
+      }
+
+      $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+      curl_close($curl);
+      $response = json_decode(substr($resp, $header_size),true);
+      if(isset($response['access_token'])) {
+        $platform->access_token = $response['access_token'];
+        $platform->refresh_token = $response['refresh_token'];
+        $platform->save();
+      }else if($response['error'] == "error_auth"){
+        $platform->delete();
+      }
+    }else {
+      return array("status" => "error", "message" => "Aunthorized access");  
+    }
+      
+  }
+
+  function handleResponse($log, $curl, $resp, $action, $shop_id, $data = array()) {
+    $err = curl_error($curl);
+    $log->response = $resp;
+    $log->save();
+    $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    
+    $headers=array();
+    $data=explode("\n",$resp);
+    $headers['status']=$data[0];
+    array_shift($data);
+    foreach($data as $part){
+      $middle=explode(":",$part);
+      if(isset($middle[1])) {
+        $headers[strtolower(trim($middle[0]))] = trim($middle[1]);
+      }
+    }
+
+    $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+    curl_close($curl);
+    $response = json_decode(substr($resp, $header_size),true);
+
+    if(in_array($httpcode, array(401,403)) && $this->retry==0) {
+      $this->retry = 1;
+      if(isset($response['message']) && $response['message'] == 'Invalid access_token.') {
+        $this->refreshToken($shop_id);
+      }
+      if($action == 'create_product') {
+        return $this->createProduct($shop_id, $data);
+      }else if($action == 'create_variant') {
+        return $this->createVariant($shop_id, $data);
+      }
+    }
+      
+    if($httpcode == 200) {
+      return $response;  
+    }else {
+      if(isset($response['message'])) {
+        return array("status" => "error", "message" => $response['message']);  
+      }elseif(isset($response['meta']['message'])) {
+        return array("status" => "error", "message" => $response['meta']['hint']);  
+      }
+      
+    }
+  }
+
+  public function uploadImage($image) {
+    $url = (env('APP_ENV') == 'production') ? "https://partner.shopeemobile.com/api/v2/media_space/upload_image" : "https://partner.test-stable.shopeemobile.com/api/v2/media_space/upload_image";
 
     $time = time();
-    $sign = hash_hmac('sha256', $this->partner_id."/api/v2/auth/access_token/get".$time , $this->key);
+    $sign = hash_hmac('sha256', $this->partner_id."/api/v2/media_space/upload_image".$time , $this->key);
 
-    $input = array(
-      'refresh_token' => $platform->refresh_token,
-      'shop_id' => (int) $shop_id,
-      'partner_id' => $this->partner_id
-    );
+
+    $post = ["image" => curl_file_create($image)];
 
     $url = $url."?timestamp=".$time."&partner_id=".$this->partner_id."&sign=".$sign;
 
     $log = ShopeeLog::create(array(
-      "type" => "refresh_token",
-      "request" => json_encode(array_merge($input, array('url' => $url))),
+      "type" => "upload_image",
+      "request" => json_encode(array_merge($post, array('url' => $url))),
       "response" => null
     ));
 
@@ -109,10 +288,7 @@ class Shopee {
       CURLOPT_TIMEOUT => 30,
       CURLOPT_HEADER => true,
       CURLOPT_CUSTOMREQUEST => "POST",
-      CURLOPT_POSTFIELDS => json_encode($input),
-      CURLOPT_HTTPHEADER => array(
-        "Content-Type: application/json",
-      )
+      CURLOPT_POSTFIELDS => $post,
     ));
 
     $resp = curl_exec($curl);
@@ -133,52 +309,7 @@ class Shopee {
     $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
     curl_close($curl);
     $response = json_decode(substr($resp, $header_size),true);
-    if(isset($response['access_token'])) {
-        $platform->access_token = $response['access_token'];
-        $platform->refresh_token = $response['refresh_token'];
-        $platform->save();
-    }
+
+    return $response;
   }
-
-  function handleResponse($log, $curl, $resp, $action, $shop_id, $data = array()) {
-    $err = curl_error($curl);
-    $log->response = $resp;
-    $log->save();
-    $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-    
-    if(in_array($httpcode, array(401,403)) && $this->retry==0) {
-      $this->retry = 1;
-      $this->refreshToken($shop_id);
-      if($action == 'create_product') {
-        return $this->createProduct($data, $shop_id);
-      }
-    }
-    
-    $headers=array();
-    $data=explode("\n",$resp);
-    $headers['status']=$data[0];
-    array_shift($data);
-    foreach($data as $part){
-      $middle=explode(":",$part);
-      if(isset($middle[1])) {
-        $headers[strtolower(trim($middle[0]))] = trim($middle[1]);
-      }
-    }
-
-    $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-    curl_close($curl);
-    $response = json_decode(substr($resp, $header_size),true);
-      
-    if($httpcode == 200) {
-      return $response;  
-    }else {
-      if(isset($response['message'])) {
-        return array("status" => "error", "message" => $response['message']);  
-      }elseif(isset($response['meta']['message'])) {
-        return array("status" => "error", "message" => $response['meta']['hint']);  
-      }
-      
-    }
-  }
-
 }
