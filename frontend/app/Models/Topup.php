@@ -63,4 +63,9 @@ class Topup extends Model
 
         \DB::commit();
     }
+
+    public function balanceLog()
+    {
+        return $this->morphOne(BalanceLog::class, 'ref', 'ref_type', 'ref_id');
+    }
 }

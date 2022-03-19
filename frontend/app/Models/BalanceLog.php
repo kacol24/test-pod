@@ -12,7 +12,7 @@ class BalanceLog extends Model
 
     const TYPE_OUT = 'order';
 
-    use HasFactory;
+    const TYPE_COMMISSION = 'commission';
 
     protected $fillable = [
         'ref_id',

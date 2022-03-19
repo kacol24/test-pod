@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Account\AccountController;
 use App\Http\Controllers\Account\SwitchStoreController;
 use App\Http\Controllers\Account\WalletController;
 use App\Http\Controllers\DesignController;
@@ -174,6 +175,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('my-address', 'account.myaddress')->name('myaddress');
     Route::view('my-team', 'account.myteam')->name('myteam');
     Route::get('my-wallet', [WalletController::class, 'index'])->name('mywallet');
+    Route::get('referrals', [AccountController::class, 'referral'])->name('myreferral');
 
     Route::get('top-up', [TopupController::class, 'index'])->name('topup');
     Route::post('top-up', [TopupController::class, 'store']);

@@ -37,6 +37,11 @@
             Stores
         </a>
     </li>
+    <li class="nav-item ">
+        <a class="nav-link" href="{{ route('myreferral') }}">
+            Referrals
+        </a>
+    </li>
 
     <li class="nav-item d-flex align-items-center d-md-none pt-3">
         <a class="nav-link" href="{{ route('myaccount') }}">
