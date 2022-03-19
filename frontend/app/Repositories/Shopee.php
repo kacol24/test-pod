@@ -34,6 +34,39 @@ class Shopee {
     }
   }
 
+  function updateStock($product) {
+    if($product->store->platform('shopee') && $product->platform('shopee')) {
+      $shop_id = (int) $product->store->platform('shopee')->platform_store_id;
+      if($product->skus->count()>1) {
+          $models = ShopeeService::getModel($shop_id, (int) $product->platform('shopee')->platform_product_id);
+
+          if($models['error']== "") {
+              $stockList = array();
+              foreach($models['response']['model'] as $model) {
+                  $sku = $product->skus->where('sku_code', $model['model_sku'])->first();
+                  $stockList[] = array(
+                      "model_id" => $model['model_id'],
+                      "normal_stock" => $sku->stock($product)
+                  );
+              }
+
+              ShopeeService::updatestock($shop_id, array(
+                  "item_id" => (int) $product->platform('shopee')->platform_product_id,
+                  "stock_list" => $stockList
+              ));
+          }
+      }else {
+          ShopeeService::updatestock($shop_id, array(
+              "item_id" => (int) $product->platform('shopee')->platform_product_id,
+              "stock_list" => array(array(
+                  "model_id" => 0,
+                  "normal_stock" => $sku->stock($product)
+              ))
+          ));
+      }
+    }
+  }
+
   function delete($product) {
     if($product->store->platform('shopee') && $product->platform('shopee')) {
       ShopeeService::deleteProduct((int)$product->store->platform('shopee')->platform_store_id, array(

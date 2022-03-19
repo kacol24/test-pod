@@ -7,6 +7,7 @@ use App\Models\Order\Order as OrderModel;
 use App\Services\Facades\Shopee as ShopeeService;
 use App\Services\Facades\Tokopedia as TokopediaService;
 use App\Repositories\Facades\Product;
+use App\Jobs\CapacityUpdated;
 
 class Order {
   function accept($order) {
@@ -21,10 +22,11 @@ class Order {
         $capacity = $detail->product->masterproduct->capacity;
         $capacity->capacity -= $detail->quantity;
         $capacity->save();
+        CapacityUpdated::dispatch($capacity->id);
       }else {
         $detail->sku->stock -= $detail->quantity;
         $detail->sku->save();
-        Product::update($detail->product);
+        Product::updateStock($detail->product);
       }
     }
     $order->store->balance -= $order->final_amount;

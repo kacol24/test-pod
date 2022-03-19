@@ -37,6 +37,27 @@ class Tokopedia {
     }
   }
 
+  function updateStock($product) {
+    if($product->store->platform('tokopedia') && $product->platform('tokopedia')) {
+      $data = array();
+      if($product->skus->count()>1) {
+          foreach($product->skus as $sku) {
+              $data[] = array(
+                  'sku' => $sku->sku_code,
+                  'new_stock' => $sku->stock($product)
+              );
+          }
+      }else {
+          $sku = $product->firstsku();
+          $data[] = array(
+              'product_id' => (int) $product->platform('tokopedia')->platform_product_id,
+              'new_stock' => $sku->stock($product)
+          );
+      }
+      TokopediaService::setStock($data, (int) $product->store->platform('tokopedia')->platform_store_id);
+    }
+  }
+
   function delete($product) {
     if($product->store->platform('tokopedia') && $product->platform('tokopedia')) {
       TokopediaService::deleteProduct(array(
