@@ -17,14 +17,14 @@ class WalletService
         $this->store = Store::find($this->storeId);
     }
 
-    public function deposit($amount, $refId)
+    public function deposit($amount, $refId, $type = BalanceLog::TYPE_IN)
     {
         $remainingBalance = $this->getBalance() + $amount;
 
         \DB::beginTransaction();
         $this->store->balanceLogs()->create([
             'ref_id'  => $refId,
-            'type'    => BalanceLog::TYPE_IN,
+            'type'    => $type,
             'last'    => $this->getBalance(),
             'given'   => $amount,
             'current' => $remainingBalance,
