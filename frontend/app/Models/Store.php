@@ -4,16 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Store extends Model
 {
     const SESSION_KEY = 'current_store';
 
-    use HasFactory;
+    const REF_LENGTH = 8;
+
+    const MAX_DOWNLINE = 10;
 
     protected $fillable = [
         'storename',
         'balance',
+        'ref_code'
     ];
 
     public function users()
@@ -54,5 +58,30 @@ class Store extends Model
     function platform($platform)
     {
         return $this->hasOne('App\Models\StorePlatform', 'store_id', 'id')->where('platform',$platform)->first();
+    }
+
+    public function downlines()
+    {
+        return $this->hasMany(StoreReferral::class, 'ref_id');
+    }
+
+    public static function generateRefCode()
+    {
+        return strtoupper(Str::random(self::REF_LENGTH));
+    }
+
+    public function getTotalCommissionAttribute()
+    {
+        return $this->downlines->sum('total_commission');
+    }
+
+    public function getFormattedTotalCommissionAttribute()
+    {
+        return number_format($this->total_commission, 0, ',', '.');
+    }
+
+    public function referralSlotsLeft()
+    {
+        return self::MAX_DOWNLINE - $this->downlines->count();
     }
 }

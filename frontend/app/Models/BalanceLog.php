@@ -12,7 +12,7 @@ class BalanceLog extends Model
 
     const TYPE_OUT = 'order';
 
-    use HasFactory;
+    const TYPE_COMMISSION = 'commission';
 
     protected $fillable = [
         'ref_id',
@@ -46,6 +46,11 @@ class BalanceLog extends Model
     public function topup()
     {
         return $this->belongsTo(Topup::class, 'ref_id');
+    }
+
+    public function ref()
+    {
+        return $this->morphTo(__FUNCTION__, 'ref_type', 'ref_id');
     }
 
     public function getRefAttribute()
