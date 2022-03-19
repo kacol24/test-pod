@@ -48,11 +48,6 @@ class BalanceLog extends Model
         return $this->belongsTo(Topup::class, 'ref_id');
     }
 
-    public function ref()
-    {
-        return $this->morphTo(__FUNCTION__, 'ref_type', 'ref_id');
-    }
-
     public function getRefAttribute()
     {
         //if ($this->isDeposit()) {

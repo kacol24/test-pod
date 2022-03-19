@@ -26,9 +26,6 @@ class AddReferralsTables extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-        Schema::table('balance_logs', function (Blueprint $table){
-            $table->string('ref_type')->after('ref_id');
-        });
     }
 
     /**
@@ -43,8 +40,5 @@ class AddReferralsTables extends Migration
         });
         \DB::statement("ALTER TABLE `balance_logs` CHANGE `type` `type` ENUM('topup', 'order');");
         Schema::dropIfExists('store_referrals');
-        Schema::table('balance_logs', function (Blueprint $table) {
-            $table->dropColumn(['ref_type']);
-        });
     }
 }
