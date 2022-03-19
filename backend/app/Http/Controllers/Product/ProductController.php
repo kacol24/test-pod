@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Resources\ProductResource;
 use App\Http\Requests\ProductRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use App\Jobs\GenerateMockupColors;
 use App\Models\Product\Capacity;
 use App\Models\Product\Category;
 use App\Models\Product\Color;
 use App\Models\Product\Design;
-use App\Models\Product\MockupColor;
 use App\Models\Product\Option;
 use App\Models\Product\OptionSet;
 use App\Models\Product\Preview;
@@ -713,70 +713,11 @@ class ProductController extends Controller
         return Str::of($result)->trim('"');
     }
 
-    private function uploadMockupColor(Design $design, Color $color)
-    {
-        if (! $design->mockup_customer_canvas) {
-            return false;
-        }
-
-        $key = 'PrinterousCustomerCanvasDemo123!@#';
-        $url = 'https://canvas.printerous.com/production/DI/api/rendering/preview?disableCache=true';
-        $post = [
-            'template' => $design->mockup_customer_canvas,
-            'format'   => 'png',
-            'size'     => [
-                'width'  => $design->mockup_width,
-                'height' => $design->mockup_height,
-            ],
-            'data'     => [
-                'Color' => [
-                    'type'  => 'shape',
-                    'color' => $color->color,
-                ],
-            ],
-        ];
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "X-CustomersCanvasAPIKey: ".$key,
-            'Content-Type: application/json',
-        ]);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $result = curl_exec($ch);
-        curl_close($ch);
-
-        return Str::of($result)->trim('"');
-    }
-
     private function generateMockupColor($product)
     {
         foreach ($product->colors as $color) {
             foreach ($product->designs as $design) {
-                $mockupImageUrl = $this->uploadMockupColor($design, $color);
-
-                if (! $mockupImageUrl) {
-                    continue;
-                }
-
-                $mockupImage = file_get_contents($mockupImageUrl);
-                $mockupFilename = substr($mockupImageUrl, strrpos($mockupImageUrl, '=') + 1);
-
-                $path = storage_path('app/b2b2c/mockups');
-                if (! file_exists($path)) {
-                    mkdir($path, 0755, true);
-                }
-                Storage::put('b2b2c/mockups/'.$mockupFilename, $mockupImage);
-
-                MockupColor::updateOrCreate([
-                    'color_id'  => $color->id,
-                    'design_id' => $design->id,
-                ], [
-                    'customer_canvas' => $this->uploadCanvas(Storage::url('b2b2c/mockups/'.$mockupFilename), 'mockups'),
-                    'product_id'      => $product->id,
-                ]);
+                GenerateMockupColors::dispatch($color, $design, $product);
             }
         }
     }
