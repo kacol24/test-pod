@@ -22,8 +22,10 @@ use App\Http\Controllers\TokopediaController;
 
 use App\Repositories\Facades\Tokopedia;
 use App\Repositories\Facades\Shopee;
+use App\Repositories\Facades\Order;
 use App\Services\Facades\Shopee as ShopeeService;
 use App\Models\Product\Product;
+use App\Models\Order\Order as OrderModel;
 
 Route::get('shopee/unpublish-product', function () {
     if(!session('current_store')) {
@@ -119,40 +121,30 @@ Route::get('tokopedia/unpublish-product', function () {
 });
 
 Route::get('tokopedia/accept-order', function () {
-    $order = Order::find(15);
-    TokopediaService::acceptOrder($order->platform('tokopedia')->platform_order_id);
+    $order = OrderModel::find(1);
+    Order::accept($order);
 });
 
 Route::get('tokopedia/reject-order', function () {
-    $order = Order::find(2);
-    $data = array(
-        'reason_code' => 1,
-        'reason' => 'out of stock'
-    );
-    TokopediaService::rejectOrder($data, $order->platform('tokopedia')->platform_order_id);
+    $order = OrderModel::find(2);
+    Order::reject($order);
 });
 
 Route::get('tokopedia/shipping-label', function () {
-    $order = Order::find(1);
-    return TokopediaService::shippingLabel($order->platform('tokopedia')->platform_order_id);
+    $order = OrderModel::find(1);
+    return Order::label($order);
 });
 
 Route::get('tokopedia/request-pickup', function () {
-    $order = Order::find(15);
-    $data = array(
-        'order_id' => (int)$order->platform('tokopedia')->platform_order_id,
-        'shop_id' => (int)$order->store->platform('tokopedia')->platform_store_id
-    );
-    TokopediaService::requestPickup($data);
+    $order = OrderModel::find(1);
+    return Order::pickup($order);
 });
 
 Route::get('tokopedia/confirm-shipping', function () {
-    $order = Order::find(14);
-    $data = array(
-        'order_status' => 500,
-        'shipping_ref_num' => "RESIM4NT413"
-    );
-    TokopediaService::confirmShipping($data, (int)$order->platform('tokopedia')->platform_order_id);
+    $order = OrderModel::find(1);
+    $order->shipping->awb = "RESIM4NT413";
+    $order->save();
+    return Order::awb($order);
 });
 
 Route::get('tokopedia/publish-product', function () {

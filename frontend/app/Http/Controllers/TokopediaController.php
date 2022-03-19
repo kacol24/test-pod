@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order\Order;
+use App\Models\Order\Order as OrderModel;
 use App\Models\Order\OrderShipping;
 use App\Models\Order\OrderPlatform;
 use App\Models\Order\OrderDetail;
@@ -15,6 +15,7 @@ use App\Models\StorePlatform;
 use Illuminate\Support\Facades\DB;
 use App\Models\Product\ProductSku;
 use App\Models\Product\ProductImage;
+use App\Repositories\Facades\Order;
 
 class TokopediaController extends Controller
 {
@@ -31,7 +32,7 @@ class TokopediaController extends Controller
             if(!$orderPlatform) {
                 DB::beginTransaction();
                 try {
-                    $order = Order::create(array(
+                    $order = OrderModel::create(array(
                         'store_id' => $store->store_id,
                         'order_no' => $request->invoice_ref_num,
                         'total_amount' => $request->amt['ttl_product_price'],
@@ -40,7 +41,7 @@ class TokopediaController extends Controller
                         'discount_voucher' => $request->amt['voucher_amount'],
                         'pay_with_point' => $request->amt['toppoints_amount'],
                         'final_amount' =>$request->amt['ttl_amount'],
-                        'status_id' => 2,
+                        'status_id' => 1,
                         'payment_method' => 'Saldo'
                     ));
 
@@ -49,7 +50,6 @@ class TokopediaController extends Controller
                         'platform' => 'tokopedia',
                         'platform_order_id' => $request->order_id
                     ));
-
                     
                     OrderShipping::create(array(
                         'order_id' => $order->id,
@@ -92,16 +92,10 @@ class TokopediaController extends Controller
                           'quantity' => $platform_product['quantity'],
                         ));
                     }
+
+                    Order::verify($order);
                     DB::commit();
                     $log->response = 'Success create order: '.$order->id;
-
-                    // if(!$this->processStock($order)) {
-                    //     Tokopedia::rejectOrder(array(
-                    //         'reason_code' => 1,
-                    //         'reason' => 'out of stock'
-                    //     ), $order->platform('tokopedia')->platform_order_id);
-                    // }
-
                 }catch(\Exception $e){
                     DB::rollback();
                     $log->response = 'Error created order';
@@ -116,21 +110,13 @@ class TokopediaController extends Controller
         echo $log->response;
     }
 
-    // public function processStock($order) {
-    //     $checkStock = true;
-    //     foreach($order->details as $detail) {
-    //         if($detail->product->)
-    //     }
-    //     return $checkStock;
-    // }
-
     public function status(Request $request) {
         $log = TokopediaLog::create(array(
             'type' => 'webhook_status',
             'request' => json_encode($request->all())
         ));
 
-        $order = Order::join('order_platforms','order_platforms.order_id','=','orders.id')->where('platform','tokopedia')->where('platform_order_id', $request->order_id)->first();
+        $order = OrderModel::join('order_platforms','order_platforms.order_id','=','orders.id')->where('platform','tokopedia')->where('platform_order_id', $request->order_id)->first();
 
         if($order) {
             if(in_array($request->order_status, array(3,5,6,10,15))) {

@@ -21,4 +21,13 @@ class Order extends Model
     {
         return $this->hasOne('App\Models\Order\OrderPlatform', 'order_id', 'id')->where('platform',$platform)->first();
     }
+
+    function shipping()
+    {
+        return $this->hasOne('App\Models\Order\OrderShipping', 'order_id', 'id');
+    }
+
+    function details(){
+        return $this->hasMany('App\Models\Order\OrderDetail','order_id','id');
+    }
 }
