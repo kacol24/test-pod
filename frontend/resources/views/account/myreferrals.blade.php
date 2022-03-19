@@ -40,7 +40,7 @@
                          class="rounded-circle d-flex align-items-center justify-content-center text-white me-3">
                         <i class="ri ri-service-fill ri-fw ri-lg"></i>
                     </div>
-                    4 Out of 10 of your friends joined.
+                    {{ $upline->downlines->count() }} out of {{ App\Models\Store::MAX_DOWNLINE }} of your friends joined.
                 </div>
                 <div>
                     <span class="fw-500" style="color: #707A83;">
