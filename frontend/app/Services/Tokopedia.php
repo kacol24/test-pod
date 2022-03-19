@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Library;
+namespace App\Services;
 
 use DB, Mail;
 use App\Models\Order\Order;
@@ -287,7 +287,7 @@ class Tokopedia {
     $url = "https://fs.tokopedia.net/inventory/v2/fs/".$this->app_id."/category/get_variant?cat_id=".$category_id;
 
     $log = TokopediaLog::create(array(
-      "type" => "categories",
+      "type" => "get_variant",
       "request" => null,
       "response" => null
     ));
@@ -401,7 +401,6 @@ class Tokopedia {
       $response = json_decode(substr($resp, $header_size),true);
     }
       
-    
     if($httpcode == 200) {
       return $response;  
     }else {

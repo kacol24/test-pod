@@ -1,5 +1,5 @@
 <?php 
-namespace App\Library\Facades;
+namespace App\Repositories\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -9,5 +9,5 @@ class Tokopedia extends Facade {
    *
    * @return string
    */
-  protected static function getFacadeAccessor() { return new \App\Library\Tokopedia; }
+  protected static function getFacadeAccessor() { return new \App\Repositories\Tokopedia; }
 }

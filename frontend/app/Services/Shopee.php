@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Library;
+namespace App\Services;
 
 use DB, Mail;
 use App\Models\Order\Order;
