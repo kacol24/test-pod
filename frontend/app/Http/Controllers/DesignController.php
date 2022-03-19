@@ -398,7 +398,7 @@ class DesignController extends Controller
             $file = file_get_contents($result['url']);
             $extension = pathinfo($result['url'], PATHINFO_EXTENSION);
             $filename = sha1(Str::random(32)).".".$extension;
-            Storage::put('/public/products/'.$filename, $file);
+            Storage::put('b2b2c/products/'.$filename, $file);
             ProductImage::create([
                 'product_id' => $product->id,
                 'image'      => $filename,
@@ -407,12 +407,12 @@ class DesignController extends Controller
 
         foreach ($masterproduct->images as $i => $image) {
             if ($i >= 1) {
-                $url = env('BACKEND_URL').'/storage/masterproduct/'.$image->image;
+                $url = Storage::get('b2b2c/masterproduct/' .$image->image);
                 try {
                     $file = file_get_contents($url);
                     $extension = pathinfo($url, PATHINFO_EXTENSION);
                     $filename = sha1(Str::random(32)).".".$extension;
-                    Storage::put('/public/products/'.$filename, $file);
+                    Storage::put('b2b2c/products/'.$filename, $file);
                     ProductImage::create([
                         'product_id' => $product->id,
                         'image'      => $filename,
