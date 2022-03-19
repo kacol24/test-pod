@@ -29,19 +29,20 @@ use App\Services\Facades\Shopee as ShopeeService;
 use App\Models\Product\Product as ProductModel;
 use App\Models\Order\Order as OrderModel;
 
+
 Route::get('shopee/unpublish-product', function () {
     $product = ProductModel::where('store_id', session('current_store')->id)->where('id',8)->first();
-    Shopee::unpublish($product);
+    Product::unpublish($product);
 });
 
 Route::get('shopee/delete-product', function () {
     $product = ProductModel::where('store_id', session('current_store')->id)->where('id',11)->first();
-    Shopee::delete($product);
+    Product::delete($product);
 });
 
 Route::get('shopee/publish-product', function () {
     $product = ProductModel::where('store_id', session('current_store')->id)->where('id',8)->first();
-    Shopee::publish($product);
+    Product::publish($product);
 });
 
 Route::get('shopee/update-product', function () {
@@ -99,7 +100,7 @@ Route::get('tokopedia/update-product', function () {
 
 Route::get('tokopedia/unpublish-product', function () {
     $product = ProductModel::where('store_id', session('current_store')->id)->where('id',8)->first();
-    Tokopedia::unpublish($product);
+    Product::unpublish($product);
 });
 
 Route::get('tokopedia/accept-order', function () {
@@ -131,12 +132,12 @@ Route::get('tokopedia/confirm-shipping', function () {
 
 Route::get('tokopedia/publish-product', function () {
     $product = ProductModel::where('store_id', session('current_store')->id)->where('id',8)->first();
-    Tokopedia::publish($product);
+    Product::publish($product); 
 });
 
 Route::get('tokopedia/delete-product', function () {
     $product = ProductModel::where('store_id', session('current_store')->id)->where('id',11)->first();
-    Tokopedia::delete($product);
+    Product::delete($product);
 });
 
 Route::get('/', function () {
