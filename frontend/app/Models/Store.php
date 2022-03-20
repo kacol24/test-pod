@@ -60,6 +60,11 @@ class Store extends Model
         return $this->hasOne('App\Models\StorePlatform', 'store_id', 'id')->where('platform',$platform)->first();
     }
 
+    function referral()
+    {
+        return $this->hasOne('App\Models\StoreReferral', 'store_id', 'id');
+    }
+
     public function downlines()
     {
         return $this->hasMany(StoreReferral::class, 'ref_id');

@@ -16,7 +16,7 @@ class AddReferralsTables extends Migration
         Schema::table('stores', function (Blueprint $table){
             $table->string('ref_code')->after('id')->nullable();
         });
-        \DB::statement("ALTER TABLE `balance_logs` CHANGE `type` `type` ENUM('topup', 'order', 'commission');");
+        \DB::statement("ALTER TABLE `balance_logs` CHANGE `type` `type` ENUM('topup', 'order', 'commission','refund');");
         Schema::create('store_referrals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ref_id');

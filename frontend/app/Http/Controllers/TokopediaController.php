@@ -98,7 +98,7 @@ class TokopediaController extends Controller
                     $log->response = 'Success create order: '.$order->id;
                 }catch(\Exception $e){
                     DB::rollback();
-                    $log->response = 'Error created order';
+                    $log->response = $e->getMessage();
                 }
             }else {
                 $log->response = 'Order already exists.';    
@@ -120,17 +120,16 @@ class TokopediaController extends Controller
 
         if($order) {
             if(in_array($request->order_status, array(3,5,6,10,15))) {
-                $order->status_id = 3; #canceled
+                Order::updateStatus($order, 3); #canceled
             }else if($request->order_status == 400) {
-                $order->status_id = 4; #in prgoress
+                Order::updateStatus($order, 4); #in prgoress
             }else if($request->order_status == 500) {
-                $order->status_id = 5; #undershipment
+                Order::updateStatus($order, 5); #undershipment
             }else if($request->order_status == 600) {
-                $order->status_id = 6; #delivered
+                Order::updateStatus($order, 6); #delivered
             }else if($request->order_status == 700) {
-                $order->status_id = 7; #finished
+                Order::updateStatus($order, 7); #finished
             }
-            $order->save();
             $log->response = 'Success update order status.';
         }else {
             $log->response = 'Order id not found.';

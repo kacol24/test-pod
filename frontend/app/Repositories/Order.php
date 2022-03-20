@@ -8,29 +8,77 @@ use App\Services\Facades\Shopee as ShopeeService;
 use App\Services\Facades\Tokopedia as TokopediaService;
 use App\Repositories\Facades\Product;
 use App\Jobs\CapacityUpdated;
+use App\Services\WalletService;
 
 class Order {
   function accept($order) {
-    if($order->platform('tokopedia')) {
-      TokopediaService::acceptOrder($order->platform('tokopedia')->platform_order_id);
-    }
-    foreach($order->details as $detail) {
-      if($detail->product->master_product_id) {
-        $mastersku = $detail->product->mastersku($detail->sku->option_detail_key1, $detail->sku->option_detail_key2);
-        $mastersku->stock -= $detail->quantity;
-        $mastersku->save();
-        $capacity = $detail->product->masterproduct->capacity;
-        $capacity->capacity -= $detail->quantity;
-        $capacity->save();
-        CapacityUpdated::dispatch($capacity->id);
-      }else {
-        $detail->sku->stock -= $detail->quantity;
-        $detail->sku->save();
-        Product::updateStock($detail->product);
+    DB::beginTransaction();
+    try {
+      foreach($order->details as $detail) {
+        if($detail->product->master_product_id) {
+          $mastersku = $detail->product->mastersku($detail->sku->option_detail_key1, $detail->sku->option_detail_key2);
+          if($mastersku->stock >= $detail->quantity) {
+            $mastersku->stock -= $detail->quantity;
+            $mastersku->save();
+          }else {
+            throw new \Exception('Insufficient stock');
+          }   
+          $capacity = $detail->product->masterproduct->capacity;
+          if($capacity->capacity>=$detail->quantity) {
+            $capacity->capacity -= $detail->quantity;
+            $capacity->save();  
+            CapacityUpdated::dispatch($capacity->id);
+          }else {
+            throw new \Exception('Insufficient stock');
+          }
+        }else {
+          if($detail->sku->stock >= $detail->quantity) {
+            $detail->sku->stock -= $detail->quantity;
+            $detail->sku->save();
+            Product::updateStock($detail->product);
+          }else {
+            throw new \Exception('Insufficient stock');
+          }
+        }
       }
+      $wallet = new WalletService($order->store_id);
+      $wallet->order($order->final_amount, $order->id);
+      DB::commit();
+      if($order->platform('tokopedia')) {
+        TokopediaService::acceptOrder($order->platform('tokopedia')->platform_order_id);
+      }
+      $this->updateStatus($order,2);
+    } catch (\Exception $e) {
+      DB::rollback();
+      throw new \Exception($e->getMessage());
     }
-    $order->store->balance -= $order->final_amount;
-    $order->store->save();
+  }
+
+  function updateStatus($order, $status) {
+    if($status == 7 && $order->status_id !=7) {
+      $this->giveCommission($order);
+    }
+    $order->status_id = $status;
+    $order->save();
+  }
+
+  function giveCommission($order) {
+    $fee = 2;
+    DB::beginTransaction();
+    try {
+      $referral = $order->store->referral;
+      if($referral && strtotime($referral->expired_at)>=time()) {
+        $commission = round($order->final_amount*2/100);
+        $referral->total_commission += $commission;
+        $referral->save();
+        $wallet = new WalletService($referral->ref_id);
+        $wallet->commission($commission, $order->id);
+      }
+      DB::commit();
+    } catch (\Exception $e) {
+      DB::rollback();
+      throw new \Exception($e->getMessage());
+    }
   }
 
   function reject($order) {

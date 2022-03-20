@@ -10,6 +10,7 @@ use App\Http\Controllers\Xendit\XenditController;
 use App\Http\Controllers\Xendit\XenditWebhookController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TokopediaController;
+use App\Jobs\CapacityUpdated;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,7 +29,6 @@ use App\Repositories\Facades\Product;
 use App\Services\Facades\Shopee as ShopeeService;
 use App\Models\Product\Product as ProductModel;
 use App\Models\Order\Order as OrderModel;
-
 
 Route::get('shopee/unpublish-product', function () {
     $product = ProductModel::where('store_id', session('current_store')->id)->where('id',8)->first();
@@ -187,6 +187,10 @@ Route::prefix('xendit')->group(function () {
          ->name('xendit.notifyvacreated');
     Route::post('notify-va-paid', [XenditWebhookController::class, 'notifyVAPaid'])
          ->name('xendit.notifyvapaid');
+});
+
+Route::get('capacity-updated/{id}', function($id){
+    CapacityUpdated::dispatch($id);
 });
 
 require __DIR__.'/auth.php';

@@ -28,7 +28,7 @@ class WalletService
         return $this->store;
     }
 
-    public function withdraw($amount, $refId)
+    public function order($amount, $refId)
     {
         if ($this->getBalance() == 0) {
             throw new \Exception('Balance is empty');
@@ -43,6 +43,15 @@ class WalletService
         $this->makeTransaction($refId, BalanceLog::TYPE_OUT, $amount, $remainingBalance);
 
         session([Store::SESSION_KEY => $this->store]);
+
+        return $this->store;
+    }
+
+    public function commission($amount, $refId)
+    {
+        $remainingBalance = $this->getBalance() + $amount;
+
+        $this->makeTransaction($refId, BalanceLog::TYPE_COMMISSION, $amount, $remainingBalance);
 
         return $this->store;
     }
