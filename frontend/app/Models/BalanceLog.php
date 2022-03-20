@@ -14,6 +14,8 @@ class BalanceLog extends Model
 
     const TYPE_COMMISSION = 'commission';
 
+    const TYPE_REFUND = 'refund';
+
     protected $fillable = [
         'ref_id',
         'store_id',

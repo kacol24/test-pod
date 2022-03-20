@@ -55,7 +55,10 @@ class Order {
   }
 
   function updateStatus($order, $status) {
-    if($status == 7 && $order->status_id !=7) {
+    if($status == 3 && $order->status_id == 2) {
+      $wallet = new WalletService($order->store->id);
+      $wallet->refund($order->final_amount, $order->id);
+    }else if($status == 7 && $order->status_id !=7) {
       $this->giveCommission($order);
     }
     $order->status_id = $status;

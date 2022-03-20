@@ -28,6 +28,15 @@ class WalletService
         return $this->store;
     }
 
+    public function refund($amount, $refId)
+    {
+        $remainingBalance = $this->getBalance() + $amount;
+
+        $this->makeTransaction($refId, BalanceLog::TYPE_REFUND, $amount, $remainingBalance);
+        
+        return $this->store;
+    }
+
     public function order($amount, $refId)
     {
         if ($this->getBalance() == 0) {
