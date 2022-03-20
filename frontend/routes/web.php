@@ -94,7 +94,7 @@ Route::get('tokopedia/create-product', function () {
 });
 
 Route::get('tokopedia/update-product', function () {
-    $product = ProductModel::where('store_id', session('current_store')->id)->where('id',8)->first();
+    $product = ProductModel::where('store_id', session('current_store')->id)->where('id',11)->first();
     Tokopedia::update($product);
 });
 

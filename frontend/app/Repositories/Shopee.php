@@ -305,7 +305,8 @@ class Shopee {
               ))
           ));
       }
+    }else {
+      $this->create($product);
     }
-      
   }
 }

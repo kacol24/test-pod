@@ -248,6 +248,8 @@ class Tokopedia {
 
       $data['products'] = array($productdata);
       $response = TokopediaService::updateProduct($data, (int)$product->store->platform('tokopedia')->platform_store_id);
+    } else {
+      $this->create($product);
     }
   }
 }
