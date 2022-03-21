@@ -10,6 +10,7 @@ use App\Http\Controllers\Xendit\XenditController;
 use App\Http\Controllers\Xendit\XenditWebhookController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TokopediaController;
+use App\Http\Controllers\ShopeeController;
 use App\Jobs\CapacityUpdated;
 /*
 |--------------------------------------------------------------------------
