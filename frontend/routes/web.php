@@ -132,7 +132,7 @@ Route::get('tokopedia/confirm-shipping', function () {
 
 Route::get('tokopedia/publish-product', function () {
     $product = ProductModel::where('store_id', session('current_store')->id)->where('id',8)->first();
-    Product::publish($product); 
+    Product::publish($product);
 });
 
 Route::get('tokopedia/delete-product', function () {
@@ -149,6 +149,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('switch-store/{storename}', [SwitchStoreController::class, 'switch'])->name('switchstore');
 
     Route::view('my-account', 'account.myaccount')->name('myaccount');
+    Route::put('my-account', [AccountController::class, 'update']);
     Route::view('my-purchases', 'account.mypurchases')->name('myorders');
     Route::view('my-purchases/{id?}', 'account.orderdetail')->name('orderdetail');
     Route::view('my-purchases/{id?}/print', 'account.print-invoice')->name('orderdetail.print');
