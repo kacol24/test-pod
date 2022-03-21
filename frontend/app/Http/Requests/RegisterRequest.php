@@ -27,7 +27,7 @@ class RegisterRequest extends FormRequest
         return [
             'username'    => ['required', 'string', 'max:255', 'unique:stores,storename'],
             'name'        => ['required', 'string', 'max:255'],
-            'phone'       => ['required', 'numeric'],
+            'phone'       => ['required', 'numeric', 'unique:users'],
             'email'       => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password'    => ['required', 'confirmed', Rules\Password::defaults()],
             'description' => ['required'],

@@ -2,15 +2,15 @@
     <div class="card-header p-4 d-flex align-items-center">
         <div class="me-3">
             <div class="avatar bg-color:yellow">
-                JT
+                {{ auth()->user()->initials }}
             </div>
         </div>
         <div>
             <h3 class="card-title">
-                Junitalia Tanosudcipto
+                {{ auth()->user()->name }}
             </h3>
             <small class="card-subtitle d-block">
-                Joined since 08 Jul 2020
+                Joined since {{ auth()->user()->created_at->format('d M Y') }}
             </small>
             <form action="{{ route('logout') }}" method="post">
                 @csrf

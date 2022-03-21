@@ -17,37 +17,39 @@
                         </small>
                     </div>
                     <div class="list-group order-list">
-                        <a href="{{ route('shipmentdetail', '1') }}" class="list-group-item list-group-item-action">
-                            <div class="row align-items-center">
-                                <div class="col-md-3">
-                                    <dl>
-                                        <dt>INV 20203389</dt>
-                                        <dd>08 Sep 2018, 14:00 PM</dd>
-                                    </dl>
-                                </div>
-                                <div class="col-md-5">
-                                    <dl>
-                                        <dt>4 Items</dt>
-                                        <dd>Jolly t-shirt, Nocturnal pillow, Do...</dd>
-                                    </dl>
-                                </div>
-                                <div class="col-md-2">
-                                    <dl>
-                                        <dt>IDR 500,000</dt>
-                                        <dd>Bank Transfer</dd>
-                                    </dl>
-                                </div>
-                                <div class="col-md-2">
-                                    <dl>
-                                        <dt>
+                        @foreach([] as $shipment)
+                            <a href="{{ route('shipmentdetail', '1') }}" class="list-group-item list-group-item-action">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3">
+                                        <dl>
+                                            <dt>INV 20203389</dt>
+                                            <dd>08 Sep 2018, 14:00 PM</dd>
+                                        </dl>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <dl>
+                                            <dt>4 Items</dt>
+                                            <dd>Jolly t-shirt, Nocturnal pillow, Do...</dd>
+                                        </dl>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <dl>
+                                            <dt>IDR 500,000</dt>
+                                            <dd>Bank Transfer</dd>
+                                        </dl>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <dl>
+                                            <dt>
                                             <span class="badge badge-success d-inline-block p-0"
                                                   style="width: 6px;height: 6px;"></span>
-                                            Completed
-                                        </dt>
-                                    </dl>
+                                                Completed
+                                            </dt>
+                                        </dl>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>

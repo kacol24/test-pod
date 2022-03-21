@@ -41,8 +41,17 @@ class StoreReferral extends Model
         return number_format($this->total_commission, 0, ',', '.');
     }
 
+    public function getExpiredDaysLeftAttribute()
+    {
+        if ($this->isExpired()) {
+            return 0;
+        }
+
+        return $this->expired_at->startOfDay()->diffInDays(today());
+    }
+
     public function isExpired()
     {
-        return $this->expired_at->diffInDays(today()) <= 0;
+        return $this->expired_at->startOfDay()->lte(today());
     }
 }
