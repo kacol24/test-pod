@@ -90,7 +90,7 @@
                                 @endif
                             </td>
                             <td class="py-4 text-end">
-                                {{ $downline->expired_at->diffInDays(today()) }}
+                                {{ $downline->expired_days_left }}
                             </td>
                         </tr>
                     @endforeach
