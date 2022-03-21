@@ -15,5 +15,6 @@ class VerifyCsrfToken extends Middleware
         'webhook/tokopedia/orders',
         'webhook/tokopedia/status',
         'xendit/notify-*',
+        'webhook/shopee',
     ];
 }

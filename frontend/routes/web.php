@@ -85,9 +85,6 @@ Route::get('shopee/callback', function (Request $request) {
 })->name('shopee.callback');
 
 
-Route::post('webhook/tokopedia/orders', [TokopediaController::class, 'order']);
-Route::post('webhook/tokopedia/status', [TokopediaController::class, 'status']);
-
 Route::get('tokopedia/create-product', function () {
     $product = ProductModel::where('store_id', session('current_store')->id)->where('id',11)->first();
     Tokopedia::create($product);
@@ -195,5 +192,9 @@ Route::prefix('xendit')->group(function () {
 Route::get('capacity-updated/{id}', function($id){
     CapacityUpdated::dispatch($id);
 });
+
+Route::post('webhook/tokopedia/orders', [TokopediaController::class, 'order']);
+Route::post('webhook/tokopedia/status', [TokopediaController::class, 'status']);
+Route::post('webhook/shopee', [ShopeeController::class, 'index']);
 
 require __DIR__.'/auth.php';
