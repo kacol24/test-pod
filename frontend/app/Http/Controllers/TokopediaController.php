@@ -32,15 +32,20 @@ class TokopediaController extends Controller
             if(!$orderPlatform) {
                 DB::beginTransaction();
                 try {
+                    $total = 0;
+                    foreach($request->products as $platform_product) {
+                        $sku = ProductSku::where('sku_code', $platform_product['sku'])->first();
+                        $total += $sku->cost($sku->product);
+                    }
                     $order = OrderModel::create(array(
                         'store_id' => $store->store_id,
                         'order_no' => $request->invoice_ref_num,
-                        'total_amount' => $request->amt['ttl_product_price'],
-                        'shipping_fee' => $request->amt['shipping_cost'],
-                        'insurance_fee' => $request->amt['insurance_cost'],
-                        'discount_voucher' => $request->amt['voucher_amount'],
-                        'pay_with_point' => $request->amt['toppoints_amount'],
-                        'final_amount' =>$request->amt['ttl_amount'],
+                        'total_amount' => $total,
+                        'shipping_fee' => 0,
+                        'insurance_fee' => 0,
+                        'discount_voucher' => 0,
+                        'pay_with_point' => 0,
+                        'final_amount' => $total,
                         'status_id' => 1,
                         'payment_method' => 'Saldo'
                     ));
@@ -88,7 +93,7 @@ class TokopediaController extends Controller
                           'width' => $sku->width,
                           'length' => $sku->length,
                           'height' => $sku->height,
-                          'price' => $platform_product['price'],
+                          'price' => $sku->cost($sku->product),
                           'quantity' => $platform_product['quantity'],
                         ));
                     }

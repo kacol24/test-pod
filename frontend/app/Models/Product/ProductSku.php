@@ -64,11 +64,18 @@ class ProductSku extends Model
             if($capacity_stock < $stock) {
                 $stock = $capacity_stock;
             }
-            $stock = round($stock*$product->masterproduct->threshold/100);
+            return round($stock*$product->masterproduct->threshold/100);
         }else {
-            $stock = $this->stock;
+            return $this->stock;
         }
+    }
 
-        return $stock;
+    public function cost($product) {
+        if($product->master_product_id) {
+            $skumaster = $product->mastersku($this->option_detail_key1, $this->option_detail_key2);
+            return $skumaster->production_cost+$skumaster->fulfillment_cost;
+        }else {
+            return $this->price;
+        }
     }
 }
