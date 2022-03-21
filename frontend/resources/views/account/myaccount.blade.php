@@ -10,12 +10,19 @@
                 {{ session('status') }}
             </x-alert>
         @endif
+        @foreach ($errors->all() as $error)
+            <x-alert type="danger" dismissible icon>
+                {{ $error }}
+            </x-alert>
+        @endforeach
         <div class="row">
             <div class="col-md-4">
                 @include('partials.account-sidebar')
             </div>
             <div class="col-md-8">
                 <form action="{{ route('myaccount') }}" method="post">
+                    @csrf
+                    @method('PUT')
                     <div class="card p-0">
                         <div class="card-header p-4">
                             <h3 class="card-title">
@@ -26,8 +33,6 @@
                             </small>
                         </div>
                         <div class="card-body">
-                            @csrf
-                            @method('PUT')
                             <div class="mb-4">
                                 <label for="name" class="text-uppercase text-color:black">
                                     Full Name
@@ -113,17 +118,19 @@
                         </div>
                     </div>
                 </form>
-                <div class="card p-0 mt-4">
-                    <div class="card-header p-4">
-                        <h3 class="card-title">
-                            Change Password
-                        </h3>
-                        <small class="card-subtitle">
-                            You can change your password here.
-                        </small>
-                    </div>
-                    <div class="card-body">
-                        <form action="">
+                <form action="{{ route('myaccount.changepassword') }}" method="post">
+                    @csrf
+                    @method('PUT')
+                    <div class="card p-0 mt-4">
+                        <div class="card-header p-4">
+                            <h3 class="card-title">
+                                Change Password
+                            </h3>
+                            <small class="card-subtitle">
+                                You can change your password here.
+                            </small>
+                        </div>
+                        <div class="card-body">
                             <div class="mb-4 position-relative">
                                 <label for="old_password" class="text-uppercase text-color:black">
                                     Current Password
@@ -149,14 +156,14 @@
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        </div>
+                        <div class="card-footer p-4 text-end">
+                            <button class="btn btn-primary ms-auto px-4" type="submit">
+                                Save Password
+                            </button>
+                        </div>
                     </div>
-                    <div class="card-footer p-4 text-end">
-                        <button class="btn btn-primary ms-auto px-4">
-                            Save Changes
-                        </button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

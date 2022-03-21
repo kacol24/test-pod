@@ -150,6 +150,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::view('my-account', 'account.myaccount')->name('myaccount');
     Route::put('my-account', [AccountController::class, 'update']);
+    Route::put('my-account/change-password', [AccountController::class, 'changePassword'])
+         ->name('myaccount.changepassword');
     Route::view('my-purchases', 'account.mypurchases')->name('myorders');
     Route::view('my-purchases/{id?}', 'account.orderdetail')->name('orderdetail');
     Route::view('my-purchases/{id?}/print', 'account.print-invoice')->name('orderdetail.print');
