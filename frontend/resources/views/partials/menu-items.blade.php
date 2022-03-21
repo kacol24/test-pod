@@ -123,11 +123,13 @@
             {{--                    My Addresses--}}
             {{--                </a>--}}
             {{--            </li>--}}
-            <li>
-                <a class="dropdown-item" href="{{ route('myteam') }}">
-                    My Team
-                </a>
-            </li>
+            @can(App\Enums\Permissions::TEAM)
+                <li>
+                    <a class="dropdown-item" href="{{ route('myteam') }}">
+                        My Team
+                    </a>
+                </li>
+            @endcan
             <li class="p-0">
                 <hr class="dropdown-divider">
             </li>

@@ -31,8 +31,6 @@ class AuthServiceProvider extends ServiceProvider
             if (in_array($user->role_id, [User::ROLE_ID_SUPER_ADMIN, User::ROLE_ID_ADMIN])) {
                 return true;
             }
-
-            return false;
         });
 
         foreach (Permissions::ALL as $permission) {
