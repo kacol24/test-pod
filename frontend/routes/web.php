@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Permissions;
 use App\Http\Controllers\Account\AccountController;
 use App\Http\Controllers\Account\AddressController;
 use App\Http\Controllers\Account\SwitchStoreController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\DesignProductController;
 use App\Http\Controllers\TopupController;
 use App\Http\Controllers\Xendit\XenditController;
 use App\Http\Controllers\Xendit\XenditWebhookController;
+use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TokopediaController;
 use App\Http\Controllers\ShopeeController;
@@ -162,29 +164,38 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('my-address/{address}', [AccountController::class, 'update'])->name('myaddress.update');
     Route::delete('my-address/{address}', [AccountController::class, 'update'])->name('myaddress.destroy');
 
-    Route::view('my-team', 'account.myteam')->name('myteam');
-    Route::get('my-wallet', [WalletController::class, 'index'])->name('mywallet');
     Route::get('referrals', [AccountController::class, 'referral'])->name('myreferral');
 
-    Route::get('top-up', [TopupController::class, 'index'])->name('topup');
-    Route::post('top-up', [TopupController::class, 'store']);
-    Route::get('top-up/success', [TopupController::class, 'success'])->name('topup.success');
+    Route::middleware('can:'.Permissions::TEAM)->group(function (){
+        Route::view('my-team', 'account.myteam')->name('myteam');
+    });
+
+    Route::middleware('can:'.Permissions::WALLET)->group(function (){
+        Route::get('my-wallet', [WalletController::class, 'index'])->name('mywallet');
+        Route::get('top-up', [TopupController::class, 'index'])->name('topup');
+        Route::post('top-up', [TopupController::class, 'store']);
+        Route::get('top-up/success', [TopupController::class, 'success'])->name('topup.success');
+    });
 
     Route::post('xendit/cc', [XenditController::class, 'creditCard'])->name('xendit.cc');
     Route::post('xendit/e-wallet', [XenditController::class, 'ewallet'])->name('xendit.ewallet');
 
-    Route::get('design/add-more', [DesignController::class, 'additional'])->name('design.additional');
-    Route::get('design/finish', [DesignController::class, 'finish'])->name('design.finish');
-    Route::post('design/finish', [DesignController::class, 'store'])->name('design.finish.store');
-    Route::get('design/saving', [DesignController::class, 'saving'])->name('design.saving');
-    Route::get('design/success', [DesignController::class, 'success'])->name('design.saved');
-    Route::get('design/datatable', [DesignController::class, 'datatable'])->name('design.datatable');
-    Route::resource('design', DesignController::class);
-    Route::get('design/product/{id}', [DesignController::class, 'designer'])->name('design');
-    Route::post('design/product/{id}', [DesignController::class, 'saveDesigner'])->name('design.post');
-    Route::get('design/product/{id}/remove', [DesignController::class, 'removeProduct'])->name('design.remove-product');
-    Route::get('design/{design}/product/{product}/edit', [DesignProductController::class, 'edit'])->name('design.product.edit');
-    Route::post('design/{design}/product/{product}/edit', [DesignProductController::class, 'update']);
+    Route::middleware('can:'.Permissions::DESIGN)->group(function (){
+        Route::get('design/add-more', [DesignController::class, 'additional'])->name('design.additional');
+        Route::get('design/finish', [DesignController::class, 'finish'])->name('design.finish');
+        Route::post('design/finish', [DesignController::class, 'store'])->name('design.finish.store');
+        Route::get('design/saving', [DesignController::class, 'saving'])->name('design.saving');
+        Route::get('design/success', [DesignController::class, 'success'])->name('design.saved');
+        Route::get('design/datatable', [DesignController::class, 'datatable'])->name('design.datatable');
+        Route::resource('design', DesignController::class);
+        Route::get('design/product/{id}', [DesignController::class, 'designer'])->name('design');
+        Route::post('design/product/{id}', [DesignController::class, 'saveDesigner'])->name('design.post');
+        Route::get('design/product/{id}/remove', [DesignController::class, 'removeProduct'])
+             ->name('design.remove-product');
+        Route::get('design/{design}/product/{product}/edit', [DesignProductController::class, 'edit'])
+             ->name('design.product.edit');
+        Route::post('design/{design}/product/{product}/edit', [DesignProductController::class, 'update']);
+    });
 });
 
 Route::prefix('xendit')->group(function () {

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Notifications\QueuedVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Arr;
@@ -73,9 +72,14 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'role_id'
+    ];
+
     public function stores()
     {
-        return $this->belongsToMany(Store::class, 'store_users', 'user_id')->withPivot('role_id');
+        return $this->belongsToMany(Store::class, 'store_users', 'user_id')
+                    ->withPivot('role_id');
     }
 
     public function sendEmailVerificationNotification()
@@ -94,5 +98,17 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return $initials->implode('');
+    }
+
+    public function getCurrentStoreAttribute()
+    {
+        return $this->stores()->where('store_id', session(Store::SESSION_KEY)->id)->first();
+    }
+
+    public function getRoleIdAttribute()
+    {
+        return StoreUser::where('store_id', session(Store::SESSION_KEY)->id)
+                        ->where('user_id', $this->id)
+                        ->first()->role_id;
     }
 }
