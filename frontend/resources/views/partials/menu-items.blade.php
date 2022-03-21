@@ -27,11 +27,11 @@
             Orders
         </a>
     </li>
-    <li class="nav-item ">
-        <a class="nav-link" href="./products-index.html">
-            Warehouse
-        </a>
-    </li>
+{{--    <li class="nav-item ">--}}
+{{--        <a class="nav-link" href="./products-index.html">--}}
+{{--            Warehouse--}}
+{{--        </a>--}}
+{{--    </li>--}}
     <li class="nav-item ">
         <a class="nav-link" href="./payments-index.html">
             Stores
