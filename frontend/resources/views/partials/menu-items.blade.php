@@ -49,7 +49,7 @@
         </li>
     @endcan
     @can(App\Enums\Permissions::REFERRALS)
-        <li class="nav-item ">
+        <li class="nav-item {{ request()->routeIs(['myreferral']) ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('myreferral') }}">
                 Referrals
             </a>
@@ -60,33 +60,37 @@
         <a class="nav-link" href="{{ route('myaccount') }}">
             <i class="ri-account-circle-line ri-xl align-middle"></i>
         </a>
-        <a class="nav-link" href="./customers-index.html">
-            <i class="ri-shopping-basket-line ri-xl align-middle"></i>
-        </a>
-        <a class="nav-link" href="{{ route('mywallet') }}">
-            <i class="ri-wallet-3-line ri-xl align-middle"></i>
-        </a>
-        <div class="d-flex flex-column font-size:12 ms-2">
+        {{--        <a class="nav-link" href="./customers-index.html">--}}
+        {{--            <i class="ri-shopping-basket-line ri-xl align-middle"></i>--}}
+        {{--        </a>--}}
+        @can(App\Enums\Permissions::WALLET)
+            <a class="nav-link" href="{{ route('mywallet') }}">
+                <i class="ri-wallet-3-line ri-xl align-middle"></i>
+            </a>
+            <div class="d-flex flex-column font-size:12 ms-2">
             <span class="fw-500">
                 IDR {{ number_format($storeBalanceComposer, 0, ',', '.') }}
             </span>
-            <a href="{{ route('mywallet') }}" class="text-decoration-none fw-400">
-                Top Up
-            </a>
-        </div>
+                <a href="{{ route('mywallet') }}" class="text-decoration-none fw-400">
+                    Top Up
+                </a>
+            </div>
+        @endcan
     </li>
-    <li class="nav-item d-block d-md-none border-0">
-        <div class="nav-link">
-            <a class="btn btn-primary w-100" href="{{ route('design.create') }}">
-                <i class="ri-add-circle-line ri-xl align-middle"></i>
-                Create
-            </a>
-            {{--            <a class="btn btn-primary w-100" href="#createModal" data-bs-toggle="modal">--}}
-            {{--                <i class="ri-add-circle-line ri-xl align-middle"></i>--}}
-            {{--                Create--}}
-            {{--            </a>--}}
-        </div>
-    </li>
+    @can(App\Enums\Permissions::DESIGN)
+        <li class="nav-item d-block d-md-none border-0">
+            <div class="nav-link">
+                <a class="btn btn-primary w-100" href="{{ route('design.create') }}">
+                    <i class="ri-add-circle-line ri-xl align-middle"></i>
+                    Create
+                </a>
+                {{--            <a class="btn btn-primary w-100" href="#createModal" data-bs-toggle="modal">--}}
+                {{--                <i class="ri-add-circle-line ri-xl align-middle"></i>--}}
+                {{--                Create--}}
+                {{--            </a>--}}
+            </div>
+        </li>
+    @endcan
 
 
     {{--    <li class="nav-item border-start ps-4 me-3 d-none d-md-flex">--}}
