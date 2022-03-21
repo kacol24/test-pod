@@ -104,6 +104,8 @@
                                             <dt>
                                                 @if($transaction->isDeposit())
                                                     Wallet top up
+                                                @elseif($transaction->isCommission())
+                                                    Referral commission
                                                 @else
                                                     Production Cost - T-shirt (2 pcs) //TODO
                                                 @endif
@@ -115,16 +117,25 @@
                                     </div>
                                     <div class="col-md-3">
                                         <dl>
-                                            <dt>
-                                                {{ $transaction->ref->serial_number }}</dt>
-                                            <dd>
-                                                {{ $transaction->ref->payment }}
-                                            </dd>
+                                            @if($transaction->isDeposit())
+                                                <dt>
+                                                    {{ $transaction->ref->serial_number }}
+                                                </dt>
+                                            @else
+                                                <dt>
+                                                    {{ $transaction->ref->store->storename }}
+                                                </dt>
+                                            @endif
+                                            @unless($transaction->isCommission())
+                                                <dd>
+                                                    {{ $transaction->ref->payment }}
+                                                </dd>
+                                            @endunless
                                         </dl>
                                     </div>
                                     <div class="col-md-2 text-end">
                                         <dl>
-                                            <dt class="{{ $transaction->isDeposit() ? 'text-color:green' : 'text-color:red' }}
+                                            <dt class="{{ $transaction->isWithdrawal() ? 'text-color:red' : 'text-color:green' }}
                                                 ">
                                                 IDR
                                                 {{ $transaction->formatted_given }}

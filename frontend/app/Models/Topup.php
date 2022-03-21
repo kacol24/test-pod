@@ -27,6 +27,10 @@ class Topup extends Model
         'ref_id',
     ];
 
+    protected $appends = [
+        'serial_number'
+    ];
+
     protected static function booted()
     {
         static::addGlobalScope(new CurrentStoreScope);

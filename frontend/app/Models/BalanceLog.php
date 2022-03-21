@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Order\Order;
 use App\Scopes\CurrentStoreScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -40,6 +41,11 @@ class BalanceLog extends Model
         return $this->type == self::TYPE_OUT;
     }
 
+    public function isCommission()
+    {
+        return $this->type == self::TYPE_COMMISSION;
+    }
+
     public function getFormattedGivenAttribute()
     {
         return number_format($this->given, 0, ',', '.');
@@ -50,14 +56,17 @@ class BalanceLog extends Model
         return $this->belongsTo(Topup::class, 'ref_id');
     }
 
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'ref_id')->with('store');
+    }
+
     public function getRefAttribute()
     {
-        //if ($this->isDeposit()) {
-        //    return json_encode($this->topup);
-        //}
-        //
-        //return json_encode($this->order);
+        if ($this->isDeposit()) {
+            return $this->topup;
+        }
 
-        return $this->topup;
+        return $this->order;
     }
 }
