@@ -78,22 +78,6 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-4">
-                                    <label for="phone" class="text-uppercase text-color:black">
-                                        Mobile Phone
-                                    </label>
-                                    <input id="phone" name="phone" type="tel"
-                                           class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}"
-                                           placeholder="Your mobile phone" x-model="phone"
-                                           value="{{ old('phone') }}">
-                                    @error('phone')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-4">
                                     <label for="email" class="text-uppercase text-color:black">
                                         E-mail Address
                                     </label>
@@ -102,6 +86,22 @@
                                            placeholder="Your email" x-model="email"
                                            value="{{ old('email') }}">
                                     @error('email')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="phone" class="text-uppercase text-color:black">
+                                        Mobile Phone
+                                    </label>
+                                    <input id="phone" name="phone" type="tel"
+                                           class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}"
+                                           placeholder="Your mobile phone" x-model="phone"
+                                           value="{{ old('phone') }}">
+                                    @error('phone')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
