@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Account\AccountController;
+use App\Http\Controllers\Account\AddressController;
 use App\Http\Controllers\Account\SwitchStoreController;
 use App\Http\Controllers\Account\WalletController;
 use App\Http\Controllers\DesignController;
@@ -155,7 +156,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('my-purchases/{id?}/print', 'account.print-invoice')->name('orderdetail.print');
     Route::view('my-shipments', 'account.myshipments')->name('myshipments');
     Route::view('my-shipments/{id?}', 'account.shipmentdetail')->name('shipmentdetail');
-    Route::view('my-address', 'account.myaddress')->name('myaddress');
+
+    Route::get('my-address', [AddressController::class, 'index'])->name('myaddress');
+    Route::post('my-address', [AddressController::class, 'store'])->name('myaddress.store');
+    Route::put('my-address/{address}', [AccountController::class, 'update'])->name('myaddress.update');
+    Route::delete('my-address/{address}', [AccountController::class, 'update'])->name('myaddress.destroy');
+
     Route::view('my-team', 'account.myteam')->name('myteam');
     Route::get('my-wallet', [WalletController::class, 'index'])->name('mywallet');
     Route::get('referrals', [AccountController::class, 'referral'])->name('myreferral');
