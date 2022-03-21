@@ -38,8 +38,6 @@ class AccountController extends Controller
         auth()->user()->update([
             'name'        => $request->name,
             'phone'       => $request->phone,
-            'description' => $request->description,
-            'what_to_do'  => $request->what_to_do,
         ]);
 
         return back()->withStatus('Profile successfully updated!');
