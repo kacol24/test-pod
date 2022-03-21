@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Arr;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -37,7 +38,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'I\'m just playing around',
     ];
 
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -80,5 +81,18 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendEmailVerificationNotification()
     {
         $this->notify(new QueuedVerifyEmail);
+    }
+
+    public function getInitialsAttribute()
+    {
+        $explode = explode(' ', strtoupper($this->name));
+
+        $initials = collect([substr($explode[0], 0, 1)]);
+
+        if (count($explode) > 1) {
+            $initials->push(substr(Arr::last($explode), 0, 1));
+        }
+
+        return $initials->implode('');
     }
 }

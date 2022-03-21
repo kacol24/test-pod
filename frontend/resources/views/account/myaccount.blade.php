@@ -27,7 +27,7 @@
                                 </label>
                                 <input id="name" name="name" type="text"
                                        class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
-                                       value="{{ old('name') }}">
+                                       value="{{ auth()->user()->name }}">
                                 @error('name')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -42,7 +42,7 @@
                                         </label>
                                         <input id="phone" name="phone" type="tel"
                                                class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}"
-                                               value="{{ old('phone') }}">
+                                               value="{{ auth()->user()->phone }}">
                                         @error('phone')
                                         <div class="invalid-feedback">
                                             {{ $message }}
@@ -57,7 +57,7 @@
                                         </label>
                                         <input id="email" name="email" type="email"
                                                class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}"
-                                               value="{{ old('email') }}">
+                                               value="{{ auth()->user()->email }}" readonly>
                                         @error('email')
                                         <div class="invalid-feedback">
                                             {{ $message }}
@@ -73,10 +73,11 @@
                                             Describe Yourself?
                                         </label>
                                         <select class="form-select" id="describe">
-                                            <option selected>Illustrator/Designer</option>
-                                            <option value="1">One</option>
-                                            <option value="2">Two</option>
-                                            <option value="3">Three</option>
+                                            @foreach(App\Models\User::OPTIONS_DESCRIBE as $option)
+                                                <option value="{{ $option }}" {{ auth()->user()->description == $option ? 'selected' : '' }}>
+                                                    {{ $option }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -86,10 +87,11 @@
                                             What Would You Like To Do With Us
                                         </label>
                                         <select class="form-select" id="intention">
-                                            <option selected>Start my first online business</option>
-                                            <option value="1">One</option>
-                                            <option value="2">Two</option>
-                                            <option value="3">Three</option>
+                                            @foreach(App\Models\User::OPTIONS_WHAT_WOULD_YOU_DO as $option)
+                                                <option value="{{ $option }}" {{ auth()->user()->what_to_do == $option ? 'selected' : '' }}>
+                                                    {{ $option }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
