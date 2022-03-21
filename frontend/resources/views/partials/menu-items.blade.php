@@ -64,19 +64,23 @@
     </li>
     <li class="nav-item d-block d-md-none border-0">
         <div class="nav-link">
-            <a class="btn btn-primary w-100" href="#createModal" data-bs-toggle="modal">
+            <a class="btn btn-primary w-100" href="{{ route('design.create') }}">
                 <i class="ri-add-circle-line ri-xl align-middle"></i>
                 Create
             </a>
+{{--            <a class="btn btn-primary w-100" href="#createModal" data-bs-toggle="modal">--}}
+{{--                <i class="ri-add-circle-line ri-xl align-middle"></i>--}}
+{{--                Create--}}
+{{--            </a>--}}
         </div>
     </li>
 
 
-    <li class="nav-item border-start ps-4 me-3 d-none d-md-flex">
-        <a class="nav-link" href="./customers-index.html">
-            <i class="ri-shopping-basket-line ri-xl align-middle"></i>
-        </a>
-    </li>
+{{--    <li class="nav-item border-start ps-4 me-3 d-none d-md-flex">--}}
+{{--        <a class="nav-link" href="./customers-index.html">--}}
+{{--            <i class="ri-shopping-basket-line ri-xl align-middle"></i>--}}
+{{--        </a>--}}
+{{--    </li>--}}
     <li class="nav-item dropdown border-start ps-4 me-3 d-none d-md-flex">
         <a class="nav-link dropdown-toggle fw-500 d-flex align-items-center" href="#" role="button"
            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -144,9 +148,13 @@
         </div>
     </li>
     <li class="nav-item me-3 d-none d-md-flex">
-        <a class="btn btn-primary" href="#createModal" data-bs-toggle="modal">
+        <a class="btn btn-primary" href="{{ route('design.create') }}">
             <i class="ri-add-circle-line ri-xl align-middle"></i>
             Create
         </a>
+{{--        <a class="btn btn-primary" href="#createModal" data-bs-toggle="modal">--}}
+{{--            <i class="ri-add-circle-line ri-xl align-middle"></i>--}}
+{{--            Create--}}
+{{--        </a>--}}
     </li>
 </ul>
