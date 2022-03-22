@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Notifications\QueuedVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Arr;
@@ -38,6 +39,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     use HasApiTokens, Notifiable;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -51,6 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'description',
         'what_to_do',
         'password',
+        'last_login_at'
     ];
 
     /**
