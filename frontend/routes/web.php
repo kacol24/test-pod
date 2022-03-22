@@ -4,6 +4,7 @@ use App\Enums\Permissions;
 use App\Http\Controllers\Account\AccountController;
 use App\Http\Controllers\Account\AddressController;
 use App\Http\Controllers\Account\SwitchStoreController;
+use App\Http\Controllers\Account\TeamController;
 use App\Http\Controllers\Account\WalletController;
 use App\Http\Controllers\DesignController;
 use App\Http\Controllers\DesignProductController;
@@ -167,7 +168,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('referrals', [AccountController::class, 'referral'])->name('myreferral');
 
     Route::middleware('can:'.Permissions::TEAM)->group(function (){
-        Route::view('my-team', 'account.myteam')->name('myteam');
+        Route::get('my-team', [TeamController::class, 'index'])->name('myteam');
+        Route::post('my-team/invite', [TeamController::class, 'invite'])->name('myteam.invite');
+        Route::delete('my-team/invite/{invite?}', [TeamController::class, 'destroyInvite'])->name('myteam.destroy_invite');
     });
 
     Route::middleware('can:'.Permissions::WALLET)->group(function (){

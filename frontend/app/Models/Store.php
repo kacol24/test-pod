@@ -89,4 +89,9 @@ class Store extends Model
     {
         return self::MAX_DOWNLINE - $this->downlines->count();
     }
+
+    public function teamInvitations()
+    {
+        return $this->hasMany(TeamInvitation::class);
+    }
 }

@@ -53,7 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'description',
         'what_to_do',
         'password',
-        'last_login_at'
+        'last_login_at',
     ];
 
     /**
@@ -73,10 +73,11 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'last_login_at'     => 'datetime',
     ];
 
     protected $appends = [
-        'role_id'
+        'role_id',
     ];
 
     public function stores()
@@ -113,5 +114,19 @@ class User extends Authenticatable implements MustVerifyEmail
         return StoreUser::where('store_id', session(Store::SESSION_KEY)->id)
                         ->where('user_id', $this->id)
                         ->first()->role_id;
+    }
+
+    public function getRoleNameAttribute()
+    {
+        switch ($this->role_id) {
+            case self::ROLE_ID_SUPER_ADMIN:
+                return 'Super Admin';
+            case self::ROLE_ID_ADMIN:
+                return 'Admin';
+            case self::ROLE_ID_DESIGNER:
+                return 'Designer';
+            case self::ROLE_ID_FINANCE:
+                return 'Finance';
+        }
     }
 }

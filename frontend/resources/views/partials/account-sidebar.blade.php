@@ -50,7 +50,7 @@
             {{--            </li>--}}
             @can(App\Enums\Permissions::TEAM)
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('myteam') }}">
+                    <a class="nav-link {{ request()->routeIs(['myteam']) ? 'active' : '' }}" href="{{ route('myteam') }}">
                         My Team
                     </a>
                 </li>
