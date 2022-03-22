@@ -99,7 +99,8 @@ class RegisteredUserController extends Controller
             'what_to_do'  => $request->what_to_do,
         ]);
         $invitation->store->users()->attach($user->id, [
-            'role_id' => $invitation->role_id,
+            'role_id'   => $invitation->role_id,
+            'joined_at' => now(),
         ]);
         $invitation->delete();
 

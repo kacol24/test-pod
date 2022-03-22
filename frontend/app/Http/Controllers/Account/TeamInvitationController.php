@@ -7,6 +7,7 @@ use App\Mail\TeamInvitation as MailInvitation;
 use App\Models\Store;
 use App\Models\TeamInvitation;
 use App\Models\User;
+use App\Scopes\CurrentStoreScope;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -43,13 +44,17 @@ class TeamInvitationController extends Controller
         return back(303);
     }
 
-    public function accept(Request $request, TeamInvitation $invitation)
+    public function accept(Request $request, $invitationId)
     {
+        $invitation = TeamInvitation::withoutGlobalScope(CurrentStoreScope::class)
+                                    ->findOrFail($invitationId);
+
         $user = User::where('email', $invitation->email)->firstOrFail();
 
         \DB::beginTransaction();
-        $invitation->store()->users()->attach($user->id, [
-            'role_id' => $invitation->role_id,
+        $invitation->store->users()->attach($user->id, [
+            'role_id'   => $invitation->role_id,
+            'joined_at' => now(),
         ]);
         $invitation->delete();
         \DB::commit();

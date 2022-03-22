@@ -7,6 +7,7 @@ use App\Http\Controllers\Account\SwitchStoreController;
 use App\Http\Controllers\Account\TeamController;
 use App\Http\Controllers\Account\TeamInvitationController;
 use App\Http\Controllers\Account\WalletController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DesignController;
 use App\Http\Controllers\DesignProductController;
@@ -172,9 +173,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('my-team', [TeamController::class, 'index'])->name('myteam');
         Route::post('my-team/invite', [TeamInvitationController::class, 'store'])->name('myteam.invite');
         Route::delete('my-team/invite/{invite?}', [TeamInvitationController::class, 'destroy'])->name('myteam.destroy_invite');
-        Route::get('my-team/invite/{invitation}/accept', [TeamInvitationController::class, 'accept'])
-             ->middleware(['signed'])
-             ->name('myteam.accept');
     });
 
     Route::middleware('can:'.Permissions::WALLET)->group(function (){
@@ -223,9 +221,14 @@ Route::post('webhook/tokopedia/status', [TokopediaController::class, 'status']);
 Route::post('webhook/shopee', [ShopeeController::class, 'index']);
 
 require __DIR__.'/auth.php';
+
 Route::get('/register/invited/{invitation}', [RegisteredUserController::class, 'invited'])
      ->name('register_invited')
      ->middleware('guest');
 
 Route::post('/register/invited/{invitation}', [RegisteredUserController::class, 'storeInvited'])
      ->middleware('guest');
+
+Route::get('my-team/invite/{invitation}/accept', [TeamInvitationController::class, 'accept'])
+     ->middleware(['signed'])
+     ->name('myteam.accept');
