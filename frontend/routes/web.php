@@ -171,6 +171,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::middleware('can:'.Permissions::TEAM)->group(function (){
         Route::get('my-team', [TeamController::class, 'index'])->name('myteam');
+        Route::delete('my-team/{member}', [TeamController::class, 'destroy'])->name('myteam.destroy');
+        Route::put('my-team/{member}', [TeamController::class, 'update'])->name('myteam.update');
         Route::post('my-team/invite', [TeamInvitationController::class, 'store'])->name('myteam.invite');
         Route::delete('my-team/invite/{invite?}', [TeamInvitationController::class, 'destroy'])->name('myteam.destroy_invite');
     });

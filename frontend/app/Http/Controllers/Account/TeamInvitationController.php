@@ -41,7 +41,7 @@ class TeamInvitationController extends Controller
         $invite = TeamInvitation::findOrFail($id);
         $invite->delete();
 
-        return back(303);
+        return back(303)->with('success_delete', 'User invitation removed.');
     }
 
     public function accept(Request $request, $invitationId)

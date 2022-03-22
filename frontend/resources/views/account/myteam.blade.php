@@ -3,11 +3,19 @@
 @section('content')
     <div class="container"
          x-data="{
-            delete_id: '',
-            delete_url: '{{ route('myteam.destroy_invite') }}/',
+            delete_url: '',
             delete_email: '',
-            delete_role: ''
+            delete_role: '',
+
+            update_url: '',
+            update_role: '',
+            update_email: ''
          }">
+        @if (session('success_delete'))
+            <x-alert type="success" dismissible icon>
+                {{ session('success_delete') }}
+            </x-alert>
+        @endif
         <div class="row">
             <div class="col-md-4">
                 @include('partials.account-sidebar')
@@ -58,11 +66,14 @@
                                         </div>
                                     </div>
                                     <div class="col-md-2 text-end">
-                                        <a href="" class="text-decoration-none text-color:black me-3">
+                                        <a href="#modalEditMember" class="text-decoration-none text-color:black me-3"
+                                           data-bs-toggle="modal"
+                                           @click="update_role='{{ $member->role_id }}';update_url='{{ route('myteam.update', $member->id) }}'; update_email='{{ $member->email }}'">
                                             <i class="ri-edit-line ri-fw ri-lg"></i>
                                         </a>
                                         <a href="#modalDelete" class="text-decoration-none text-color:black"
-                                           data-bs-toggle="modal">
+                                           data-bs-toggle="modal"
+                                           @click="delete_email='{{ $member->email }}'; delete_role='{{ $member->role_name }}'; delete_url='{{ route('myteam.destroy', $member->id) }}'">
                                             <i class="ri-delete-bin-line ri-fw ri-lg"></i>
                                         </a>
                                     </div>
@@ -104,7 +115,7 @@
                                     <div class="col-md-2 text-end">
                                         <a href="#modalDelete" class="text-decoration-none text-color:black"
                                            data-bs-toggle="modal"
-                                           @click="delete_id = {{ $invite->id }}; delete_email = '{{ $invite->email }}'; delete_role = '{{ $invite->role_name }}'">
+                                           @click="delete_email='{{ $invite->email }}'; delete_role='{{ $invite->role_name }}';delete_url='{{ route('myteam.destroy_invite', $invite->id) }}'">
                                             <i class="ri-delete-bin-line ri-fw ri-lg"></i>
                                         </a>
                                     </div>
@@ -124,6 +135,80 @@
                         </a>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modalEditMember" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+                 style="max-width: 385px">
+                <form :action="update_url" method="post">
+                    @csrf
+                    @method('put')
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">
+                                Update User
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-4">
+                                <label for="email_modal" class="text-uppercase text-color:black">
+                                    Email Address
+                                </label>
+                                <input type="email" class="form-control" id="email_modal" name="email" required
+                                       disabled x-model="update_email">
+                            </div>
+                            <div class="mb-4">
+                                <label class="text-uppercase text-color:black">
+                                    Assign A Role
+                                </label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="role_id" required
+                                           x-model="update_role"
+                                           id="role_admin" value="{{ App\Models\User::ROLE_ID_ADMIN }}">
+                                    <label class="form-check-label" for="role_admin">
+                                        Admin
+                                        <span class="d-block font-size:12 fw-400">
+                                    Allowed to view all pages, but unable to edit Account Settings.
+                                </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="role_id" required
+                                           x-model="update_role"
+                                           id="role_designer" value="{{ App\Models\User::ROLE_ID_DESIGNER }}">
+                                    <label class="form-check-label" for="role_designer">
+                                        Designer
+                                        <span class="d-block font-size:12 fw-400">
+                                            Allowed to view and edit product pages only
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="role_id" required
+                                           x-model="update_role"
+                                           id="role_finance" value="{{ App\Models\User::ROLE_ID_FINANCE }}">
+                                    <label class="form-check-label" for="role_finance">
+                                        Finance
+                                        <span class="d-block font-size:12 fw-400">
+                                            Allowed to view order pages only
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary d-block w-100" :disabled="!email || !role">
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -153,7 +238,7 @@
                             Once removed, they will have no access to this account unless you invite them again.
                         </p>
                         <div class="d-flex justify-content-center mt-3">
-                            <form :action="delete_url + delete_id" method="post">
+                            <form :action="delete_url" method="post">
                                 @csrf
                                 @method('delete')
                                 <button type="submit" class="btn px-5 btn-primary me-2" data-bs-dismiss="modal">
