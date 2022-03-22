@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Store;
 use App\Models\StoreReferral;
+use App\Models\TeamInvitation;
 use App\Models\User;
+use App\Scopes\CurrentStoreScope;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -21,6 +24,14 @@ class RegisteredUserController extends Controller
     public function create()
     {
         return view('auth.register');
+    }
+
+    public function invited($inviteId)
+    {
+        $invitation = TeamInvitation::withoutGlobalScope(CurrentStoreScope::class)
+                                    ->findOrFail($inviteId);
+
+        return view('auth.register_invited', compact('invitation'));
     }
 
     /**
@@ -63,9 +74,44 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        Auth::login($user, $remember = true);
+        auth()->user()->update([
+            'last_login_at' => now(),
+        ]);
         session([Store::SESSION_KEY => $store]);
         session()->forget(StoreReferral::REF_SESSION_KEY);
+
+        return redirect()->route('verification.notice');
+    }
+
+    public function storeInvited(Request $request, $inviteId)
+    {
+        $invitation = TeamInvitation::withoutGlobalScope(CurrentStoreScope::class)
+                                    ->findOrFail($inviteId);
+
+        \DB::beginTransaction();
+        $user = User::create([
+            'name'        => $request->name,
+            'email'       => $invitation->email,
+            'phone'       => $request->phone,
+            'password'    => Hash::make($request->password),
+            'description' => $request->description,
+            'what_to_do'  => $request->what_to_do,
+        ]);
+        $invitation->store->users()->attach($user->id, [
+            'role_id' => $invitation->role_id,
+        ]);
+        $invitation->delete();
+
+        event(new Registered($user));
+
+        Auth::login($user, $remember = true);
+        auth()->user()->update([
+            'last_login_at' => now(),
+        ]);
+        session([Store::SESSION_KEY => $invitation->store]);
+
+        \DB::commit();
 
         return redirect()->route('verification.notice');
     }

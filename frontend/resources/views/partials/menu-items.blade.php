@@ -134,10 +134,10 @@
                     </a>
                 </li>
             @endcan
-            <li class="p-0">
-                <hr class="dropdown-divider">
-            </li>
             @if(auth()->user()->stores->count() > 1)
+                <li class="p-0">
+                    <hr class="dropdown-divider">
+                </li>
                 <li class="p-0">
                     <h6 class="dropdown-header text-uppercase">
                         Switch to other account
