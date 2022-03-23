@@ -32,7 +32,7 @@
                             <div class="card-body pt-3">
                                 <div class="row">
                                     <div class="col-md">
-                                        <select name="template" class="form-control">
+                                        <select name="template" class="form-select">
                                             @foreach($templates as $template)
                                                 <option value="{{$template->id}}">{{$template->design_name}}</option>
                                             @endforeach
@@ -180,7 +180,7 @@
                 </form>
             </div>
             <div class="col-md">
-                <div class="card p-0">
+                <div class="card p-0 mt-5 mt-md-0">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h5 class="card-title d-inline-block">
                             Product Colors
