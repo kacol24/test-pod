@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Auth;
 
 use App\Models\Store;
-use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -31,7 +30,7 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'email'    => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ];
     }
@@ -47,7 +46,7 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (! Auth::attempt($this->only('email', 'password'), $remember = true)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -62,6 +61,10 @@ class LoginRequest extends FormRequest
                 'email' => __('You don\'t have to right permission to access this store.'),
             ]);
         }
+
+        auth()->user()->update([
+            'last_login_at' => now(),
+        ]);
 
         RateLimiter::clear($this->throttleKey());
     }

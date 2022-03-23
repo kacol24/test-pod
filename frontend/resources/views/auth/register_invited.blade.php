@@ -4,12 +4,12 @@
 
 @section('content')
     <div class="container">
-        <form method="post" action="{{ route('register') }}" novalidate
+        <form method="post" action="{{ route('register_invited', $invitation) }}" novalidate
               x-data="{
-                username: '{{ old('username') }}',
+                username: '{{ old('username', $invitation->store->storename) }}',
                 name: '{{ old('name') }}',
                 phone: '{{ old('phone') }}',
-                email: '{{ old('email') }}',
+                email: '{{ old('email', $invitation->email) }}',
                 password: '',
                 password_confirmation: '',
                 description: '{{ old('description') }}',
@@ -33,11 +33,11 @@
                     @endif
                     <fieldset>
                         <legend class="fw-600 font-poppins font-size:22">
-                            Create Account
+                            Join as creator
                         </legend>
                         <small class="font-size:12">
-                            Let’s start by filling up these real quick! Or, have you had an account? <a
-                                href="{{ route('login') }}" class="text-decoration-none">Sign In</a>
+                            {{ $invitation->store->storename }} has invited you into their team
+                            as {{ $invitation->role_name }}
                         </small>
                         <hr>
                         <div class="row">
@@ -49,8 +49,9 @@
                                     <input id="username" name="username" type="text"
                                            class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}"
                                            placeholder="Create a name for your account (eg. ELLISTORE)"
+                                           disabled
                                            @keydown.space.prevent x-model="username"
-                                           value="{{ old('username') }}">
+                                           value="{{ old('username', $invitation->store->storename) }}">
                                     @error('username')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -84,7 +85,8 @@
                                     <input id="email" name="email" type="email"
                                            class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}"
                                            placeholder="Your email" x-model="email"
-                                           value="{{ old('email') }}">
+                                           disabled
+                                           value="{{ old('email', $invitation->email) }}">
                                     @error('email')
                                     <div class="invalid-feedback">
                                         {{ $message }}

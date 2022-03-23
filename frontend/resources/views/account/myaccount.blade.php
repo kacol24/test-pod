@@ -49,21 +49,6 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-4">
-                                        <label for="phone" class="text-uppercase text-color:black">
-                                            Mobile Phone
-                                        </label>
-                                        <input id="phone" name="phone" type="tel"
-                                               class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}"
-                                               value="{{ auth()->user()->phone }}">
-                                        @error('phone')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-4">
                                         <label for="email" class="text-uppercase text-color:black">
                                             E-mail Address
                                         </label>
@@ -77,36 +62,19 @@
                                         @enderror
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-6">
-                                    <div class="mb-4 mb-md-0">
-                                        <label for="description" class="text-uppercase text-color:black">
-                                            Describe Yourself?
+                                    <div class="mb-4">
+                                        <label for="phone" class="text-uppercase text-color:black">
+                                            Mobile Phone
                                         </label>
-                                        <select class="form-select" id="description" name="description">
-                                            @foreach(App\Models\User::OPTIONS_DESCRIBE as $option)
-                                                <option
-                                                    value="{{ $option }}" {{ auth()->user()->description == $option ? 'selected' : '' }}>
-                                                    {{ $option }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-4 mb-md-0">
-                                        <label for="what_to_do" class="text-uppercase text-color:black">
-                                            What Would You Like To Do With Us
-                                        </label>
-                                        <select class="form-select" id="what_to_do" name="what_to_do">
-                                            @foreach(App\Models\User::OPTIONS_WHAT_WOULD_YOU_DO as $option)
-                                                <option
-                                                    value="{{ $option }}" {{ auth()->user()->what_to_do == $option ? 'selected' : '' }}>
-                                                    {{ $option }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <input id="phone" name="phone" type="tel"
+                                               class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}"
+                                               value="{{ auth()->user()->phone }}">
+                                        @error('phone')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>

@@ -172,94 +172,52 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <div class="card p-0 card--address-default">
-                                    <div class="card-header border-0 pb-0 p-3 d-flex justify-content-end">
-                                        <div class="d-flex align-items-center">
-                                            <a href="" class="text-color:black text-decoration-none me-3">
-                                                <i class="ri-pencil-line ri-fw ri-lg align-middle"></i>
-                                            </a>
-                                            <div class="dropdown">
-                                                <a href="" class="text-color:black text-decoration-none"
-                                                   data-bs-toggle="dropdown">
-                                                    <i class="ri-more-2-line ri-fw ri-lg align-middle"></i>
+                            @foreach($addresses as $address)
+                                <div class="col-md-6 mb-4">
+                                    <div class="card p-0 card--address-default">
+                                        <div class="card-header border-0 pb-0 p-3 d-flex justify-content-end">
+                                            <div class="d-flex align-items-center">
+                                                <a href="" class="text-color:black text-decoration-none me-3">
+                                                    <i class="ri-pencil-line ri-fw ri-lg align-middle"></i>
                                                 </a>
-                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                    <li>
-                                                        <a class="dropdown-item font-size:12 fw-500 p-4" href="#">
-                                                            Make Default Address
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <hr class="dropdown-divider">
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item font-size:12 fw-500 p-4" href="#">
-                                                            Delete Address
-                                                        </a>
-                                                    </li>
-                                                </ul>
+                                                <div class="dropdown">
+                                                    <a href="" class="text-color:black text-decoration-none"
+                                                       data-bs-toggle="dropdown">
+                                                        <i class="ri-more-2-line ri-fw ri-lg align-middle"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                        <li>
+                                                            <a class="dropdown-item font-size:12 fw-500 p-4" href="#">
+                                                                Make Default Address
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item font-size:12 fw-500 p-4" href="#">
+                                                                Delete Address
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="card-body pt-0">
-                                        <h4 class="card-title font-size:14 fw-500">
-                                            Home
-                                        </h4>
-                                        <address class="font-size:12 m-0">
-                                            Junitalia<br>
-                                            08996782233<br>
-                                            Jl.Pattimura blok D2 no. 11,<br>
-                                            Jakarta Pusat, DKI Jakarta,<br>
-                                            Indonesia 16143
-                                        </address>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-4">
-                                <div class="card p-0">
-                                    <div class="card-header border-0 pb-0 p-3 d-flex justify-content-end">
-                                        <div class="d-flex align-items-center">
-                                            <a href="" class="text-color:black text-decoration-none me-3">
-                                                <i class="ri-pencil-line ri-fw ri-lg align-middle"></i>
-                                            </a>
-                                            <div class="dropdown">
-                                                <a href="" class="text-color:black text-decoration-none"
-                                                   data-bs-toggle="dropdown">
-                                                    <i class="ri-more-2-line ri-fw ri-lg align-middle"></i>
-                                                </a>
-                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                    <li>
-                                                        <a class="dropdown-item font-size:12 fw-500 p-4" href="#">
-                                                            Make Default Address
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <hr class="dropdown-divider">
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item font-size:12 fw-500 p-4" href="#">
-                                                            Delete Address
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                        <div class="card-body pt-0">
+                                            <h4 class="card-title font-size:14 fw-500">
+                                                Home
+                                            </h4>
+                                            <address class="font-size:12 m-0">
+                                                Junitalia<br>
+                                                08996782233<br>
+                                                Jl.Pattimura blok D2 no. 11,<br>
+                                                Jakarta Pusat, DKI Jakarta,<br>
+                                                Indonesia 16143
+                                            </address>
                                         </div>
                                     </div>
-                                    <div class="card-body pt-0">
-                                        <h4 class="card-title font-size:14 fw-500">
-                                            Home
-                                        </h4>
-                                        <address class="font-size:12 m-0">
-                                            Junitalia<br>
-                                            08996782233<br>
-                                            Jl.Pattimura blok D2 no. 11,<br>
-                                            Jakarta Pusat, DKI Jakarta,<br>
-                                            Indonesia 16143
-                                        </address>
-                                    </div>
                                 </div>
-                            </div>
+                            @endforeach
                             <div class="col-md-6 mb-4">
                                 <a href="#addressModal" class="text-decoration-none" data-bs-toggle="modal">
                                     <div class="card card--address-placeholder" style="height: 192px;">

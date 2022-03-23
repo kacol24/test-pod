@@ -30,35 +30,38 @@
                     My Profile
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs(['myorders', 'orderdetail']) ? 'active' : '' }}"
-                   href="{{ route('myorders') }}">
-                    My Purchases
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs(['myshipments', 'shipmentdetail']) ? 'active' : '' }}"
-                   href="{{ route('myshipments') }}">
-                    My Shipments
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs(['myaddress']) ? 'active' : '' }}"
-                   href="{{ route('myaddress') }}">
-                    My Addresses
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('myteam') }}">
-                    My Team
-                </a>
-            </li>
+            {{--            <li class="nav-item">--}}
+            {{--                <a class="nav-link {{ request()->routeIs(['myorders', 'orderdetail']) ? 'active' : '' }}"--}}
+            {{--                   href="{{ route('myorders') }}">--}}
+            {{--                    My Purchases--}}
+            {{--                </a>--}}
+            {{--            </li>--}}
+            {{--            <li class="nav-item">--}}
+            {{--                <a class="nav-link {{ request()->routeIs(['myshipments', 'shipmentdetail']) ? 'active' : '' }}"--}}
+            {{--                   href="{{ route('myshipments') }}">--}}
+            {{--                    My Shipments--}}
+            {{--                </a>--}}
+            {{--            </li>--}}
+            {{--            <li class="nav-item">--}}
+            {{--                <a class="nav-link {{ request()->routeIs(['myaddress']) ? 'active' : '' }}"--}}
+            {{--                   href="{{ route('myaddress') }}">--}}
+            {{--                    My Addresses--}}
+            {{--                </a>--}}
+            {{--            </li>--}}
+            @can(App\Enums\Permissions::TEAM)
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs(['myteam']) ? 'active' : '' }}" href="{{ route('myteam') }}">
+                        My Team
+                    </a>
+                </li>
+            @endcan
         </ul>
     </div>
 </div>
 
 <div class="dropdown mb-4 d-block d-md-none">
-    <button class="btn btn-default w-100 dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+    <button class="btn btn-default w-100 dropdown-toggle" type="button" id="dropdownMenuButton1"
+            data-bs-toggle="dropdown"
             aria-expanded="false">
         My Profile
     </button>
@@ -68,25 +71,27 @@
                 My Profile
             </a>
         </li>
-        <li>
-            <a class="dropdown-item" href="{{ route('myorders') }}">
-                My Purchases
-            </a>
-        </li>
-        <li>
-            <a class="dropdown-item" href="{{ route('myshipments') }}">
-                My Shipments
-            </a>
-        </li>
-        <li>
-            <a class="dropdown-item" href="{{ route('myaddress') }}">
-                My Addresses
-            </a>
-        </li>
-        <li>
-            <a class="dropdown-item" href="{{ route('myteam') }}">
-                My Team
-            </a>
-        </li>
+        {{--        <li>--}}
+        {{--            <a class="dropdown-item" href="{{ route('myorders') }}">--}}
+        {{--                My Purchases--}}
+        {{--            </a>--}}
+        {{--        </li>--}}
+        {{--        <li>--}}
+        {{--            <a class="dropdown-item" href="{{ route('myshipments') }}">--}}
+        {{--                My Shipments--}}
+        {{--            </a>--}}
+        {{--        </li>--}}
+        {{--        <li>--}}
+        {{--            <a class="dropdown-item" href="{{ route('myaddress') }}">--}}
+        {{--                My Addresses--}}
+        {{--            </a>--}}
+        {{--        </li>--}}
+        @can(App\Enums\Permissions::TEAM)
+            <li>
+                <a class="dropdown-item" href="{{ route('myteam') }}">
+                    My Team
+                </a>
+            </li>
+        @endcan
     </ul>
 </div>

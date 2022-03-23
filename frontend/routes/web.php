@@ -1,17 +1,31 @@
 <?php
 
+use App\Enums\Permissions;
 use App\Http\Controllers\Account\AccountController;
+use App\Http\Controllers\Account\AddressController;
 use App\Http\Controllers\Account\SwitchStoreController;
+use App\Http\Controllers\Account\TeamController;
+use App\Http\Controllers\Account\TeamInvitationController;
 use App\Http\Controllers\Account\WalletController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DesignController;
 use App\Http\Controllers\DesignProductController;
+use App\Http\Controllers\ShopeeController;
+use App\Http\Controllers\TokopediaController;
 use App\Http\Controllers\TopupController;
 use App\Http\Controllers\Xendit\XenditController;
 use App\Http\Controllers\Xendit\XenditWebhookController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TokopediaController;
-use App\Http\Controllers\ShopeeController;
 use App\Jobs\CapacityUpdated;
+use App\Models\Order\Order as OrderModel;
+use App\Models\Product\Product as ProductModel;
+use App\Repositories\Facades\Order;
+use App\Repositories\Facades\Product;
+use App\Repositories\Facades\Shopee;
+use App\Repositories\Facades\Tokopedia;
+use App\Services\Facades\Shopee as ShopeeService;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,14 +36,6 @@ use App\Jobs\CapacityUpdated;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-use App\Repositories\Facades\Tokopedia;
-use App\Repositories\Facades\Shopee;
-use App\Repositories\Facades\Order;
-use App\Repositories\Facades\Product;
-use App\Services\Facades\Shopee as ShopeeService;
-use App\Models\Product\Product as ProductModel;
-use App\Models\Order\Order as OrderModel;
 
 Route::get('shopee/unpublish-product', function () {
     $product = ProductModel::where('store_id', session('current_store')->id)->where('id',8)->first();
@@ -155,30 +161,48 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('my-purchases/{id?}/print', 'account.print-invoice')->name('orderdetail.print');
     Route::view('my-shipments', 'account.myshipments')->name('myshipments');
     Route::view('my-shipments/{id?}', 'account.shipmentdetail')->name('shipmentdetail');
-    Route::view('my-address', 'account.myaddress')->name('myaddress');
-    Route::view('my-team', 'account.myteam')->name('myteam');
-    Route::get('my-wallet', [WalletController::class, 'index'])->name('mywallet');
+
+    Route::get('my-address', [AddressController::class, 'index'])->name('myaddress');
+    Route::post('my-address', [AddressController::class, 'store'])->name('myaddress.store');
+    Route::put('my-address/{address}', [AccountController::class, 'update'])->name('myaddress.update');
+    Route::delete('my-address/{address}', [AccountController::class, 'update'])->name('myaddress.destroy');
+
     Route::get('referrals', [AccountController::class, 'referral'])->name('myreferral');
 
-    Route::get('top-up', [TopupController::class, 'index'])->name('topup');
-    Route::post('top-up', [TopupController::class, 'store']);
-    Route::get('top-up/success', [TopupController::class, 'success'])->name('topup.success');
+    Route::middleware('can:'.Permissions::TEAM)->group(function (){
+        Route::get('my-team', [TeamController::class, 'index'])->name('myteam');
+        Route::delete('my-team/{member}', [TeamController::class, 'destroy'])->name('myteam.destroy');
+        Route::put('my-team/{member}', [TeamController::class, 'update'])->name('myteam.update');
+        Route::post('my-team/invite', [TeamInvitationController::class, 'store'])->name('myteam.invite');
+        Route::delete('my-team/invite/{invite?}', [TeamInvitationController::class, 'destroy'])->name('myteam.destroy_invite');
+    });
+
+    Route::middleware('can:'.Permissions::WALLET)->group(function (){
+        Route::get('my-wallet', [WalletController::class, 'index'])->name('mywallet');
+        Route::get('top-up', [TopupController::class, 'index'])->name('topup');
+        Route::post('top-up', [TopupController::class, 'store']);
+        Route::get('top-up/success', [TopupController::class, 'success'])->name('topup.success');
+    });
 
     Route::post('xendit/cc', [XenditController::class, 'creditCard'])->name('xendit.cc');
     Route::post('xendit/e-wallet', [XenditController::class, 'ewallet'])->name('xendit.ewallet');
 
-    Route::get('design/add-more', [DesignController::class, 'additional'])->name('design.additional');
-    Route::get('design/finish', [DesignController::class, 'finish'])->name('design.finish');
-    Route::post('design/finish', [DesignController::class, 'store'])->name('design.finish.store');
-    Route::get('design/saving', [DesignController::class, 'saving'])->name('design.saving');
-    Route::get('design/success', [DesignController::class, 'success'])->name('design.saved');
-    Route::get('design/datatable', [DesignController::class, 'datatable'])->name('design.datatable');
-    Route::resource('design', DesignController::class);
-    Route::get('design/product/{id}', [DesignController::class, 'designer'])->name('design');
-    Route::post('design/product/{id}', [DesignController::class, 'saveDesigner'])->name('design.post');
-    Route::get('design/product/{id}/remove', [DesignController::class, 'removeProduct'])->name('design.remove-product');
-    Route::get('design/{design}/product/{product}/edit', [DesignProductController::class, 'edit'])->name('design.product.edit');
-    Route::post('design/{design}/product/{product}/edit', [DesignProductController::class, 'update']);
+    Route::middleware('can:'.Permissions::DESIGN)->group(function (){
+        Route::get('design/add-more', [DesignController::class, 'additional'])->name('design.additional');
+        Route::get('design/finish', [DesignController::class, 'finish'])->name('design.finish');
+        Route::post('design/finish', [DesignController::class, 'store'])->name('design.finish.store');
+        Route::get('design/saving', [DesignController::class, 'saving'])->name('design.saving');
+        Route::get('design/success', [DesignController::class, 'success'])->name('design.saved');
+        Route::get('design/datatable', [DesignController::class, 'datatable'])->name('design.datatable');
+        Route::resource('design', DesignController::class);
+        Route::get('design/product/{id}', [DesignController::class, 'designer'])->name('design');
+        Route::post('design/product/{id}', [DesignController::class, 'saveDesigner'])->name('design.post');
+        Route::get('design/product/{id}/remove', [DesignController::class, 'removeProduct'])
+             ->name('design.remove-product');
+        Route::get('design/{design}/product/{product}/edit', [DesignProductController::class, 'edit'])
+             ->name('design.product.edit');
+        Route::post('design/{design}/product/{product}/edit', [DesignProductController::class, 'update']);
+    });
 });
 
 Route::prefix('xendit')->group(function () {
@@ -199,3 +223,14 @@ Route::post('webhook/tokopedia/status', [TokopediaController::class, 'status']);
 Route::post('webhook/shopee', [ShopeeController::class, 'index']);
 
 require __DIR__.'/auth.php';
+
+Route::get('/register/invited/{invitation}', [RegisteredUserController::class, 'invited'])
+     ->name('register_invited')
+     ->middleware('guest');
+
+Route::post('/register/invited/{invitation}', [RegisteredUserController::class, 'storeInvited'])
+     ->middleware('guest');
+
+Route::get('my-team/invite/{invitation}/accept', [TeamInvitationController::class, 'accept'])
+     ->middleware(['signed'])
+     ->name('myteam.accept');

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Notifications\QueuedVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Arr;
@@ -39,6 +39,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     use HasApiTokens, Notifiable;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -52,6 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'description',
         'what_to_do',
         'password',
+        'last_login_at',
     ];
 
     /**
@@ -71,11 +73,17 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'last_login_at'     => 'datetime',
+    ];
+
+    protected $appends = [
+        'role_id',
     ];
 
     public function stores()
     {
-        return $this->belongsToMany(Store::class, 'store_users', 'user_id')->withPivot('role_id');
+        return $this->belongsToMany(Store::class, 'store_users', 'user_id')
+                    ->withPivot('role_id');
     }
 
     public function sendEmailVerificationNotification()
@@ -94,5 +102,31 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return $initials->implode('');
+    }
+
+    public function getCurrentStoreAttribute()
+    {
+        return $this->stores()->where('store_id', session(Store::SESSION_KEY)->id)->first();
+    }
+
+    public function getRoleIdAttribute()
+    {
+        return StoreUser::where('store_id', session(Store::SESSION_KEY)->id)
+                        ->where('user_id', $this->id)
+                        ->first()->role_id;
+    }
+
+    public function getRoleNameAttribute()
+    {
+        switch ($this->role_id) {
+            case self::ROLE_ID_SUPER_ADMIN:
+                return 'Super Admin';
+            case self::ROLE_ID_ADMIN:
+                return 'Admin';
+            case self::ROLE_ID_DESIGNER:
+                return 'Designer';
+            case self::ROLE_ID_FINANCE:
+                return 'Finance';
+        }
     }
 }
