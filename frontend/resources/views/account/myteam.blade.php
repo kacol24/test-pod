@@ -203,7 +203,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary d-block w-100" :disabled="!email || !role">
+                            <button type="submit" class="btn btn-primary d-block w-100" :disabled="!update_email || !update_role">
                                 Update
                             </button>
                         </div>
