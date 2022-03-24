@@ -7,6 +7,7 @@ use App\Http\Controllers\Resources\ProductResource;
 use App\Http\Requests\ProductRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Jobs\GenerateMockupColors;
+use App\Models\CanvasLog;
 use App\Models\Product\Capacity;
 use App\Models\Product\Category;
 use App\Models\Product\Color;
@@ -707,7 +708,22 @@ class ProductController extends Controller
             "X-CustomersCanvasAPIKey: ".$key,
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $log = CanvasLog::create([
+            'type'    => static::class . '::uploadCanvas',
+            'request' => json_encode([
+                $url,
+                $key,
+                $post,
+            ]),
+        ]);
+
         $result = curl_exec($ch);
+
+        $log->update([
+            'response' => json_encode($result),
+        ]);
+
         curl_close($ch);
 
         return Str::of($result)->trim('"');

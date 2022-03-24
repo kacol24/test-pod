@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DesignDatatableResource;
+use App\Models\CanvasLog;
 use App\Models\MasterProduct\Category;
 use App\Models\MasterProduct\MasterProduct;
 use App\Models\MasterProduct\Template;
@@ -388,7 +389,22 @@ class DesignController extends Controller
             "X-CustomersCanvasAPIKey: ".$key,
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $log = CanvasLog::create([
+            'type' => static::class . '::generateImage',
+            'request' => json_encode([
+                $url,
+                $key,
+                $post,
+            ])
+        ]);
+
         $result = json_decode(curl_exec($ch), true);
+
+        $log->update([
+            'response' => json_encode($result)
+        ]);
+
         curl_close($ch);
 
         if (isset($result['message']) && $result['message'] == "Error") {
