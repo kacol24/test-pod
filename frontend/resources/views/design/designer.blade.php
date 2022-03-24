@@ -183,10 +183,10 @@
                 <div class="card p-0 mt-5 mt-md-0">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h5 class="card-title d-inline-block">
-                            Product Colors
+                            Design Editor
                         </h5>
                     </div>
-                    <div class="card-body border-0 px-0 pb-0 pt-3">
+                    <div class="card-body border-0 px-0 pb-0 pt-3 position-relative">
                         @if($masterproduct->colors->count()>0)
                             <div class="d-flex flex-wrap mb-3 justify-content-center">
                                 @foreach($masterproduct->colors as $color)
@@ -199,9 +199,7 @@
                                 @endforeach
                             </div>
                         @endif
-                        <div class="position-relative">
-                            <iframe class="content__iframe" id="editorFrame"></iframe>
-                        </div>
+                        <iframe class="content__iframe" id="editorFrame"></iframe>
                     </div>
                 </div>
             </div>

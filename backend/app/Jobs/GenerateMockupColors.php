@@ -11,6 +11,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -19,7 +21,9 @@ class GenerateMockupColors implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $color;
+
     protected $design;
+
     protected $product;
 
     /**
@@ -101,18 +105,18 @@ class GenerateMockupColors implements ShouldQueue
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
         $log = CanvasLog::create([
-            'type' => static::class . '::uploadMockupColor',
+            'type'    => static::class.'::uploadMockupColor',
             'request' => json_encode([
                 $url,
                 $key,
                 $post,
-            ])
+            ]),
         ]);
 
         $result = curl_exec($ch);
 
         $log->update([
-            'response' => json_encode($result)
+            'response' => json_encode($result),
         ]);
 
         curl_close($ch);
@@ -137,18 +141,18 @@ class GenerateMockupColors implements ShouldQueue
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
         $log = CanvasLog::create([
-            'type' => static::class . '::uploadCanvas',
+            'type'    => static::class.'::uploadCanvas',
             'request' => json_encode([
                 $url,
                 $key,
                 $post,
-            ])
+            ]),
         ]);
 
         $result = curl_exec($ch);
 
         $log->update([
-            'response' => json_encode($result)
+            'response' => json_encode($result),
         ]);
 
         curl_close($ch);
