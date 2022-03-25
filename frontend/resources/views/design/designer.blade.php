@@ -362,38 +362,38 @@
                     },
                     Toolbox: {
                         buttons: [
-                            {
-                                translationKey: 'Toolbox.TEXT',
-                                translationKeyTitle: 'Toolbox.TITLE_ADD_TEXT',
-                                iconClass: 'prs-icon prs-icon--caption prs-icon-add-text',
-                                buttons: [
-                                    {
-                                        translationKey: 'Toolbox.TEXT',
-                                        translationKeyTitle: 'Toolbox.TITLE_ADD_TEXT',
-                                        iconClass: 'prs-icon prs-icon-add-text',
-                                        action: 'Text'
-                                    },
-                                    'RichText'
-                                ]
-                            },
+                            // {
+                            //     translationKey: 'Toolbox.TEXT',
+                            //     translationKeyTitle: 'Toolbox.TITLE_ADD_TEXT',
+                            //     iconClass: 'prs-icon prs-icon--caption prs-icon-add-text',
+                            //     buttons: [
+                            //         {
+                            //             translationKey: 'Toolbox.TEXT',
+                            //             translationKeyTitle: 'Toolbox.TITLE_ADD_TEXT',
+                            //             iconClass: 'prs-icon prs-icon-add-text',
+                            //             action: 'Text'
+                            //         },
+                            //         'RichText'
+                            //     ]
+                            // },
                             {
                                 translationKey: 'Toolbox.IMAGE',
                                 translationKeyTitle: 'Toolbox.TITLE_ADD_IMAGE',
                                 iconClass: 'prs-icon prs-icon--caption prs-icon-add-image',
                                 action: 'Image'
                             },
-                            {
-                                translationKey: 'Toolbox.SHAPE',
-                                translationKeyTitle: 'Toolbox.TITLE_ADD_SHAPE',
-                                iconClass: 'prs-icon prs-icon--caption prs-icon-add-shape',
-                                buttons: ['Line', 'Rectangle', 'Ellipse']
-                            },
-                            {
-                                translationKey: 'Toolbox.LINEAR_BARCODE',
-                                translationKeyTitle: 'Toolbox.TITLE_ADD_LINEAR_BARCODE',
-                                iconClass: 'prs-icon prs-icon--caption prs-icon-add-qr',
-                                buttons: ['LinearBarcode', 'QrCode']
-                            }
+                            // {
+                            //     translationKey: 'Toolbox.SHAPE',
+                            //     translationKeyTitle: 'Toolbox.TITLE_ADD_SHAPE',
+                            //     iconClass: 'prs-icon prs-icon--caption prs-icon-add-shape',
+                            //     buttons: ['Line', 'Rectangle', 'Ellipse']
+                            // },
+                            // {
+                            //     translationKey: 'Toolbox.LINEAR_BARCODE',
+                            //     translationKeyTitle: 'Toolbox.TITLE_ADD_LINEAR_BARCODE',
+                            //     iconClass: 'prs-icon prs-icon--caption prs-icon-add-qr',
+                            //     buttons: ['LinearBarcode', 'QrCode']
+                            // }
                         ]
                     }
                 },
