@@ -28,7 +28,7 @@
                             <div class="card-body pt-3">
                                 <div class="row">
                                     <div class="col-md">
-                                        <select name="template" class="form-control">
+                                        <select name="template" class="form-select">
                                             @foreach($templates as $template)
                                                 <option value="{{$template->id}}">{{$template->design_name}}</option>
                                             @endforeach
@@ -178,39 +178,30 @@
                         </div>
                     </div>
                 </div>
-                @if($masterproduct->colors->count() > 0)
-                    <div class="col-md">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="card p-0 h-100">
-                                    <div class="card-header d-flex align-items-center justify-content-between">
-                                        <h5 class="card-title d-inline-block">
-                                            Product Colors
-                                        </h5>
-                                    </div>
-                                    <div class="card-body p-3">
-                                        <div class="row">
-                                            @foreach($masterproduct->colors as $color)
-                                                <div class="col-md-6 mb-4">
-                                                    <a href="javascript:void(0);"
-                                                       class="d-flex align-items-center color-option"
-                                                       data-id="{{$color->id}}">
-                                                    <span class="color-display"
-                                                          style="background-color:{{$color->color}};"></span>
-                                                        {{$color->name}}
-                                                    </a>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
+                <div class="col-md">
+                    <div class="card p-0 mt-5 mt-md-0">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <h5 class="card-title d-inline-block">
+                                Design Editor
+                            </h5>
+                        </div>
+                        <div class="card-body border-0 px-0 pb-0 pt-3 position-relative">
+                            @if($masterproduct->colors->count()>0)
+                                <div class="d-flex flex-wrap mb-3 justify-content-center">
+                                    @foreach($masterproduct->colors as $color)
+                                        <a href="javascript:void(0);"
+                                           class="d-flex align-items-center color-option mx-1 mb-1 {{ $loop->first ? 'active' : '' }}"
+                                           data-id="{{$color->id}}">
+                                            <div class="color-display"
+                                                 style="background-color:{{$color->color}};"></div>
+                                        </a>
+                                    @endforeach
                                 </div>
-                            </div>
-                            <div class="col-md-8">
-                                <iframe class="content__iframe" id="editorFrame"></iframe>
-                            </div>
                             @endif
+                            <iframe class="content__iframe" id="editorFrame"></iframe>
                         </div>
                     </div>
+                </div>
             </div>
         </form>
     </div>
@@ -243,6 +234,11 @@
             width: 30px;
             height: 30px;
             margin-right: 10px;
+        }
+
+        .color-option.active .color-display {
+            border-color: black;
+            border-width: 2px;
         }
     </style>
     <link href="https://canvas.printerous.com/production/Canvas/Edge/Configuration/customCss/loader.css"
@@ -292,6 +288,8 @@
 
             $('.color-option').click(function() {
                 color_id = $(this).attr('data-id');
+                $('.color-option').removeClass('active');
+                $(this).addClass('active');
                 defineTemplate(template_id);
             });
         });

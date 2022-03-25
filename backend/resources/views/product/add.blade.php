@@ -503,7 +503,7 @@
                                 </div>
                                 <small class="text-color:tertiary font-size:14 text-right">
                                     <a href="#" class="btn btn-primary btn-sm py-0"
-                                       @click.prevent="templates.push({design_name: '', designs: [], previews: []})">
+                                       @click.prevent="templates.push({design_name: '', designs: [], previews: []}); $nextTick(function() { $('.price').priceFormat({ prefix: '', centsLimit: 0 }) })">
                                         <i class="fas fa-plus fa-fw"></i>
                                         Add
                                     </a>
@@ -720,17 +720,15 @@
                                                                             <label class="text-uppercase">
                                                                                 Design File
                                                                             </label>
-                                                                            <input type="file"
-                                                                                   class="form-control-file"
-                                                                                   :name="'templates['+ index +'][design]['+ designIndex +'][file]'">
+                                                                            <input type="text" class="form-control"
+                                                                                   :name="'templates['+ index +'][design]['+ designIndex +'][customer_canvas]'">
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="text-uppercase">
                                                                                 Mockup File
                                                                             </label>
-                                                                            <input type="file"
-                                                                                   class="form-control-file"
-                                                                                   :name="'templates['+ index +'][design]['+ designIndex +'][mockup_file]'">
+                                                                            <input type="text" class="form-control"
+                                                                                   :name="'templates['+ index +'][design]['+ designIndex +'][mockup_customer_canvas]'">
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="col-md-6">
@@ -829,8 +827,8 @@
                                                                                    for="template_file">
                                                                                 File
                                                                             </label>
-                                                                            <input type="file" class="form-control-file"
-                                                                                   :name="'templates['+ index +'][preview]['+previewIndex+'][file]'">
+                                                                            <input type="text" class="form-control"
+                                                                                   :name="'templates['+ index +'][preview]['+previewIndex+'][customer_canvas]'">
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="text-uppercase">

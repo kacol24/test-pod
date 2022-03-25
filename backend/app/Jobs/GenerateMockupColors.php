@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\CanvasLog;
 use App\Models\Product\Color;
 use App\Models\Product\Design;
 use App\Models\Product\MockupColor;
@@ -10,6 +11,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -18,7 +21,9 @@ class GenerateMockupColors implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $color;
+
     protected $design;
+
     protected $product;
 
     /**
@@ -98,7 +103,22 @@ class GenerateMockupColors implements ShouldQueue
             'Content-Type: application/json',
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $log = CanvasLog::create([
+            'type'    => static::class.'::uploadMockupColor',
+            'request' => json_encode([
+                $url,
+                $key,
+                $post,
+            ]),
+        ]);
+
         $result = curl_exec($ch);
+
+        $log->update([
+            'response' => json_encode($result),
+        ]);
+
         curl_close($ch);
 
         return Str::of($result)->trim('"');
@@ -119,7 +139,22 @@ class GenerateMockupColors implements ShouldQueue
             "X-CustomersCanvasAPIKey: ".$key,
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $log = CanvasLog::create([
+            'type'    => static::class.'::uploadCanvas',
+            'request' => json_encode([
+                $url,
+                $key,
+                $post,
+            ]),
+        ]);
+
         $result = curl_exec($ch);
+
+        $log->update([
+            'response' => json_encode($result),
+        ]);
+
         curl_close($ch);
 
         return Str::of($result)->trim('"');

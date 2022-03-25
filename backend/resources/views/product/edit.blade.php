@@ -747,33 +747,17 @@
                                                                             <label class="text-uppercase">
                                                                                 Design File
                                                                             </label>
-                                                                            <input type="file"
-                                                                                   class="form-control-file"
-                                                                                   :name="'templates['+ index +'][design]['+designIndex+'][file]'">
-                                                                        </div>
-                                                                        <div class="form-group" x-show="design.file">
-                                                                            <a :href="'{{ Storage::url('b2b2c/templates') }}/' + design.file"
-                                                                               class="btn btn-default btn-sm"
-                                                                               target="_blank">
-                                                                                <i class="fas fa-fw fa-eye"></i> View
-                                                                                File
-                                                                            </a>
+                                                                            <input type="text" class="form-control"
+                                                                                   :name="'templates['+ index +'][design]['+designIndex+'][customer_canvas]'"
+                                                                                    x-model="design.customer_canvas">
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="text-uppercase">
                                                                                 Mockup File
                                                                             </label>
-                                                                            <input type="file"
-                                                                                   class="form-control-file"
-                                                                                   :name="'templates['+ index +'][design]['+designIndex+'][mockup_file]'">
-                                                                        </div>
-                                                                        <div class="form-group" x-show="design.mockup">
-                                                                            <a :href="'{{ Storage::url('b2b2c/templates') }}/' + design.mockup"
-                                                                               class="btn btn-default btn-sm"
-                                                                               target="_blank">
-                                                                                <i class="fas fa-fw fa-eye"></i> View
-                                                                                File
-                                                                            </a>
+                                                                            <input type="text" class="form-control"
+                                                                                   :name="'templates['+ index +'][design]['+designIndex+'][mockup_customer_canvas]'"
+                                                                                    x-model="design.mockup_customer_canvas">
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="col-md-6">
@@ -879,16 +863,9 @@
                                                                                    for="template_file">
                                                                                 File
                                                                             </label>
-                                                                            <input type="file" class="form-control-file"
-                                                                                   :name="'templates['+ index +'][preview]['+previewIndex+'][file]'">
-                                                                        </div>
-                                                                        <div class="form-group" x-show="preview.file">
-                                                                            <a :href="'{{ Storage::url('b2b2c/previews') }}/' + preview.file"
-                                                                               class="btn btn-default btn-sm"
-                                                                               target="_blank">
-                                                                                <i class="fas fa-fw fa-eye"></i> View
-                                                                                File
-                                                                            </a>
+                                                                            <input type="text" class="form-control"
+                                                                                   :name="'templates['+ index +'][preview]['+previewIndex+'][customer_canvas]'"
+                                                                                    x-model="preview.customer_canvas">
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="text-uppercase">

@@ -7,6 +7,7 @@ use App\Http\Controllers\Resources\ProductResource;
 use App\Http\Requests\ProductRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Jobs\GenerateMockupColors;
+use App\Models\CanvasLog;
 use App\Models\Product\Capacity;
 use App\Models\Product\Category;
 use App\Models\Product\Color;
@@ -176,17 +177,17 @@ class ProductController extends Controller
 
             foreach ($template['design'] ?? [] as $designIndex => $design) {
                 $createDesign = [
-                    'page_name'       => $design['page_name'],
+                    'page_name'              => $design['page_name'],
                     //'file'                   => $filename,
-                    //'customer_canvas'        => $canvas,
-                    'mockup_width'    => $design['mockup_width'],
-                    'mockup_height'   => $design['mockup_height'],
-                    'design_location' => json_encode([
+                    'customer_canvas'        => $design['customer_canvas'],
+                    'mockup_width'           => $design['mockup_width'],
+                    'mockup_height'          => $design['mockup_height'],
+                    'design_location'        => json_encode([
                         'X' => $design['location_x'],
                         'Y' => $design['location_y'],
-                    ])
+                    ]),
                     //'mockup'                 => $mockupFilename,
-                    //'mockup_customer_canvas' => $mockupCanvas,
+                    'mockup_customer_canvas' => $design['mockup_customer_canvas'],
                 ];
                 $fileKey = 'templates.'.$index.'.design.'.$designIndex.'.file';
                 if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
@@ -223,10 +224,10 @@ class ProductController extends Controller
             foreach ($template['preview'] ?? [] as $previewIndex => $preview) {
                 $createPreview = [
                     //'file'            => $filename,
-                    'preview_name'   => $preview['preview_name'],
-                    'thumbnail_name' => $preview['thumbnail_name'],
-                    'file_config'    => $preview['file_config'],
-                    //'customer_canvas' => $canvas,
+                    'preview_name'    => $preview['preview_name'],
+                    'thumbnail_name'  => $preview['thumbnail_name'],
+                    'file_config'     => $preview['file_config'],
+                    'customer_canvas' => $preview['customer_canvas'],
                 ];
                 $fileKey = 'templates.'.$index.'.preview.'.$previewIndex.'.file';
                 if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
@@ -438,6 +439,8 @@ class ProductController extends Controller
                     'X' => $design['location_x'],
                     'Y' => $design['location_y'],
                 ]);
+                $theDesign['customer_canvas'] = $design['customer_canvas'];
+                $theDesign['mockup_customer_canvas'] = $design['mockup_customer_canvas'];
 
                 $fileKey = 'templates.'.$index.'.design.'.$designIndex.'.file';
                 if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
@@ -479,6 +482,8 @@ class ProductController extends Controller
                 $thePreview['preview_name'] = $preview['preview_name'];
                 $thePreview['thumbnail_name'] = $preview['thumbnail_name'];
                 $thePreview['file_config'] = $preview['file_config'];
+                $thePreview['customer_canvas'] = $preview['customer_canvas'];
+
                 $fileKey = 'templates.'.$index.'.preview.'.$previewIndex.'.file';
                 if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
                     $file = $request->file($fileKey);
@@ -707,7 +712,22 @@ class ProductController extends Controller
             "X-CustomersCanvasAPIKey: ".$key,
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $log = CanvasLog::create([
+            'type'    => static::class . '::uploadCanvas',
+            'request' => json_encode([
+                $url,
+                $key,
+                $post,
+            ]),
+        ]);
+
         $result = curl_exec($ch);
+
+        $log->update([
+            'response' => json_encode($result),
+        ]);
+
         curl_close($ch);
 
         return Str::of($result)->trim('"');

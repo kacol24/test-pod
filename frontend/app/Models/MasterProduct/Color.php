@@ -24,4 +24,9 @@ class Color extends Model
     {
         return $this->hasMany(MockupColor::class, 'color_id');
     }
+
+    public function getLowercaseNameAttribute()
+    {
+        return strtolower($this->name);
+    }
 }
