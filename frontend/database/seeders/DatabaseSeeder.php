@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
                 'title' => 'Delivered'
             ),
             array(
-                'title' => 'Finished'
+                'title' => 'Completed'
             )
         ));
     }

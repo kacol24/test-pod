@@ -472,6 +472,7 @@
                 final_product,
                 config
             ).then(function(editor) {
+                $('li[ng-if="previewModeCheckboxEnabled()"] .checkbox label').click();
                 $('#continue').click(function() {
                     editor.finishProductDesign().then(function(result) {
                         // Verify a state ID and a user ID.
