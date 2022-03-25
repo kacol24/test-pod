@@ -474,11 +474,11 @@
                 $('#continue').click(function() {
                     editor.finishProductDesign().then(function(result) {
                         // Verify a state ID and a user ID.
-                        stateId = result.stateId;
+                        state_id = result.stateId;
                         userId = result.userId;
                         // Get links to hi-res outputs.
                         hiResOutputUrls = result.hiResOutputUrls;
-                        $('input[name=\'state_id\']').val(stateId);
+                        $('input[name=\'state_id\']').val(state_id);
                         $('input[name=\'print_file\']').val(hiResOutputUrls[0]);
                         $('input[name=\'proof_file\']').val(result.proofImageUrls);
                         $('#form-design').submit();
