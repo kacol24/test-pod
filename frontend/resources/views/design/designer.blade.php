@@ -285,12 +285,12 @@
                 defineTemplate($(this).val());
             });
 
-            $('.color-option').click(function() {
-                color_id = $(this).attr('data-id');
-                $('.color-option').removeClass('active');
-                $(this).addClass('active');
-                defineTemplate(template_id);
-            });
+            // $('.color-option').click(function() {
+            //     color_id = $(this).attr('data-id');
+            //     $('.color-option').removeClass('active');
+            //     $(this).addClass('active');
+            //     defineTemplate(template_id);
+            // });
         });
 
         function defineTemplate(id) {
@@ -482,6 +482,34 @@
                         $('input[name=\'print_file\']').val(hiResOutputUrls[0]);
                         $('input[name=\'proof_file\']').val(result.proofImageUrls);
                         $('#form-design').submit();
+                    });
+                });
+
+                $('.color-option').click(function() {
+                    color_id = $(this).attr('data-id');
+                    $('.color-option').removeClass('active');
+                    $(this).addClass('active');
+                    if (mockup_colors.length) {
+                        mockup_colors.map(function(color, idx) {
+                            // if (color.color_id == color_id && color.design_id == el.id) {
+                            if (color.color_id == color_id) {
+                                mockup = color.customer_canvas;
+                            }
+                        });
+                    } else {
+                        mockup = el.mockup_customer_canvas;
+                    }
+                    editor.getProduct().then(function (product) {
+                        product.setMockups([
+                          {
+                            surface: product.surfaces[0],
+                            mockup: {
+                              down: mockup
+                            }
+                          }
+                        ]);
+                    }).catch(function (error) {
+                        console.error("Setting up the mockups failed with exception: ", error);
                     });
                 });
             });
