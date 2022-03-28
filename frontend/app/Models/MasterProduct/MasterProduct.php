@@ -24,6 +24,7 @@ class MasterProduct extends Model
     protected $appends = [
         'thumbnail_url',
         'firstcategory_name',
+        'base_cost',
     ];
 
     function option1()
@@ -129,7 +130,7 @@ class MasterProduct extends Model
 
     function categories()
     {
-        return $this->belongsToMany('App\Models\MasterProduct\Category', 'master_category_master_product');
+        return $this->belongsToMany('App\Models\MasterProduct\Category', 'master_category_master_product', 'product_id');
     }
 
     function firstcategory() {
