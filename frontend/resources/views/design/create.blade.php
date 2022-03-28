@@ -22,15 +22,19 @@
                     </div>
                 </div>
             </template>
-            <div class="col-md-3" x-init="$watch('categoryId', function() { return fetchProducts(); })">
-                <input type="search" class="form-control" placeholder="Search product">
-                <ul class="list-group list-group-flush font-size:12 mt-3 d-none d-md-block">
+            <div class="col-md-3"
+                x-init="$watch('search', function() { return fetchProducts() })">
+                <input type="search" class="form-control" placeholder="Search product"
+                       x-model.debounce="search">
+                <ul class="list-group list-group-flush font-size:12 mt-3 d-none d-md-block"
+                    x-init="$watch('categoryId', function() { return fetchProducts() })">
                     <li class="list-group-item ps-0 text-uppercase text-color:tertiary fw-400">
                         Categories
                     </li>
                     @foreach($categories as $category)
                         <li class="list-group-item ps-0 py-3">
-                            <a href="#" @click.prevent="categoryId = {{ $category->id }}"
+                            <a href="?category_id={{ $category->id }}"
+                               @click.prevent="categoryId = {{ $category->id }}"
                                class="text-decoration-none text-color:black fw-500">
                                 {{$category->name}}
                             </a>
@@ -141,6 +145,7 @@
                         this.fetchProducts();
                     },
 
+                    search: null,
                     modalProduct: {},
                     products: [],
                     categoryId: null,
@@ -154,6 +159,10 @@
 
                         if (this.categoryId) {
                             payload.category_id = this.categoryId;
+                        }
+
+                        if (this.search) {
+                            payload.s = this.search;
                         }
 
                         $.get('{{ route('api.products.index') }}', payload)
