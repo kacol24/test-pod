@@ -59,18 +59,9 @@ class DesignController extends Controller
             'design' => collect(),
             'design_products' => collect()
         ]);
-        $products = MasterProduct::where('is_publish', 1);
-        if ($request->category_id) {
-            $products = $products->join('master_category_master_product', 'master_category_master_product.product_id',
-                '=', 'master_products.id')->where('category_id', $request->category_id);
-        }
-        $products = $products->when(! empty($request->s), function ($query) use ($request) {
-            return $query->where('title', 'like', "%{$request->s}%");
-        })->get();
 
         return view('design.create', [
             'categories' => Category::active()->get(),
-            'products'   => $products,
         ]);
     }
 

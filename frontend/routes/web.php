@@ -195,7 +195,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('design/success', [DesignController::class, 'success'])->name('design.saved');
         Route::get('design/datatable', [DesignController::class, 'datatable'])->name('design.datatable');
         Route::resource('design', DesignController::class);
-        Route::get('design/product/{id}', [DesignController::class, 'designer'])->name('design');
+        Route::get('design/product/{id?}', [DesignController::class, 'designer'])->name('design');
         Route::post('design/product/{id}', [DesignController::class, 'saveDesigner'])->name('design.post');
         Route::get('design/product/{id}/remove', [DesignController::class, 'removeProduct'])
              ->name('design.remove-product');

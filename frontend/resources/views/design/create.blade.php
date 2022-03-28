@@ -11,8 +11,18 @@
                 Tweak and finalize the design and price of this product
             </div>
         </div>
-        <div class="row mt-5">
-            <div class="col-md-3">
+        <div class="row mt-5 position-relative"
+             x-data="ProductCatalogApp">
+            <template x-if="isLoading">
+                <div class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center"
+                     style="left: 0;top: 0;background-color: rgba(255, 255, 255, .7);z-index: 999">
+                    <div>
+                        <i class="fas fa-fw fa-sync fa-spin fa-lg"></i>
+                        Loading...
+                    </div>
+                </div>
+            </template>
+            <div class="col-md-3" x-init="$watch('categoryId', function() { return fetchProducts(); })">
                 <input type="search" class="form-control" placeholder="Search product">
                 <ul class="list-group list-group-flush font-size:12 mt-3 d-none d-md-block">
                     <li class="list-group-item ps-0 text-uppercase text-color:tertiary fw-400">
@@ -20,7 +30,7 @@
                     </li>
                     @foreach($categories as $category)
                         <li class="list-group-item ps-0 py-3">
-                            <a href="?category_id={{$category->id}}"
+                            <a href="#" @click.prevent="categoryId = {{ $category->id }}"
                                class="text-decoration-none text-color:black fw-500">
                                 {{$category->name}}
                             </a>
@@ -37,10 +47,7 @@
                 </div>
             </div>
             <div class="col-md">
-                <div class="row"
-                     x-data="{
-                        modalProduct: {}
-                     }">
+                <div class="row position-relative">
                     <div class="modal fade" id="productViewModal" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content">
@@ -80,42 +87,43 @@
                             </div>
                         </div>
                     </div>
-                    @foreach($products as $product)
+                    <template x-for="product in products">
                         <div class="col-md-3 mb-4">
-                            <a href="{{ route('design', $product->id) }}" class="product-item">
+                            <a :href="'{{ route('design') }}/' + product.id" class="product-item">
                                 <div class="card p-0 rounded-0 shadow-sm position-relative">
                                     <div class="position-absolute pe-auto" style="z-index: 1; top: 13px;left: 13px;"
-                                         @click.prevent='modalProduct = @json($product); $nextTick(function() { productViewModal.show() })'>
-                                        <span
-                                            class="badge bg-dark text-white rounded-circle p-0 m-0 d-flex align-items-center justify-content-center"
-                                            style="width: 20px;height: 20px;">
-                                            <i class="fas fa-fw fa-info m-0 fa-xs"></i>
-                                        </span>
+                                         @click.prevent='modalProduct = product; $nextTick(function() { productViewModal.show() })'>
+                                            <span
+                                                class="badge bg-dark text-white rounded-circle p-0 m-0 d-flex align-items-center justify-content-center"
+                                                style="width: 20px;height: 20px;">
+                                                <i class="fas fa-fw fa-info m-0 fa-xs"></i>
+                                            </span>
                                     </div>
                                     <div class="card-header p-0 position-relative">
                                         <img
-                                            src="{{ $product->thumbnail_url }}"
-                                            alt="{{ $product->title }}" class="img-fluid w-100">
+                                            :src="product.thumbnail_url"
+                                            :alt="product.title" class="img-fluid w-100">
                                         <div class="product-item__overlay">
                                             <span class="badge bg-dark">Coming Soon</span>
                                         </div>
                                     </div>
                                     <div class="card-body p-3">
-                                        <div class="text-uppercase font-size:12 fw-400">
-                                            {{$product->firstcategory()->name}}
+                                        <div class="text-uppercase font-size:12 fw-400"
+                                             x-text="product.firstcategory_name">
+                                            Category Name
                                         </div>
-                                        <h3 class="font-size:14 m-0 fw-600">
-                                            {{$product->title}}
+                                        <h3 class="font-size:14 m-0 fw-600" x-text="product.title">
+                                            Title
                                         </h3>
                                         <div class="font-size:12 text-color:tertiary fw-500">
-                                            Base cost
-                                            IDR {{number_format(($product->base_cost),0,",",".")}}
+                                            Base cost IDR
+                                            <span x-text="number_format(product.base_cost, 0, ',', '.')">100,000</span>
                                         </div>
                                     </div>
                                 </div>
                             </a>
                         </div>
-                    @endforeach
+                    </template>
                 </div>
             </div>
         </div>
@@ -125,5 +133,37 @@
 @push('scripts')
     <script>
         var productViewModal = new bootstrap.Modal(document.getElementById('productViewModal'));
+
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('ProductCatalogApp', function() {
+                return {
+                    init: function() {
+                        this.fetchProducts();
+                    },
+
+                    modalProduct: {},
+                    products: [],
+                    categoryId: null,
+                    isLoading: true,
+
+                    fetchProducts: function() {
+                        this.isLoading = true;
+                        var that = this;
+
+                        var payload = {};
+
+                        if (this.categoryId) {
+                            payload.category_id = this.categoryId;
+                        }
+
+                        $.get('{{ route('api.products.index') }}', payload)
+                         .then(function(response) {
+                             that.products = response.data;
+                             that.isLoading = false;
+                         });
+                    }
+                };
+            });
+        });
     </script>
 @endpush
