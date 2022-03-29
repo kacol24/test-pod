@@ -30,8 +30,8 @@
         </li>
     @endcan
     @can(App\Enums\Permissions::ORDERS)
-        <li class="nav-item ">
-            <a class="nav-link" href="./orders-index.html">
+        <li class="nav-item {{ request()->routeIs(['orders.*']) ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('orders.index') }}">
                 Orders
             </a>
         </li>

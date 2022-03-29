@@ -7,10 +7,10 @@ use App\Http\Controllers\Account\SwitchStoreController;
 use App\Http\Controllers\Account\TeamController;
 use App\Http\Controllers\Account\TeamInvitationController;
 use App\Http\Controllers\Account\WalletController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DesignController;
 use App\Http\Controllers\DesignProductController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ShopeeController;
 use App\Http\Controllers\TokopediaController;
 use App\Http\Controllers\TopupController;
@@ -192,6 +192,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('design/{design}/product/{product}/edit', [DesignProductController::class, 'edit'])
              ->name('design.product.edit');
         Route::post('design/{design}/product/{product}/edit', [DesignProductController::class, 'update']);
+    });
+
+    Route::middleware('can:' . Permissions::ORDERS)->group(function (){
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     });
 });
 
