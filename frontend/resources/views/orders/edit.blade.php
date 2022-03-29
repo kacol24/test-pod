@@ -46,7 +46,7 @@
                 <div class="stepper sticky-top sticky-top--header">
                     <div class="stepper__steps">
                         <div
-                            class="stepper__step {{ request()->routeIs(['products.*']) ? 'stepper__step--stepped' : '' }}">
+                            class="stepper__step {{ $order->status_id > 0 ? 'stepper__step--stepped' : '' }}">
                             <div class="stepper__numbering">1</div>
                             <div class="stepper__step-content">
                                 <div class="d-none d-md-block">
@@ -55,7 +55,7 @@
                             </div>
                         </div>
                         <div
-                            class="stepper__step {{ request()->routeIs(['products.designer', 'products.additional']) ? 'stepper__step--stepped' : '' }}">
+                            class="stepper__step {{ $order->status_id > 1 ? 'stepper__step--stepped' : '' }}">
                             <div class="stepper__numbering">2</div>
                             <div class="stepper__step-content">
                                 <div class="d-none d-md-block">
@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <div
-                            class="stepper__step {{ request()->routeIs(['products.designer', 'products.additional', 'products.finish']) ? 'stepper__step--stepped' : '' }}">
+                            class="stepper__step {{ $order->status_id > 3 ? 'stepper__step--stepped' : '' }}">
                             <div class="stepper__numbering">3</div>
                             <div class="stepper__step-content">
                                 <div class="d-none d-md-block">
@@ -73,7 +73,7 @@
                             </div>
                         </div>
                         <div
-                            class="stepper__step {{ request()->routeIs(['products.finish']) ? 'stepper__step--stepped' : '' }}">
+                            class="stepper__step {{ $order->status_id > 4? 'stepper__step--stepped' : '' }}">
                             <div class="stepper__numbering">4</div>
                             <div class="stepper__step-content">
                                 <div class="d-none d-md-block">
@@ -82,7 +82,7 @@
                             </div>
                         </div>
                         <div
-                            class="stepper__step {{ request()->routeIs(['products.finish']) ? 'stepper__step--stepped' : '' }}">
+                            class="stepper__step {{ $order->status_id > 6 ? 'stepper__step--stepped' : '' }}">
                             <div class="stepper__numbering">4</div>
                             <div class="stepper__step-content">
                                 <div class="d-none d-md-block">
