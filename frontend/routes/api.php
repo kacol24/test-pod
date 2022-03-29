@@ -15,12 +15,11 @@ use App\Http\Controllers\PrismController;
 |
 */
 
-// Route::middleware('auth:sanctum')
-//      ->group(function () {
-//          Route::apiResource('products', ProductController::class)
-//               ->only(['index']);
-//      });
-
+Route::middleware('auth:sanctum')
+     ->group(function () {
+         Route::apiResource('products', ProductController::class)
+              ->only(['index']);
+     });
 
 Route::post('pickup', [PrismController::class, 'pickup'])->middleware('client');
 Route::post('awb', [PrismController::class, 'awb'])->middleware('client');
