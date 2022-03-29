@@ -34,7 +34,8 @@
 
     <title>@yield('page_title', 'Welcome') | {{ config('app.name') }}</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.9.2/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.9.5/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.9.5/dist/cdn.min.js" defer></script>
     <script type="text/javascript">
         var lang = "{{session('language')}}";
     </script>

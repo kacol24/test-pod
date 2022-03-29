@@ -1,7 +1,8 @@
 @extends('layouts.layout')
 
 @section('content')
-    <div class="container container--app">
+    <div class="container container--app"
+         x-data="ProductCatalogApp">
         @include('partials.product-nav')
         <div class="text-start">
             <h1 class="page-title font-size:22">
@@ -11,8 +12,7 @@
                 Tweak and finalize the design and price of this product
             </div>
         </div>
-        <div class="row mt-5 position-relative"
-             x-data="ProductCatalogApp">
+        <div class="row mt-5 position-relative">
             <template x-if="isLoading">
                 <div class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center"
                      style="left: 0;top: 0;background-color: rgba(255, 255, 255, .7);z-index: 999">
@@ -23,7 +23,7 @@
                 </div>
             </template>
             <div class="col-md-3"
-                x-init="$watch('search', function() { return fetchProducts() })">
+                 x-init="$watch('search', function() { return fetchProducts() })">
                 <input type="search" class="form-control" placeholder="Search product"
                        x-model.debounce="search">
                 <ul class="list-group list-group-flush font-size:12 mt-3 d-none d-md-block"
@@ -128,6 +128,9 @@
                             </a>
                         </div>
                     </template>
+                    <template x-if="products">
+                        <div x-intersect.full="if (!lastPage) { fetchProducts() }"></div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -141,21 +144,21 @@
         document.addEventListener('alpine:init', () => {
             Alpine.data('ProductCatalogApp', function() {
                 return {
-                    init: function() {
-                        this.fetchProducts();
-                    },
-
                     search: null,
                     modalProduct: {},
                     products: [],
                     categoryId: null,
+                    page: 1,
+                    lastPage: false,
                     isLoading: true,
 
                     fetchProducts: function() {
                         this.isLoading = true;
                         var that = this;
 
-                        var payload = {};
+                        var payload = {
+                            page: this.page
+                        };
 
                         if (this.categoryId) {
                             payload.category_id = this.categoryId;
@@ -167,7 +170,14 @@
 
                         $.get('{{ route('api.products.index') }}', payload)
                          .then(function(response) {
-                             that.products = response.data;
+                             response.data.forEach(function (product){
+                                 that.products.push(product);
+                             });
+                             if (response.next_page_url) {
+                                 that.page = response.current_page + 1;
+                             } else {
+                                 that.lastPage = true;
+                             }
                              that.isLoading = false;
                          });
                     }

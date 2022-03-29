@@ -169,7 +169,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::middleware('can:' . Permissions::ORDERS)->group(function (){
-        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/datatable', [OrderController::class, 'datatable'])->name('orders.datatable');
+        Route::get('orders/{order}', [OrderController::class, 'edit'])->name('orders.edit');
     });
 });
 

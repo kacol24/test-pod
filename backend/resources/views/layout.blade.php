@@ -32,7 +32,7 @@
 
         <title>{{$page_title}} | Goodcommerce</title>
 
-        <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.9.0/dist/cdn.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.9.5/dist/cdn.min.js" defer></script>
         <script type="text/javascript">
           var lang = "{{session('language')}}";
         </script>

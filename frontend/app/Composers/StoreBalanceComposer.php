@@ -7,17 +7,10 @@ use Illuminate\View\View;
 
 class StoreBalanceComposer
 {
-    protected $store;
-
-    public function __construct()
+    public function compose(View $view)
     {
         $storeId = session(Store::SESSION_KEY)->id;
 
-        $this->store = Store::find($storeId);
-    }
-
-    public function compose(View $view)
-    {
-        $view->with('storeBalanceComposer', $this->store->balance);
+        $view->with('storeBalanceComposer', Store::find($storeId)->balance);
     }
 }
