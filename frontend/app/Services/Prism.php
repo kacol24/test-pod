@@ -47,7 +47,8 @@ class Prism {
       CURLOPT_POSTFIELDS => json_encode($input),
       CURLOPT_HTTPHEADER => array(
         "Authorization: ".$base64,
-        "Locale: id"
+        "Locale: id",
+        "Content-Type: application/json"
       )
     ));
 
@@ -73,31 +74,70 @@ class Prism {
     return $response;
   }
 
-  public function getToken() {
+  public function createOrder($order) {
     $time = time();
     $hash = md5($this->id.$time.$this->secret);
     $base64 = base64_encode($this->id.",".$hash.",".$time);
+    $url = $this->url."/arterous/orders";
+
+    $items = array();
+    foreach($order->details as $detail) {
+      $items[] = array(
+        "title" => $detail->title,
+        "product_id" => $detail->product_id,
+        "artwork_url" => $detail->product->editor->print_file,
+        "preview_url" => $detail->product->editor->proof_file,
+        "quantity" => $detail->quantity,
+        "unit" => "pc",
+        "unit_price" => $detail->price,
+        "subtotal" => $detail->quantity*$detail->price
+      );
+    }
+
+    $input = array(
+      "number" => $order->order_no,
+      "total_price" => $order->final_amount,
+      "source" => $order->platform->platform,
+      "shipping_courier" => array(
+        "code" => $order->shipping->shipping_code,
+        "service" => $order->shipping->shipping_type
+      ),
+      "shipping_address" => array(
+        "code" => "SHIPPING-1",
+        "label" => "Home",
+        "name" => $order->shipping->name,
+        "email" => "user-1@arterous.com",
+        "phone" => $order->shipping->phone,
+        "street" => $order->shipping->address,
+        "zipcode"=> $order->shipping->postal_code
+      ),
+      "order_items" => $items
+    );
     $log = PrismLog::create(array(
-      "type" => "token",
-      "request" => json_encode(array(
+      "type" => "create_order",
+      "request" => json_encode(array_merge($input, array(
         'id' => $this->id,
         'hash' => $hash,
         'time' => $time,
-        'base64' => $base64
-      )),
+        'base64' => $base64,
+        'url' => $url
+      ))),
       "response" => null
     ));
 
     $curl = curl_init();
     curl_setopt_array($curl, array(
-      CURLOPT_URL => $this->url,
+      CURLOPT_URL => $url,
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_TIMEOUT => 30,
       CURLOPT_HEADER => true,
-      CURLOPT_CUSTOMREQUEST => "GET",
+      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_POSTFIELDS => json_encode($input),
       CURLOPT_HTTPHEADER => array(
         "Authorization: ".$base64,
-        "Locale: id"
+        "Locale: id",
+        "Content-Type: application/json",
+        "User-Token: ".$order->store->prism_token
       )
     ));
 
@@ -121,111 +161,6 @@ class Prism {
     $response = json_decode(substr($resp, $header_size),true);
 
     return $response;
-  }
-
-  public function createProduct($shop_id, $input) {
-    $platform = StorePlatform::where('platform','prism')->where('platform_store_id', $shop_id)->first();
-    $url = (env('APP_ENV') == 'production') ? "https://partner.prismmobile.com/api/v2/product/add_item" : "https://partner.test-stable.prismmobile.com/api/v2/product/add_item";
-
-    if($platform) {
-      $time = time();
-      $sign = hash_hmac('sha256', $this->id."/api/v2/product/add_item".$time.$platform->access_token.$shop_id , $this->secret);
-      $url = $url."?timestamp=".$time."&id=".$this->id."&sign=".$sign."&shop_id=".$shop_id."&access_token=".$platform->access_token;
-
-      $log = PrismLog::create(array(
-        "type" => "create_product",
-        "request" => json_encode(array_merge($input, array("url" => $url))),
-        "response" => null
-      ));
-
-      $curl = curl_init();
-      curl_setopt_array($curl, array(
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_HEADER => true,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => json_encode($input),
-        CURLOPT_HTTPHEADER => array(
-          "Content-Type: application/json",
-        )
-      ));
-
-      $resp = curl_exec($curl);
-      return $this->handleResponse($log, $curl, $resp, 'create_product', $shop_id , $input);
-    }else {
-      $log = PrismLog::create(array(
-        "type" => "create_product",
-        "request" => json_encode($input),
-        "response" => json_encode(array("status" => "error", "message" => "Aunthorized access"))
-      ));
-    }
-  }
-
-  public function refreshToken($shop_id) {
-    $platform = StorePlatform::where('platform','prism')->where('platform_store_id', $shop_id)->first();
-    if($platform) {
-      $url = (env('APP_ENV') == 'production') ? "https://partner.prismmobile.com/api/v2/auth/access_token/get" : "https://partner.test-stable.prismmobile.com/api/v2/auth/access_token/get";
-
-      $time = time();
-      $sign = hash_hmac('sha256', $this->id."/api/v2/auth/access_token/get".$time , $this->secret);
-
-      $input = array(
-        'refresh_token' => $platform->refresh_token,
-        'shop_id' => (int) $shop_id,
-        'id' => $this->id
-      );
-
-      $url = $url."?timestamp=".$time."&id=".$this->id."&sign=".$sign;
-
-      $log = PrismLog::create(array(
-        "type" => "refresh_token",
-        "request" => json_encode(array_merge($input, array('url' => $url))),
-        "response" => null
-      ));
-
-      $curl = curl_init();
-      curl_setopt_array($curl, array(
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_HEADER => true,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => json_encode($input),
-        CURLOPT_HTTPHEADER => array(
-          "Content-Type: application/json",
-        )
-      ));
-
-      $resp = curl_exec($curl);
-      $log->response = $resp;
-      $log->save();
-
-      $headers=array();
-      $data=explode("\n",$resp);
-      $headers['status']=$data[0];
-      array_shift($data);
-      foreach($data as $part){
-        $middle=explode(":",$part);
-        if(isset($middle[1])) {
-          $headers[strtolower(trim($middle[0]))] = trim($middle[1]);
-        }
-      }
-
-      $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-      curl_close($curl);
-      $response = json_decode(substr($resp, $header_size),true);
-      if(isset($response['access_token'])) {
-        $platform->access_token = $response['access_token'];
-        $platform->refresh_token = $response['refresh_token'];
-        $platform->save();
-      }else if($response['error'] == "error_auth"){
-        $platform->delete();
-      }
-    }else {
-      return array("status" => "error", "message" => "Aunthorized access");  
-    }
-      
   }
 
   function handleResponse($log, $curl, $resp, $action, $shop_id, $input = array()) {
@@ -287,54 +222,5 @@ class Prism {
       }
       
     }
-  }
-
-  public function uploadImage($image) {
-    $url = (env('APP_ENV') == 'production') ? "https://partner.prismmobile.com/api/v2/media_space/upload_image" : "https://partner.test-stable.prismmobile.com/api/v2/media_space/upload_image";
-
-    $time = time();
-    $sign = hash_hmac('sha256', $this->id."/api/v2/media_space/upload_image".$time , $this->secret);
-
-
-    $post = ["image" => curl_file_create($image)];
-
-    $url = $url."?timestamp=".$time."&id=".$this->id."&sign=".$sign;
-
-    $log = PrismLog::create(array(
-      "type" => "upload_image",
-      "request" => json_encode(array_merge($post, array('url' => $url))),
-      "response" => null
-    ));
-
-    $curl = curl_init();
-    curl_setopt_array($curl, array(
-      CURLOPT_URL => $url,
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_TIMEOUT => 30,
-      CURLOPT_HEADER => true,
-      CURLOPT_CUSTOMREQUEST => "POST",
-      CURLOPT_POSTFIELDS => $post,
-    ));
-
-    $resp = curl_exec($curl);
-    $log->response = $resp;
-    $log->save();
-
-    $headers=array();
-    $data=explode("\n",$resp);
-    $headers['status']=$data[0];
-    array_shift($data);
-    foreach($data as $part){
-      $middle=explode(":",$part);
-      if(isset($middle[1])) {
-        $headers[strtolower(trim($middle[0]))] = trim($middle[1]);
-      }
-    }
-
-    $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-    curl_close($curl);
-    $response = json_decode(substr($resp, $header_size),true);
-
-    return $response;
   }
 }

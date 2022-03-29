@@ -41,12 +41,17 @@ use App\Models\User;
 
 Route::get('prism/user', function () {
     $user = User::find(1);
-    echo Prism::createUser(array(
-        'uid' => $user->id,
+    var_dump(Prism::createUser(array("user" => array(
+        'uid' => 'arterous-'.$user->id,
         'email' => $user->email,
         'name' => $user->name,
         'phone' => $user->phone
-    ));
+    ))));
+});
+
+Route::get('prism/order', function () {
+    $order = OrderModel::find(30);
+    var_dump(Prism::createOrder($order));
 });
 
 Route::get('shopee/unpublish-product', function () {

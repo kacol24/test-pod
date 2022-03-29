@@ -9,6 +9,7 @@ use App\Services\Facades\Tokopedia as TokopediaService;
 use App\Repositories\Facades\Product;
 use App\Jobs\CapacityUpdated;
 use App\Services\WalletService;
+use App\Services\Facades\Prism;
 
 class Order {
   function accept($order) {
@@ -44,8 +45,8 @@ class Order {
       $wallet = new WalletService($order->store_id);
       $wallet->order($order->final_amount, $order->id);
       DB::commit();
-      if($order->platform('tokopedia')) {
-        TokopediaService::acceptOrder($order->platform('tokopedia')->platform_order_id);
+      if($order->platform && $order->platform->platform == 'tokopedia') {
+        TokopediaService::acceptOrder($order->platform->platform_order_id);
       }
       $this->updateStatus($order,2);
     } catch (\Exception $e) {
@@ -55,7 +56,9 @@ class Order {
   }
 
   function updateStatus($order, $status) {
-    if($status == 3 && $order->status_id == 2) {
+    if($status==2) {
+      Prism::createOrder($order);
+    }else if($status == 3 && $order->status_id == 2) {
       $wallet = new WalletService($order->store->id);
       $wallet->refund($order->final_amount, $order->id);
     }else if($status == 7 && $order->status_id !=7) {
@@ -85,36 +88,36 @@ class Order {
   }
 
   function reject($order) {
-    if($order->platform('tokopedia')) {
+    if($order->platform && $order->platform->platform == 'tokopedia') {
       TokopediaService::rejectOrder(array(
         'reason_code' => 1,
         'reason' => 'out of stock'
-      ), $order->platform('tokopedia')->platform_order_id);
+      ), $order->platform->platform_order_id);
     }
   }
 
   function label($order) {
-    if($order->platform('tokopedia')) {
-      return TokopediaService::shippingLabel($order->platform('tokopedia')->platform_order_id);
+    if($order->platform && $order->platform->platform == 'tokopedia') {
+      return TokopediaService::shippingLabel($order->platform->platform_order_id);
     }
   }
 
   function pickup($order) {
-    if($order->platform('tokopedia')) {
+    if($order->platform && $order->platform->platform == 'tokopedia') {
       TokopediaService::requestPickup(array(
-        'order_id' => (int) $order->platform('tokopedia')->platform_order_id,
+        'order_id' => (int) $order->platform->platform_order_id,
         'shop_id' => (int) $order->store->platform('tokopedia')->platform_store_id
       ));
     }
   }
 
   function awb($order) {
-    if($order->platform('tokopedia')) {
+    if($order->platform && $order->platform->platform == 'tokopedia') {
       $data = array(
         'order_status' => 500,
         'shipping_ref_num' => $order->shipping->awb
       );
-      TokopediaService::confirmShipping($data, (int) $order->platform('tokopedia')->platform_order_id);
+      TokopediaService::confirmShipping($data, (int) $order->platform->platform_order_id);
     }
   }
 

@@ -17,9 +17,9 @@ class Order extends Model
         return $this->hasOne('App\Models\Store', 'id', 'store_id');
     }
 
-    function platform($platform)
+    function platform()
     {
-        return $this->hasOne('App\Models\Order\OrderPlatform', 'order_id', 'id')->where('platform',$platform)->first();
+        return $this->hasOne('App\Models\Order\OrderPlatform', 'order_id', 'id');
     }
 
     function shipping()
