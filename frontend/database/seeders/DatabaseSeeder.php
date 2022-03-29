@@ -19,25 +19,25 @@ class DatabaseSeeder extends Seeder
         DB::table('order_status')->truncate();
         OrderStatus::insert(array(
             array(
-                'title' => 'Pending'
+                'title' => 'Pending' #1
             ),
             array(
-                'title' => 'Paid'
+                'title' => 'Paid' #2
             ),
             array(
-                'title' => 'Canceled'
+                'title' => 'Canceled' #3
             ),
             array(
-                'title' => 'In Progress'
+                'title' => 'In Progress' #4
             ),
             array(
-                'title' => 'Undershipment'
+                'title' => 'Undershipment' #5
             ),
             array(
-                'title' => 'Delivered'
+                'title' => 'Delivered' #6
             ),
             array(
-                'title' => 'Completed'
+                'title' => 'Completed' #7
             )
         ));
     }

@@ -107,16 +107,6 @@ Route::get('tokopedia/unpublish-product', function () {
     Product::unpublish($product);
 });
 
-Route::get('tokopedia/accept-order', function () {
-    $order = OrderModel::find(1);
-    Order::accept($order);
-});
-
-Route::get('tokopedia/reject-order', function () {
-    $order = OrderModel::find(2);
-    Order::reject($order);
-});
-
 Route::get('tokopedia/shipping-label', function () {
     $order = OrderModel::find(1);
     return Order::label($order);
@@ -221,6 +211,7 @@ Route::get('capacity-updated/{id}', function($id){
 Route::post('webhook/tokopedia/orders', [TokopediaController::class, 'order']);
 Route::post('webhook/tokopedia/status', [TokopediaController::class, 'status']);
 Route::post('webhook/shopee', [ShopeeController::class, 'index']);
+
 
 require __DIR__.'/auth.php';
 
