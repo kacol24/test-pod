@@ -129,63 +129,24 @@
                 <table id="datatable"
                        data-mobile-responsive="true"
                        data-pagination="true"
-                       data-sticky-header="true"
-                       data-sticky-header-offset-y="70"
-                       data-sort-order="desc"
+                       data-sort-order="asc"
+                       data-classes="table table-hover table-striped"
+                       data-reorderable-rows="true"
+                       data-use-row-attr-func="true"
                        data-side-pagination="server"
-                       data-query-params="queryOrder"
-                       data-page-list="[10,20, 50, 100, 200]">
+                       data-query-params="queryProduct"
+                       data-page-list="[10,20, 50, 100, 200]"
+                       data-url="{{ route('orders.datatable') }}">
                     <thead>
                     <tr>
                         <th data-field="order_no">ORDER</th>
                         <th data-field="customer">CUSTOMER</th>
-                        <th data-field="email">EMAIL</th>
+                        <th data-field="address"><ADDRESS></ADDRESS></th>
                         <th data-field="created_at">ORDER TIME</th>
                         <th data-field="total">TOTAL</th>
                         <th data-field="status">STATUS</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>
-                            <a href="{{ route('orders.index', 1) }}" class="text-decoration-none">
-                                INV 2020211
-                                <small class="d-block text-color:green">Tokopedia</small>
-                            </a>
-                        </td>
-                        <td>
-                            Mica
-                            <small class="d-block text-color:icon">
-                                08138889999
-                            </small>
-                        </td>
-                        <td>
-                            msutanto@gmail.com
-                            <small class="d-block text-color:icon">
-                                Jakarta
-                            </small>
-                        </td>
-                        <td>
-                            12 May 2018
-                            <small class="d-block text-color:icon">
-                                14:00 PM
-                            </small>
-                        </td>
-                        <td>
-                            IDR 500.000
-                            <small class="d-block text-color:icon">
-                                Bank Transfer
-                            </small>
-                        </td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                        <span class="badge badge-status-1 d-inline-block p-0"
-                                              style="width: 6px;height: 6px;"></span>
-                                Paid
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
                 </table>
             </div>
         </div>

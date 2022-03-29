@@ -2,15 +2,22 @@
 
 namespace App\Models\Order;
 
+use App\Scopes\CurrentStoreScope;
 use Cache;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
+    public $timestamps = false;
+
     protected $table = 'orders';
+
     protected $guarded = ['id'];
-    // public $timestamps = false;
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new CurrentStoreScope);
+    }
 
     function store()
     {
@@ -19,7 +26,7 @@ class Order extends Model
 
     function platform($platform)
     {
-        return $this->hasOne('App\Models\Order\OrderPlatform', 'order_id', 'id')->where('platform',$platform)->first();
+        return $this->hasOne('App\Models\Order\OrderPlatform', 'order_id', 'id')->where('platform', $platform)->first();
     }
 
     function shipping()
@@ -27,7 +34,13 @@ class Order extends Model
         return $this->hasOne('App\Models\Order\OrderShipping', 'order_id', 'id');
     }
 
-    function details(){
-        return $this->hasMany('App\Models\Order\OrderDetail','order_id','id');
+    function details()
+    {
+        return $this->hasMany('App\Models\Order\OrderDetail', 'order_id', 'id');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(OrderStatus::class, 'status_id');
     }
 }
