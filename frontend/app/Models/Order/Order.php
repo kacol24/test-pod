@@ -63,4 +63,24 @@ class Order extends Model
             ],
             $template);
     }
+
+    public function getFormattedSubtotalAttribute()
+    {
+        return number_format($this->total_amount, 0, ',', '.');
+    }
+
+    public function getFormattedPromotionAttribute()
+    {
+        return number_format($this->discount_voucher, 0, ',', '.');
+    }
+
+    public function getFormattedShippingFeeAttribute()
+    {
+        return number_format($this->shipping_fee, 0, ',', '.');
+    }
+
+    public function getFormattedGrandTotalAttribute()
+    {
+        return number_format($this->final_amount, 0, ',', '.');
+    }
 }

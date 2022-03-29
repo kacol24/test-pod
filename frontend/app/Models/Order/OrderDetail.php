@@ -19,4 +19,19 @@ class OrderDetail extends Model
     function sku() {
         return $this->hasOne('App\Models\Product\ProductSku','id','sku_id')->whereNull('deleted_at');
     }
+
+    public function getFormattedPriceAttribute()
+    {
+        return number_format($this->price, 0, ',', '.');
+    }
+
+    public function getSubtotalAttribute()
+    {
+        return $this->quantity * $this->price;
+    }
+
+    public function getFormattedSubtotalAttribute()
+    {
+        return number_format($this->subtotal, 0, ',', '.');
+    }
 }
