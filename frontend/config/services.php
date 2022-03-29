@@ -51,5 +51,14 @@ return [
         'live_auth_url' => '',
         'live_partner_id' => 1006410,
         'live_key' => '0f35d2cd57f7554d5a1f6cd5115081314b4cbfc9c530853d7aa0e20438c84c23',
+    ],
+
+    'prism' => [
+        'staging_id' => '97b6303ea0607df54800f021b63cbe96',
+        'staging_secret' => '2edcf51c3bf0229d2c0beef206cefcd6',
+        'staging_url' => 'https://orion-api-staging.printerous.com',
+        'live_id' => '97b6303ea0607df54800f021b63cbe96',
+        'live_secret' => '2edcf51c3bf0229d2c0beef206cefcd6',
+        'live_url' => 'https://orion-api.printerous.com',
     ]
 ];

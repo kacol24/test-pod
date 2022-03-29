@@ -22,7 +22,6 @@ use App\Models\Product\Product as ProductModel;
 use App\Repositories\Facades\Order;
 use App\Repositories\Facades\Product;
 use App\Repositories\Facades\Shopee;
-use App\Repositories\Facades\Tokopedia;
 use App\Services\Facades\Shopee as ShopeeService;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +35,19 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+use App\Services\Facades\Prism;
+use App\Models\User;
+
+Route::get('prism/user', function () {
+    $user = User::find(1);
+    echo Prism::createUser(array(
+        'uid' => $user->id,
+        'email' => $user->email,
+        'name' => $user->name,
+        'phone' => $user->phone
+    ));
+});
 
 Route::get('shopee/unpublish-product', function () {
     $product = ProductModel::where('store_id', session('current_store')->id)->where('id',8)->first();
@@ -90,49 +102,6 @@ Route::get('shopee/callback', function (Request $request) {
         // return redirect()->to('store'); #redirect back ke connect store
     }
 })->name('shopee.callback');
-
-
-Route::get('tokopedia/create-product', function () {
-    $product = ProductModel::where('store_id', session('current_store')->id)->where('id',11)->first();
-    Tokopedia::create($product);
-});
-
-Route::get('tokopedia/update-product', function () {
-    $product = ProductModel::where('store_id', session('current_store')->id)->where('id',11)->first();
-    Tokopedia::update($product);
-});
-
-Route::get('tokopedia/unpublish-product', function () {
-    $product = ProductModel::where('store_id', session('current_store')->id)->where('id',8)->first();
-    Product::unpublish($product);
-});
-
-Route::get('tokopedia/shipping-label', function () {
-    $order = OrderModel::find(1);
-    return Order::label($order);
-});
-
-Route::get('tokopedia/request-pickup', function () {
-    $order = OrderModel::find(1);
-    return Order::pickup($order);
-});
-
-Route::get('tokopedia/confirm-shipping', function () {
-    $order = OrderModel::find(1);
-    $order->shipping->awb = "RESIM4NT413";
-    $order->save();
-    return Order::awb($order);
-});
-
-Route::get('tokopedia/publish-product', function () {
-    $product = ProductModel::where('store_id', session('current_store')->id)->where('id',8)->first();
-    Product::publish($product);
-});
-
-Route::get('tokopedia/delete-product', function () {
-    $product = ProductModel::where('store_id', session('current_store')->id)->where('id',11)->first();
-    Product::delete($product);
-});
 
 Route::get('/', function () {
     return view('welcome');
