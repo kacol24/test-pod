@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderDatatableResource;
 use App\Models\Order\Order;
+use App\Models\Store;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -23,6 +24,7 @@ class OrderController extends Controller
 
         return OrderDatatableResource::collection(
             Order::query()
+                 ->where('store_id', session(Store::SESSION_KEY)->id)
                  ->when(! empty($search), function ($query) use ($search) {
                      return $query->where('order_no', 'like', "%{$search}%");
                  })

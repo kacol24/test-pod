@@ -15,7 +15,7 @@ class OrderDatatableResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'order_no'   => '<a href="'.route('orders.edit', $this).'" class="text-decoration-none">'.$this->order_no.'<small class="d-block text-color:icon">Tokopedia</small></a>',
+            'order_no'   => '<a href="'.route('orders.edit', $this).'" class="text-decoration-none">'.$this->order_no.'</a>',
             'customer'   => $this->shipping->name.'<small class="d-block text-color:icon">'.$this->shipping->phone.'</small>',
             'address'      => $this->shipping->address.'<small class="d-block text-color:icon">'.$this->shipping->city.'</small>',
             'total'      => 'IDR ' . number_format($this->final_amount, 0, ",", ".").'<small class="d-block text-color:icon">'.$this->payment_method.'</small>',

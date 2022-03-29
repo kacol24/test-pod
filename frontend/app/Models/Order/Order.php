@@ -14,11 +14,6 @@ class Order extends Model
 
     protected $guarded = ['id'];
 
-    protected static function booted()
-    {
-        static::addGlobalScope(new CurrentStoreScope);
-    }
-
     function store()
     {
         return $this->hasOne('App\Models\Store', 'id', 'store_id');
@@ -42,5 +37,30 @@ class Order extends Model
     public function status()
     {
         return $this->belongsTo(OrderStatus::class, 'status_id');
+    }
+
+    public function getFullAddressAttribute()
+    {
+        $address = $this->shipping;
+        $template = '%address%<br>%subdistrict% %city%,<br>%state% %postcode%<br>%country%';
+
+        return str_replace(
+            [
+                '%address%',
+                '%subdistrict%',
+                '%city%',
+                '%state%',
+                '%postcode%',
+                '%country%'
+            ],
+            [
+                $address->address,
+                $address->subdistrict,
+                $address->city,
+                $address->state,
+                $address->postcode,
+                $address->country,
+            ],
+            $template);
     }
 }
