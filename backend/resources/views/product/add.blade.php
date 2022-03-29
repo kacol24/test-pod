@@ -730,6 +730,16 @@
                                                                             <input type="text" class="form-control"
                                                                                    :name="'templates['+ index +'][design]['+ designIndex +'][mockup_customer_canvas]'">
                                                                         </div>
+                                                                        <div class="form-group">
+                                                                            <label class="text-uppercase">
+                                                                                Position
+                                                                            </label>
+                                                                            <select class="custom-select"
+                                                                                    :name="'templates['+ index +'][design]['+ designIndex +'][position]'">
+                                                                                <option value="down">Down</option>
+                                                                                <option value="up">Up</option>
+                                                                            </select>
+                                                                        </div>
                                                                         <div class="row">
                                                                             <div class="col-md-6">
                                                                                 <div class="form-group">

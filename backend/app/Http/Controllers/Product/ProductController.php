@@ -188,6 +188,7 @@ class ProductController extends Controller
                     ]),
                     //'mockup'                 => $mockupFilename,
                     'mockup_customer_canvas' => $design['mockup_customer_canvas'],
+                    'position'               => $design['position'],
                 ];
                 $fileKey = 'templates.'.$index.'.design.'.$designIndex.'.file';
                 if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
@@ -441,6 +442,7 @@ class ProductController extends Controller
                 ]);
                 $theDesign['customer_canvas'] = $design['customer_canvas'];
                 $theDesign['mockup_customer_canvas'] = $design['mockup_customer_canvas'];
+                $theDesign['position'] = $design['position'];
 
                 $fileKey = 'templates.'.$index.'.design.'.$designIndex.'.file';
                 if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
@@ -529,39 +531,22 @@ class ProductController extends Controller
             }
 
             foreach ($templateData['design'] ?? [] as $designData) {
-                $updateDesign = [
-                    'file'                   => $designData['file'],
-                    'mockup'                 => $designData['mockup'],
-                    'mockup_customer_canvas' => $designData['mockup_customer_canvas'],
-                    'mockup_width'           => $designData['mockup_width'],
-                    'mockup_height'          => $designData['mockup_height'],
-                    'page_name'              => $designData['page_name'],
-                    'customer_canvas'        => $designData['customer_canvas'],
-                    'design_location'        => $designData['design_location'],
-                ];
                 if (isset($designData['id'])) {
                     $design = Design::withTrashed()->find($designData['id']);
                     $design->restore();
-                    $design->update($updateDesign);
+                    $design->update($designData);
                 } else {
-                    $template->designs()->create($updateDesign);
+                    $template->designs()->create($designData);
                 }
             }
 
             foreach ($templateData['preview'] ?? [] as $previewData) {
-                $updatePreview = [
-                    'file'            => $previewData['file'],
-                    'preview_name'    => $previewData['preview_name'],
-                    'thumbnail_name'  => $previewData['thumbnail_name'],
-                    'file_config'     => $previewData['file_config'],
-                    'customer_canvas' => $previewData['customer_canvas'],
-                ];
                 if (isset($previewData['id'])) {
                     $preview = Preview::withTrashed()->find($previewData['id']);
                     $preview->restore();
-                    $preview->update($updatePreview);
+                    $preview->update($previewData);
                 } else {
-                    $template->previews()->create($updatePreview);
+                    $template->previews()->create($previewData);
                 }
             }
         }

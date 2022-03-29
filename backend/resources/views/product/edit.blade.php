@@ -749,7 +749,7 @@
                                                                             </label>
                                                                             <input type="text" class="form-control"
                                                                                    :name="'templates['+ index +'][design]['+designIndex+'][customer_canvas]'"
-                                                                                    x-model="design.customer_canvas">
+                                                                                   x-model="design.customer_canvas">
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="text-uppercase">
@@ -757,7 +757,18 @@
                                                                             </label>
                                                                             <input type="text" class="form-control"
                                                                                    :name="'templates['+ index +'][design]['+designIndex+'][mockup_customer_canvas]'"
-                                                                                    x-model="design.mockup_customer_canvas">
+                                                                                   x-model="design.mockup_customer_canvas">
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="text-uppercase">
+                                                                                Position
+                                                                            </label>
+                                                                            <select class="custom-select"
+                                                                                    :name="'templates['+ index +'][design]['+ designIndex +'][position]'"
+                                                                                    x-model="design.position">
+                                                                                <option value="down">Down</option>
+                                                                                <option value="up">Up</option>
+                                                                            </select>
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="col-md-6">
@@ -865,7 +876,7 @@
                                                                             </label>
                                                                             <input type="text" class="form-control"
                                                                                    :name="'templates['+ index +'][preview]['+previewIndex+'][customer_canvas]'"
-                                                                                    x-model="preview.customer_canvas">
+                                                                                   x-model="preview.customer_canvas">
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="text-uppercase">
