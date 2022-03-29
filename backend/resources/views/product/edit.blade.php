@@ -149,7 +149,7 @@
                                             <select class="form-control" name="capacity_id">
                                                 @foreach($capacities as $capacity)
                                                     <option
-                                                        value="{{$capacity->id}}" {{ $entity->capacity_id == $capacity->id }}>
+                                                        value="{{$capacity->id}}" {{ $entity->capacity_id == $capacity->id ? 'selected' : '' }}>
                                                         {{$capacity->title}}
                                                     </option>
                                                 @endforeach

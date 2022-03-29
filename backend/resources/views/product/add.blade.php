@@ -146,7 +146,9 @@
                                             <label class="text-uppercase" for="capacity_id">Capacity</label>
                                             <select class="form-control" name="capacity_id">
                                                 @foreach($capacities as $capacity)
-                                                    <option value="{{$capacity->id}}">{{$capacity->title}}</option>
+                                                    <option value="{{$capacity->id}}" {{ old('capacity_id') == $capacity->id ? 'selected' : '' }}>
+                                                        {{$capacity->title}}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
