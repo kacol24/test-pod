@@ -257,6 +257,7 @@
         let surfaces;
         let editor;
         let mockup;
+        let mockup_file;
         let color_id;
         let template_id = $('select[name=\'template\']').val();
         var templates = {!!json_encode($templates)!!};
@@ -284,13 +285,6 @@
                 template_id = $(this).val();
                 defineTemplate($(this).val());
             });
-
-            // $('.color-option').click(function() {
-            //     color_id = $(this).attr('data-id');
-            //     $('.color-option').removeClass('active');
-            //     $(this).addClass('active');
-            //     defineTemplate(template_id);
-            // });
         });
 
         function defineTemplate(id) {
@@ -309,11 +303,21 @@
                 if (mockup_colors.length) {
                     mockup_colors.map(function(color, idx) {
                         if (color.color_id == color_id && color.design_id == el.id) {
-                            mockup = color.customer_canvas;
+                            mockup_file = color.customer_canvas;
                         }
                     });
                 } else {
-                    mockup = el.mockup_customer_canvas;
+                    mockup_file = el.mockup_customer_canvas;
+                }
+
+                if(el.position == "up") {
+                    mockup = {
+                        up: mockup_file
+                    };
+                }else {
+                    mockup = {
+                        down: mockup_file
+                    };
                 }
                 surfaces.push({
                     name: el.page_name,
@@ -323,9 +327,7 @@
                             designLocation: {X: designLocation.X, Y: designLocation.Y}
                         }
                     ],
-                    mockup: {
-                        down: mockup
-                    },
+                    mockup: mockup,
                     proofImage: {
                         fileFormat: 'PNG',
                         rgbColorProfileName: 'Adobe RGB (1998)',
@@ -362,38 +364,12 @@
                     },
                     Toolbox: {
                         buttons: [
-                            // {
-                            //     translationKey: 'Toolbox.TEXT',
-                            //     translationKeyTitle: 'Toolbox.TITLE_ADD_TEXT',
-                            //     iconClass: 'prs-icon prs-icon--caption prs-icon-add-text',
-                            //     buttons: [
-                            //         {
-                            //             translationKey: 'Toolbox.TEXT',
-                            //             translationKeyTitle: 'Toolbox.TITLE_ADD_TEXT',
-                            //             iconClass: 'prs-icon prs-icon-add-text',
-                            //             action: 'Text'
-                            //         },
-                            //         'RichText'
-                            //     ]
-                            // },
                             {
                                 translationKey: 'Toolbox.IMAGE',
                                 translationKeyTitle: 'Toolbox.TITLE_ADD_IMAGE',
                                 iconClass: 'prs-icon prs-icon--caption prs-icon-add-image',
                                 action: 'Image'
                             },
-                            // {
-                            //     translationKey: 'Toolbox.SHAPE',
-                            //     translationKeyTitle: 'Toolbox.TITLE_ADD_SHAPE',
-                            //     iconClass: 'prs-icon prs-icon--caption prs-icon-add-shape',
-                            //     buttons: ['Line', 'Rectangle', 'Ellipse']
-                            // },
-                            // {
-                            //     translationKey: 'Toolbox.LINEAR_BARCODE',
-                            //     translationKeyTitle: 'Toolbox.TITLE_ADD_LINEAR_BARCODE',
-                            //     iconClass: 'prs-icon prs-icon--caption prs-icon-add-qr',
-                            //     buttons: ['LinearBarcode', 'QrCode']
-                            // }
                         ]
                     }
                 },
