@@ -9,6 +9,7 @@ use App\Models\StoreReferral;
 use App\Models\TeamInvitation;
 use App\Models\User;
 use App\Scopes\CurrentStoreScope;
+use App\Services\Facades\Prism;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -53,9 +54,24 @@ class RegisteredUserController extends Controller
             'description' => $request->description,
             'what_to_do'  => $request->what_to_do,
         ]);
+        $prism = Prism::createUser([
+            "user" => [
+                'uid'   => 'arterous-'.$user->id,
+                'email' => $user->email,
+                'name'  => $user->name,
+                'phone' => $user->phone,
+            ],
+        ]);
+
+        if (!isset($prism['data'])) {
+            throw new \Exception('Failed to communicate with Prism server');
+        }
+
         $store = Store::create([
-            'storename' => $request->username,
-            'ref_code'  => Store::generateRefCode(),
+            'storename'   => $request->username,
+            'ref_code'    => Store::generateRefCode(),
+            'prism_uid'   => $prism['data']['uid'],
+            'prism_token' => $prism['data']['authentication_token'],
         ]);
         $store->users()->attach($user->id, [
             'role_id' => User::ROLE_ID_SUPER_ADMIN,

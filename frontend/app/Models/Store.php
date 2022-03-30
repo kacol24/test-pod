@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -17,8 +16,15 @@ class Store extends Model
     protected $fillable = [
         'storename',
         'balance',
-        'ref_code'
+        'ref_code',
+        'prism_uid',
+        'prism_token',
     ];
+
+    public static function generateRefCode()
+    {
+        return strtoupper(Str::random(self::REF_LENGTH));
+    }
 
     public function users()
     {
@@ -57,7 +63,7 @@ class Store extends Model
 
     function platform($platform)
     {
-        return $this->hasOne('App\Models\StorePlatform', 'store_id', 'id')->where('platform',$platform)->first();
+        return $this->hasOne('App\Models\StorePlatform', 'store_id', 'id')->where('platform', $platform)->first();
     }
 
     function referral()
@@ -68,11 +74,6 @@ class Store extends Model
     public function downlines()
     {
         return $this->hasMany(StoreReferral::class, 'ref_id');
-    }
-
-    public static function generateRefCode()
-    {
-        return strtoupper(Str::random(self::REF_LENGTH));
     }
 
     public function getTotalCommissionAttribute()
