@@ -182,22 +182,22 @@ $(function() {
     });
 });
 
-function confirm() {
-    $('.loading').show();
-    $.ajax({
-        url: url, // point to server-side PHP script
-        data: {
-            ids: ids,
-            _token: $('input[name=\'_token\']').val()
-        },
-        type: 'post',
-        success: function(data) {
-            $('#modalconfirm').modal('hide');
-            $table.bootstrapTable('refresh');
-            $('.loading').hide();
-        }
-    });
-}
+// function confirm() {
+//     $('.loading').show();
+//     $.ajax({
+//         url: url, // point to server-side PHP script
+//         data: {
+//             ids: ids,
+//             _token: $('input[name=\'_token\']').val()
+//         },
+//         type: 'post',
+//         success: function(data) {
+//             $('#modalconfirm').modal('hide');
+//             $table.bootstrapTable('refresh');
+//             $('.loading').hide();
+//         }
+//     });
+// }
 
 function queryParams(params) {
     params.search = $('input[name=\'search\']').val();

@@ -12,6 +12,7 @@ use App\Http\Controllers\DesignController;
 use App\Http\Controllers\DesignProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ShopeeController;
+use App\Http\Controllers\StoreController;
 use App\Http\Controllers\TokopediaController;
 use App\Http\Controllers\TopupController;
 use App\Http\Controllers\Xendit\XenditController;
@@ -177,6 +178,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/datatable', [OrderController::class, 'datatable'])->name('orders.datatable');
         Route::get('orders/{order}', [OrderController::class, 'edit'])->name('orders.edit');
+    });
+
+    Route::middleware('can:'.Permissions::STORES)->group(function (){
+        Route::get('stores', [StoreController::class, 'index'])->name('stores.index');
+        Route::post('stores', [StoreController::class, 'store'])->name('stores.store');
+        Route::delete('stores/{storePlatform}', [StoreController::class, 'destroy'])->name('stores.destroy');
+        Route::delete('stores/cancel-tokopedia/{connectTokopedia}', [StoreController::class, 'cancelTokopedia'])->name('stores.cancel_tokopedia');
     });
 });
 

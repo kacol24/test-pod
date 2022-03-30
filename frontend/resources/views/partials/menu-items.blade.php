@@ -42,8 +42,8 @@
     {{--        </a>--}}
     {{--    </li>--}}
     @can(App\Enums\Permissions::STORES)
-        <li class="nav-item ">
-            <a class="nav-link" href="./payments-index.html">
+        <li class="nav-item {{ request()->routeIs(['stores.*']) ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('stores.index') }}">
                 Stores
             </a>
         </li>
