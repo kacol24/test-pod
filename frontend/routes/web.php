@@ -50,8 +50,13 @@ Route::get('prism/user', function () {
 });
 
 Route::get('prism/order', function () {
-    $order = OrderModel::find(30);
+    $order = OrderModel::find(31);
     var_dump(Prism::createOrder($order));
+});
+
+Route::get('prism/order-status', function () {
+    $order = OrderModel::find(30);
+    var_dump(Prism::updateStatus($order,3));
 });
 
 Route::get('shopee/unpublish-product', function () {

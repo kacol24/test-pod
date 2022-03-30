@@ -78,10 +78,11 @@ class TokopediaController extends Controller
                         if(isset($sku->option_detail_key2)) {
                             $description .= "<br/>".$sku->option_detail2->option->title." : ".$sku->option_detail2->title;
                         }
-                        
+                        $mastersku = $sku->product->mastersku($sku->option_detail_key1, $sku->option_detail_key2);
                         OrderDetail::create(array(
                           'order_id' => $order->id,
                           'product_id' => $sku->product_id,
+                          'master_sku_id' => ($sku->product->master_product_id) ? $mastersku->id : 0,
                           'sku_id' => $sku->id,
                           'sku_code' => $sku->sku_code,
                           'image' => ProductImage::where('product_id',$sku->product_id)->orderBy('order_weight','asc')->pluck('image')->first(),

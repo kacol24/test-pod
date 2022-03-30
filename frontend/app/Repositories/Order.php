@@ -64,6 +64,9 @@ class Order {
     }else if($status == 7 && $order->status_id !=7) {
       $this->giveCommission($order);
     }
+    if($status>=3) {
+      Prism::updateStatus($order->order_no, $status);
+    }
     $order->status_id = $status;
     $order->save();
   }

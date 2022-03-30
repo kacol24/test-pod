@@ -20,6 +20,10 @@ class OrderDetail extends Model
         return $this->hasOne('App\Models\Product\ProductSku','id','sku_id')->whereNull('deleted_at');
     }
 
+    function mastersku() {
+        return $this->hasOne('App\Models\MasterProduct\MasterProductSku','id','master_sku_id')->whereNull('deleted_at');
+    }
+
     public function getFormattedPriceAttribute()
     {
         return number_format($this->price, 0, ',', '.');

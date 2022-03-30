@@ -84,7 +84,7 @@ class Prism {
     foreach($order->details as $detail) {
       $items[] = array(
         "title" => $detail->title,
-        "product_id" => $detail->product_id,
+        "product_id" => ($detail->product->master_product_id) ? $detail->mastersku->sku_code : $detail->sku_code,
         "artwork_url" => $detail->product->editor->print_file,
         "preview_url" => $detail->product->editor->proof_file,
         "quantity" => $detail->quantity,
@@ -103,7 +103,7 @@ class Prism {
         "service" => $order->shipping->shipping_type
       ),
       "shipping_address" => array(
-        "code" => "SHIPPING-1",
+        "code" => "SHIPPING-".$order->shipping->id,
         "label" => "Home",
         "name" => $order->shipping->name,
         "email" => "user-1@arterous.com",
@@ -132,6 +132,65 @@ class Prism {
       CURLOPT_TIMEOUT => 30,
       CURLOPT_HEADER => true,
       CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_POSTFIELDS => json_encode($input),
+      CURLOPT_HTTPHEADER => array(
+        "Authorization: ".$base64,
+        "Locale: id",
+        "Content-Type: application/json",
+        "User-Token: ".$order->store->prism_token
+      )
+    ));
+
+    $resp = curl_exec($curl);
+    $log->response = $resp;
+    $log->save();
+
+    $headers=array();
+    $data=explode("\n",$resp);
+    $headers['status']=$data[0];
+    array_shift($data);
+    foreach($data as $part){
+      $middle=explode(":",$part);
+      if(isset($middle[1])) {
+        $headers[strtolower(trim($middle[0]))] = trim($middle[1]);
+      }
+    }
+
+    $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+    curl_close($curl);
+    $response = json_decode(substr($resp, $header_size),true);
+
+    return $response;
+  }
+
+  public function updateStatus($order, $status) {
+    $time = time();
+    $hash = md5($this->id.$time.$this->secret);
+    $base64 = base64_encode($this->id.",".$hash.",".$time);
+    $url = $this->url."/arterous/orders/".$order->order_no;
+
+    $input = array(
+      "status" => $status
+    );
+    $log = PrismLog::create(array(
+      "type" => "create_order",
+      "request" => json_encode(array_merge($input, array(
+        'id' => $this->id,
+        'hash' => $hash,
+        'time' => $time,
+        'base64' => $base64,
+        'url' => $url,
+      ))),
+      "response" => null
+    ));
+
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_HEADER => true,
+      CURLOPT_CUSTOMREQUEST => "PUT",
       CURLOPT_POSTFIELDS => json_encode($input),
       CURLOPT_HTTPHEADER => array(
         "Authorization: ".$base64,
