@@ -141,7 +141,7 @@
                     <tr>
                         <th data-field="order_no">ORDER</th>
                         <th data-field="customer">CUSTOMER</th>
-                        <th data-field="address"><ADDRESS></ADDRESS></th>
+                        <th data-field="address">ADDRESS</th>
                         <th data-field="created_at">ORDER TIME</th>
                         <th data-field="total">TOTAL</th>
                         <th data-field="status">STATUS</th>
