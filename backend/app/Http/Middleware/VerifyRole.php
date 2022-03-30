@@ -93,6 +93,10 @@ class VerifyRole
 
             'order.list',
             'order.edit',
+
+            'connect_tokopedia.datatable',
+            'connect_tokopedia.store',
+            'connect_tokopedia.update',
         ];
         if (session('admin')) {
             if (! check_permission($request->route()->getName()) && ! in_array($request->route()->getName(),

@@ -80,3 +80,10 @@
         </div>
     </li>
 @endif
+@if(check_permission('connect_tokopedia.list'))
+    <li class="nav-item {{ in_array($active, ['connect_tokopedia']) ? 'active' : '' }}">
+        <a class="nav-link" href="{{route('connect_tokopedia.list')}}">
+            Connect Tokopedia
+        </a>
+    </li>
+@endif

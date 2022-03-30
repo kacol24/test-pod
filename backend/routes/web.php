@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ConnectTokopediaController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Product\CapacityController;
 use App\Http\Controllers\Product\CategoryController;
@@ -109,6 +110,14 @@ Route::group(['prefix' => 'product'], function () {
     Route::post('capacity/edit/{id}', [CapacityController::class, 'update'])->name('capacity.update');
     Route::post('capacity/delete', [CapacityController::class, 'delete'])->name('capacity.delete');
 });
+
+Route::prefix('connect-tokopedia')
+     ->name('connect_tokopedia.')
+     ->group(function () {
+         Route::get('/', [ConnectTokopediaController::class, 'index'])->name('list');
+         Route::get('datatable', [ConnectTokopediaController::class, 'datatable'])->name('datatable');
+         Route::put('{id?}', [ConnectTokopediaController::class, 'update'])->name('update');
+     });
 
 Route::prefix('orders')->name('order.')->group(function () {
     Route::get('list', [OrderController::class, 'index'])->name('list');

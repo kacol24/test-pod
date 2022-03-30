@@ -21,15 +21,16 @@ class FeaturePermissionSeeder extends Seeder
         DB::table('feature_permissions')->truncate();
 
         $features = [
-            'product'   => 'Product',
-            'order'     => 'Order',
-            'banner'    => 'Banner',
-            'admin'     => 'Admin',
-            'role'      => 'Role',
-            'category'  => 'Product Category Menu',
-            'option'    => 'Product Option Menu',
-            'optionset' => 'Product Option Set Menu',
-            'capacity'  => 'Capacity Menu',
+            'product'           => 'Product',
+            'order'             => 'Order',
+            'banner'            => 'Banner',
+            'admin'             => 'Admin',
+            'role'              => 'Role',
+            'category'          => 'Product Category Menu',
+            'option'            => 'Product Option Menu',
+            'optionset'         => 'Product Option Set Menu',
+            'capacity'          => 'Capacity Menu',
+            'connect_tokopedia' => 'Connect Tokopedia',
         ];
 
         foreach ($features as $name => $feature) {
@@ -210,6 +211,23 @@ class FeaturePermissionSeeder extends Seeder
                 'action_name' => 'capacity.delete',
                 'feature_id'  => $capacity->id,
                 'title'       => 'Delete Capacity',
+            ],
+
+            #Connect Tokopedia
+            [
+                'action_name' => 'connect_tokopedia.list',
+                'feature_id'  => $connect_tokopedia->id,
+                'title'       => 'View Connect Tokopedia',
+            ],
+            [
+                'action_name' => 'connect_tokopedia.edit',
+                'feature_id'  => $connect_tokopedia->id,
+                'title'       => 'Edit Connect Tokopedia',
+            ],
+            [
+                'action_name' => 'connect_tokopedia.delete',
+                'feature_id'  => $connect_tokopedia->id,
+                'title'       => 'Delete Connect Tokopedia',
             ],
         ];
 
